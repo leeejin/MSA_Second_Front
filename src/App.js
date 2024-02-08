@@ -1,9 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { createTheme, ThemeProvider, Box } from "@mui/material";
 import { useSelector } from 'react-redux';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import CircularProgress from '@mui/material/CircularProgress';
 import NonPage from './pages/nonPage';
 import Login from './pages/login_page';
@@ -26,7 +23,6 @@ const ConditionRoute = ({ element }) => {
 
 export default function App() {
   return (
-   
        <BrowserRouter>
         <Suspense fallback={<div className="loading">
           <CircularProgress />

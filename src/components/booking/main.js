@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Button, Box, TextField, Container, FormControl, Select, MenuItem, Alert } from '@mui/material';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import CodeIcon from '@mui/icons-material/Code';
 import AirPort from '../../util/json/airport-list';
 import AirLine from '../../util/json/airline-list';
-// import DatePicker from 'react-datepicker';
+
+import DatePicker from 'react-datepicker';
+import ko from 'date-fns/locale/ko';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function Main() {
     const navigate = useNavigate();
     const airport = AirPort.response.body.items.item; // 공항 목록
@@ -17,8 +19,7 @@ export default function Main() {
     const [depAirPort, setDepAirPort] = useState(AirPort.response.body.items.item[0].airportId); // 출발지
     const [arrAirPort, setArrAirPort] = useState(AirPort.response.body.items.item[1].airportId); // 도착지
 
-    const tomorrow = dayjs().add(1, 'day'); // 오늘 날짜의 다음 날을 계산합니다.
-    const [startDate, setStartDate] = useState(tomorrow); // 출발날짜는 항상 오늘날짜의 다음날부터
+    const [startDate, setStartDate] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [cost, setCost] = useState(0); // 가격
 
     const [errorMessage, setErrorMessage] = useState(false);
@@ -57,68 +58,74 @@ export default function Main() {
             setErrorMessage(true);
         }
     }
+
     //출발지, 도착지, 항공사, 날짜
     return (
-        <Container>
+        <div className="container">
             {
-                errorMessage && <Alert severity="error">출발지와 도착지가 같습니다</Alert>
+                errorMessage && <div>출발지와 도착지가 같습니다</div>
             }
-            <Box>
-                <FormControl >
+            <div>
+                <div>
                     <label>출발지</label>
-                    <Select
+                    <select
                         value={depAirPort}
                         onChange={handleDepAirPortChange}
                         size="small">
                         {airport.map((ap) => (
-                            <MenuItem key={ap.airportId} value={ap.airportId}>
+                            <option key={ap.airportId} value={ap.airportId}>
                                 {ap.airportNm}
-                            </MenuItem>
+                            </option>
                         ))}
-                    </Select>
-                </FormControl>
-
+                    </select>
+                </div>
                 <CodeIcon className="reverseIcon" onClick={handleAirPortReverse} />
 
-                <FormControl >
+                <div>
                     <label>도착지</label>
-                    <Select
+                    <select
                         value={arrAirPort}
                         onChange={handleArrAirPortChange}
                         size="small">
                         {airport.map((ap) => (
-                            <MenuItem key={ap.airportId} value={ap.airportId}>
+                            <option key={ap.airportId} value={ap.airportId}>
                                 {ap.airportNm}
-                            </MenuItem>
+                            </option>
                         ))}
-                    </Select>
-                </FormControl>
-            </Box>
+                    </select>
+                </div>
+            </div>
 
 
-            <FormControl >
+            <div>
                 <label>항공사</label>
-                <Select
+                <select
                     value={chooseAirLine}
                     onChange={handleChooseAirLineChange}
                     size="small">
                     {airLine.map((ap) => (
-                        <MenuItem key={ap.airlineId} value={ap.airlineId}>
+                        <option key={ap.airlineId} value={ap.airlineId}>
                             {ap.airlineNm}
-                        </MenuItem>
+                        </option>
                     ))}
-                </Select>
-            </FormControl>
-            <DemoContainer components={['DatePicker']}>
+                </select>
+            </div>
+            <section>
                 <DatePicker
-                    format='YYYY-MM-DD'
-                    showDaysOutsideCurrentMonth
-                    onChange={handleDateChange}
-                    minDate={tomorrow}
+                    className="datepicker"
+                    shouldCloseOnSelect
+                    locale={ko}
+                    selectsRange={false}
+                    selected={startDate}
+                    dateFormat="yyyy-MM-dd"
+                    minDate={new Date(dayjs().add(1, 'day'))}
+                    onChange={(date) => handleDateChange(date)}
                 />
-            </DemoContainer>
+            </section>
 
-            <Button onClick={handlePay}>예약</Button>
-        </Container>
+
+
+            <button onClick={handlePay}>예약</button>
+        </div>
     );
 }
