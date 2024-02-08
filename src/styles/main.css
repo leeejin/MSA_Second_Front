@@ -46,3 +46,9 @@ div {
 .special-color {
     color: #1976d2;
 }
+
+.reverseIcon {
+    &:hover {
+        cursor: pointer;
+    }
+}
