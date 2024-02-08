@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-import CodeIcon from '@mui/icons-material/Code';
 import AirPort from '../../util/json/airport-list';
 import AirLine from '../../util/json/airline-list';
 
@@ -79,8 +77,7 @@ export default function Main() {
                         ))}
                     </select>
                 </div>
-                <CodeIcon className="reverseIcon" onClick={handleAirPortReverse} />
-
+                <button className="reverseIcon" onClick={handleAirPortReverse}>~</button>
                 <div>
                     <label>도착지</label>
                     <select
