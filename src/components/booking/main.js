@@ -16,7 +16,9 @@ export default function Main() {
     const [chooseAirLine, setChooseAirLine] = useState(AirLine.response.body.items.item[0].airlineId);
     const [depAirPort, setDepAirPort] = useState(AirPort.response.body.items.item[0].airportId); // 출발지
     const [arrAirPort, setArrAirPort] = useState(AirPort.response.body.items.item[1].airportId); // 도착지
-    const [startDate, setStartDate] = useState(dayjs(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))); // 출발날짜는 항상 오늘날짜의 다음날부터
+
+    const tomorrow = dayjs().add(1, 'day'); // 오늘 날짜의 다음 날을 계산합니다.
+    const [startDate, setStartDate] = useState(tomorrow); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [cost, setCost] = useState(0); // 가격
 
     const [errorMessage, setErrorMessage] = useState(false);
@@ -112,7 +114,7 @@ export default function Main() {
                     format='YYYY-MM-DD'
                     showDaysOutsideCurrentMonth
                     onChange={handleDateChange}
-                    minDate={startDate}
+                    minDate={tomorrow}
                 />
             </DemoContainer>
 
