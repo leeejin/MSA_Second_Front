@@ -44,27 +44,24 @@ export default function Menubar() {
     return (
         <div>
             <ModalComponent open={open} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            <Link to="/">로고</Link>
-                        </Typography>
-                        {
-                            userId !== 0 ? <>
-                                <Button color="inherit" onClick={() => { navigate('/MyPage') }}>마이페이지</Button>
-                                <Button color="inherit" onClick={handleOpenClose}>로그아웃</Button>
+            <div style={{ flexGrow: 1 }}>
+                <div>
+                    <div sx={{ flexGrow: 1 }}>
+                        <Link to="/">로고</Link>
+                    </div>
+                    {
+                        userId !== 0 ? <>
+                            <button color="inherit" onClick={() => { navigate('/MyPage') }}>마이페이지</button>
+                            <button color="inherit" onClick={handleOpenClose}>로그아웃</button>
+                        </>
+                            : <>
+                                <button color="inherit" onClick={() => { navigate('/Signup') }}>회원가입</button>
+                                <button color="inherit" onClick={() => { navigate('/Login') }}>로그인</button>
                             </>
-                                : <>
-                                    <Button color="inherit" onClick={() => { navigate('/Signup') }}>회원가입</Button>
-                                    <Button color="inherit" onClick={() => { navigate('/Login') }}>로그인</Button>
-                                </>
 
-                        }
-
-                    </Toolbar>
-                </AppBar>
-            </Box>
+                    }
+                </div>
+            </div>
         </div>
     );
 }

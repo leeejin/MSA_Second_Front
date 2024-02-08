@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { Button, Box, TextField, Container, FormControl, Select, MenuItem, Modal, Typography } from '@mui/material';
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
@@ -24,7 +23,6 @@ export default function Signup() {
     const [passwordError, setPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
     const [DuplicateCheck, setDuplicateCheck] = useState(false);
-    console.log("변경")
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
         const errors = {
@@ -78,75 +76,67 @@ export default function Signup() {
         }
     }
     return (
-        <Container maxWidth="sm">
+        <div className="container">
             <ModalComponent open={open} subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
-            <Box
-                component="form"
-                className="component-column"
-                sx={{ '& .MuiTextField-root': { mb: 3 }, marginTop: '40%' }}
-                noValidate
-                autoComplete="off"
-            >
-                <TextField
-                    size="small"
+            <div>
+                <input
                     placeholder="이름"
                     onChange={(e) => { setName(e.target.value) }}
-                    error={nameError}
-                    helperText={nameError && '이름을 입력하세요. (2~5자 이내)'}
                 />
-                <TextField
+                {
+                    nameError && <p>'이름을 입력하세요. (2~5자 이내)'</p>
+                }
+                <input
                     size="small"
                     placeholder="닉네임"
                     onChange={(e) => { setNickname(e.target.value) }}
-                    error={nicknameError}
-                    helperText={nicknameError && '닉네임을 입력하세요. (2~5자 이내)'}
                 />
-                <Box sx={{ display: 'flex' }}>
-                    <TextField
+                {
+                    nicknameError && <p>'닉네임을 입력하세요. (2~5자 이내)'</p>
+                }
+                <div>
+                    <input
                         size="small"
                         placeholder='이메일'
                         onChange={(e) => { setEmail(e.target.value) }}
-                        error={emailError}
-                        helperText={emailError && '이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'}
                         sx={{ flex: 1 }}
                     />
                     <p style={{ flex: 0.1, textAlign: 'center' }}>@</p>
-                    <FormControl sx={{ flex: 1 }}>
-                        <Select
-                            value={select}
-                            onChange={(e) => { setSelect(e.target.value) }}
-                            sx={{ width: '100%' }}
-                            size="small">
-                            {emailMenus.map((email, i) => (
-                                <MenuItem key={i} value={email.value}>
-                                    {email.value}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Box>
-                <TextField
-                    size="small"
-                    placeholder="비밀번호"
-                    type="password"
-                    onChange={(e) => { setPassword(e.target.value) }}
-                    error={passwordError}
-                    helperText={passwordError && '비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'}
-                />
-                <TextField
-                    size="small"
-                    placeholder="비밀번호 확인"
-                    type="password"
-                    onChange={(e) => { setConfirmPassword(e.target.value) }}
-                    error={confirmPasswordError}
-                    helperText={confirmPasswordError && '비밀번호를 입력하세요.'}
-                />
-                {
-                    DuplicateCheck === true && <p style={{ color: 'red' }}>다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
-                }
-                <Button variant="contained" onClick={handleOpenClose}>회원가입</Button>
-            </Box>
+                    <select
+                        value={select}
+                        onChange={(e) => { setSelect(e.target.value) }}>
+                        {emailMenus.map((email, i) => (
+                            <option key={i} value={email.value}>
+                                {email.value}
+                            </option>
+                        ))}
+                    </select>
+                    {
+                        emailError && <p>'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
+                    }
+                </div>
+            </div>
+            <input
+                placeholder="비밀번호"
+                type="password"
+                onChange={(e) => { setPassword(e.target.value) }}
+            />
+            {
+                confirmPasswordError && <p>'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
+            }
+            <input
+                placeholder="비밀번호 확인"
+                type="password"
+                onChange={(e) => { setConfirmPassword(e.target.value) }}
+            />
+            {
+                confirmPasswordError && <p>'비밀번호를 입력하세요.'</p>
+            }
+            {
+                DuplicateCheck === true && <p style={{ color: 'red' }}>다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
+            }
+            <button variant="contained" onClick={handleOpenClose}>회원가입</button>
 
-        </Container>
+        </div>
     )
 }
