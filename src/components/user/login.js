@@ -17,7 +17,7 @@ export default function Login() {
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
-
+    console.log("변경")
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
