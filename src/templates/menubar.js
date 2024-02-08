@@ -1,6 +1,5 @@
 
 import React, { useState } from "react";
-import { AppBar, Box, Toolbar, Typography, Button } from '@mui/material';
 import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";

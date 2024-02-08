@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AIRAPI from '../../util/airAPI';
 import axios from 'axios';
-import { Container } from '@mui/material';
 
 export default function Main() {
     const [airName,setAirName] = useState(''); //항공사명
