@@ -34,6 +34,15 @@ body {
             cursor: default;
             visibility: hidden;
         }
+
+        .react-datepicker__time-list {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .react-datepicker__time-list::-webkit-scrollbar {
+            display: none;
+        }
     }
 }
 
@@ -53,7 +62,7 @@ body {
         cursor: pointer;
     }
 
-    &:focus { 
+    &:focus {
         outline: 2px solid #1976d2;
     }
 }
@@ -69,12 +78,11 @@ body {
         font-size: larger;
     }
 
-    
+
 }
 
 .selectedDay,
 .unselectedDay {
-
     color: white;
 }
 

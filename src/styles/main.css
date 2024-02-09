@@ -1,30 +1,3 @@
-@font-face {
-    font-family: 'jua';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
-body {
-    margin: 0;
-    font-family: 'jua';
-}
-div {
-    box-sizing: border-box;
-}
-button{
-
-}
-input{
-    padding:5px;
-    border:1px solid black;
-    border-radius: 5px;
-    
-}
-
-.container {
-
-}
-
 .component-column {
     display: flex;
     flex-direction: column;
@@ -50,12 +23,10 @@ input{
     height: 680px;
 }
 
-.black-wrap{
+.black-wrap {}
 
-}
-.white-wrap{
+.white-wrap {}
 
-}
 .danger-color {
     color: red;
 }
