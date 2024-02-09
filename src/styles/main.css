@@ -13,7 +13,9 @@ body {
 div {
     box-sizing: border-box;
 }
-
+.container{
+    
+}
 .component-column {
     display: flex;
     flex-direction: column;
