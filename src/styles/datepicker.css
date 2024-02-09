@@ -1,0 +1,97 @@
+body {
+
+    .react-datepicker {
+        border: none;
+        border-radius: 0;
+
+        .react-datepicker__header {
+            background-color: #1976d2;
+            color: white;
+            border-bottom: none;
+            border-radius: 0;
+
+            .react-datepicker__day-names {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 40px;
+
+                .react-datepicker__day-name {
+                    color: white;
+                }
+            }
+        }
+
+        .react-datepicker-time__header {
+            color: white;
+        }
+
+        .react-datepicker__triangle {
+            display: none;
+        }
+
+        .react-datepicker__day--outside-month {
+            cursor: default;
+            visibility: hidden;
+        }
+    }
+}
+
+.datepicker {
+    display: flex;
+    align-items: center;
+    border: none;
+    border-radius: 4px;
+    background-color: #1976d2;
+    box-sizing: border-box;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    padding-right: 14px;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus { 
+        outline: 2px solid #1976d2;
+    }
+}
+
+.customHeaderContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px 0 24px;
+
+    .year-month {
+        color: white;
+        font-size: larger;
+    }
+
+    
+}
+
+.selectedDay,
+.unselectedDay {
+
+    color: white;
+}
+
+.selectedDay {
+    background-color: #1976d2;
+    border-radius: 50%;
+    font-weight: 700;
+
+    &:hover {
+        border-radius: 50%;
+        background-color: white;
+    }
+}
+
+.unselectedDay {
+    &:hover {
+        border-radius: 50%;
+        background-color: rgba(white, 0.08);
+    }
+}

@@ -4,18 +4,27 @@
     font-weight: 700;
     font-style: normal;
 }
-
 body {
     margin: 0;
     font-family: 'jua';
 }
-
 div {
     box-sizing: border-box;
 }
-.container{
+button{
+
+}
+input{
+    padding:5px;
+    border:1px solid black;
+    border-radius: 5px;
     
 }
+
+.container {
+
+}
+
 .component-column {
     display: flex;
     flex-direction: column;
@@ -41,10 +50,20 @@ div {
     height: 680px;
 }
 
+.black-wrap{
+
+}
+.white-wrap{
+
+}
 .danger-color {
     color: red;
 }
 
 .special-color {
     color: #1976d2;
+}
+
+.warning-color {
+    color: yellow;
 }
