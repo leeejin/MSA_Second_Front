@@ -25,7 +25,3 @@ yarn-error.log*
 /public/
 
 README.md
-
-# Exclude files in src/components/user directory
-/src/components/user/*
-!/src/components/user/.gitkeep
