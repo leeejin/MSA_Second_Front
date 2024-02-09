@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
@@ -42,7 +41,10 @@ export default function Menubar() {
     };
     return (
         <div>
-            <ModalComponent open={open} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
+            {
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
+            }
+          
             <div style={{ flexGrow: 1 }}>
                 <div>
                     <div sx={{ flexGrow: 1 }}>
