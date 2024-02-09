@@ -23,6 +23,7 @@ export default function Signup() {
     const [passwordError, setPasswordError] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
     const [DuplicateCheck, setDuplicateCheck] = useState(false);
+
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
         const errors = {
