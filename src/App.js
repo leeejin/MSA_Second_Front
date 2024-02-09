@@ -29,7 +29,8 @@ export default function App() {
             <Route exact path="/Login" element={<Login />} />
             <Route exact path="/Signup" element={<Signup />} />
             <Route exact path="/MyPage/:userId" element={<ConditionRoute element={<MyPage />} />} />
-            <Route exact path="/PayCheck" element={<ConditionRoute element={<PayCheck />} />} />
+            <Route exact path="/PayCheck" element={<PayCheck />}/>
+            {/* <Route exact path="/PayCheck" element={<ConditionRoute element={<PayCheck />} />} /> */}
             <Route path="*" element={<NonPage />} />
           </Routes>
         </Suspense>

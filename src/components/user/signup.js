@@ -61,7 +61,7 @@ export default function Signup() {
     async function callAddUserAPI() {
         //회원가입할때 보낼 데이터
         const formData = {
-            email: email + '@' + select,
+            username: email + '@' + select,
             name: name,
             nickname: nickname,
             password: password

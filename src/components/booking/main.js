@@ -9,7 +9,9 @@ import dayjs from 'dayjs';
 dayjs.locale('ko'); // 한국어로 설정
 
 export default function Main() {
+
     const navigate = useNavigate();
+
     const airport = AirPort.response.body.items.item; // 공항 목록
     const airLine = AirLine.response.body.items.item; // 항공사
     const [chooseAirLine, setChooseAirLine] = useState(AirLine.response.body.items.item[0].airlineId); //항공사
@@ -146,7 +148,7 @@ const ModalBookCheck = ({ listData, setListModalVisible }) => {
     const handlePayCheck = () => {
         //여기서 예약됐고 결제 페이지 가시겠습니까? 문구 띄어야함
         console.log('야호~');
-        //navigate('/PayCheck'); //로그인 하면 가야함 근데 아직 서버 연결안되서 안됨
+        navigate('/PayCheck'); //로그인 하면 가야함 근데 아직 서버 연결안되서 안됨
     }
     const handleModalVisible = () => {
         setListModalVisible(false);
