@@ -17,13 +17,8 @@ const style = {
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => {
     const navigate = useNavigate();
 
-    const [messageConfirm, setMessageConfirm] = useState(false);
-
     const handleConfirm = () => {
-        setMessageConfirm(true);
-        if (messageConfirm) {
-            handleSubmit();
-        }
+        handleSubmit();
     };
     const handleModalVisible = () => {
         handleOpenClose();

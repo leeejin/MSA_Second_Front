@@ -4,7 +4,7 @@ import ko from 'date-fns/locale/ko';
 import dayjs from 'dayjs';
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Datepicker({ startDate, handleDateChange }) {
+export default function Datepicker({ depTime, handleDateChange }) {
     const minDate = new Date(dayjs().add(1, 'day'));
     const maxDate = new Date(dayjs().add(3, 'month'));
     const YEARS = new Date().getFullYear();
@@ -41,7 +41,7 @@ export default function Datepicker({ startDate, handleDateChange }) {
                 timeCaption="시간" //시간 Caption
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
-                selected={startDate} //선택하는 날짜
+                selected={depTime} //선택하는 날짜
                 dateFormat="yyyy-MM-dd aa h:mm" //데이터 타입 ex) 2024-02-09 오전 8:00
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
@@ -61,8 +61,8 @@ export default function Datepicker({ startDate, handleDateChange }) {
                             onClick={decreaseMonth}
                             disabled={prevMonthButtonDisabled}
                         >
-                           prev 
-                           {/* 여기 prev지우고 Icon 삽입 */}
+                            prev
+                            {/* 여기 prev지우고 Icon 삽입 */}
                         </button>
                         <div className="year-month">
                             <h3>{YEARS}년 {MONTHS[date.getMonth()]}</h3>
@@ -73,7 +73,7 @@ export default function Datepicker({ startDate, handleDateChange }) {
                             disabled={nextMonthButtonDisabled}
                         >
                             next
-                             {/* 여기 next지우고 Icon 삽입 */}
+                            {/* 여기 next지우고 Icon 삽입 */}
                         </button>
                     </div>
                 )}
