@@ -9,13 +9,13 @@ import 'dayjs/locale/ko';
 import dayjs from 'dayjs';
 dayjs.locale('ko'); // 한국어로 설정
 
+//메인페이지 - 여기서 예약조회 가능
 export default function Main() {
 
     const navigate = useNavigate();
 
     const airport = AirPort.response.body.items.item; // 공항 목록
     const airLine = AirLine.response.body.items.item; // 항공사
-    const [open,setOpen] = useState(false); //모달
     const [chooseAirLine, setChooseAirLine] = useState(AirLine.response.body.items.item[0].airlineId); //항공사
     const [depAirPort, setDepAirPort] = useState(AirPort.response.body.items.item[0].airportId); // 출발지
     const [arrAirPort, setArrAirPort] = useState(AirPort.response.body.items.item[1].airportId); // 도착지
@@ -75,6 +75,7 @@ export default function Main() {
         );
         return selectedAirline;
     }
+
     //출발 날짜 핸들러
     const handleDateChange = (date) => {
         setDepTime(date);
@@ -98,7 +99,7 @@ export default function Main() {
         if (!errors.locationError && !errors.dateError) {
             setErrorMessage(false);
             setDateErrorMessage(false);
-            navigate(`/PayCheck`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 안됨
+            navigate(`/Reserve`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 App.js 임시적으로 풀어놓음
                 state: {
                     chooseAirLine: chooseAirLine,
                     depAirPort: depAirPort,
@@ -118,6 +119,7 @@ export default function Main() {
         }
 
     }
+    //출발지,도착지,항공사,날짜가 바뀔때마다 API요청 -맞나 ..?
     async function callPostAirInfoAPI() {
         //백엔드로 보낼 데이터 : 출발지, 도착지, 항공사, 날짜
         // const formData = {
@@ -126,7 +128,7 @@ export default function Main() {
         //     arrAirport: arrAirPort,
         //     depTime: depTime,
         // };
-        // const response = axios.post(Constant.serviceURL + ``, formData, { withCredentials: true })
+        // const response = axios.post(Constant.serviceURL + `실시간데이터를 가지고 있는 URL`, formData, { withCredentials: true })
         return {
             charge: 0, // 가격
             seatCapacity: 0, //좌석 수
@@ -137,7 +139,7 @@ export default function Main() {
 
     return (
         <div className="container">
-   
+
             {
                 errorMessage && <div className="message danger-color">출발지와 도착지가 같습니다</div>
             }
