@@ -119,9 +119,6 @@ export default function Main() {
                     onChange={(date) => handleDateChange(date)}
                 />
             </section>
-
-
-
             <button onClick={handlePay}>예약</button>
         </div>
     );
