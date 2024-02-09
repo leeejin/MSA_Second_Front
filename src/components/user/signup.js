@@ -61,7 +61,7 @@ export default function Signup() {
     async function callAddUserAPI() {
         //회원가입할때 보낼 데이터
         const formData = {
-            email: email + '@' + select,
+            username: email + '@' + select,
             name: name,
             nickname: nickname,
             password: password
@@ -78,14 +78,16 @@ export default function Signup() {
     }
     return (
         <div className="container">
-            <ModalComponent open={open} subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
+            {
+                open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
+            }
             <div>
                 <input
                     placeholder="이름"
                     onChange={(e) => { setName(e.target.value) }}
                 />
                 {
-                    nameError && <p>'이름을 입력하세요. (2~5자 이내)'</p>
+                    nameError && <p className="message danger-color">'이름을 입력하세요. (2~5자 이내)'</p>
                 }
                 <input
                     size="small"
@@ -93,7 +95,7 @@ export default function Signup() {
                     onChange={(e) => { setNickname(e.target.value) }}
                 />
                 {
-                    nicknameError && <p>'닉네임을 입력하세요. (2~5자 이내)'</p>
+                    nicknameError && <p className="message danger-color">'닉네임을 입력하세요. (2~5자 이내)'</p>
                 }
                 <div>
                     <input
@@ -113,7 +115,7 @@ export default function Signup() {
                         ))}
                     </select>
                     {
-                        emailError && <p>'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
+                        emailError && <p className="message danger-color">'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
                     }
                 </div>
             </div>
@@ -123,7 +125,7 @@ export default function Signup() {
                 onChange={(e) => { setPassword(e.target.value) }}
             />
             {
-                confirmPasswordError && <p>'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
+                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
             }
             <input
                 placeholder="비밀번호 확인"
@@ -131,10 +133,10 @@ export default function Signup() {
                 onChange={(e) => { setConfirmPassword(e.target.value) }}
             />
             {
-                confirmPasswordError && <p>'비밀번호를 입력하세요.'</p>
+                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요.'</p>
             }
             {
-                DuplicateCheck === true && <p style={{ color: 'red' }}>다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
+                DuplicateCheck === true && <p className="message danger-color">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
             }
             <button variant="contained" onClick={handleOpenClose}>회원가입</button>
 

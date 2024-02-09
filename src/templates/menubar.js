@@ -41,7 +41,10 @@ export default function Menubar() {
     };
     return (
         <div>
-            <ModalComponent open={open} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
+            {
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
+            }
+          
             <div style={{ flexGrow: 1 }}>
                 <div>
                     <div sx={{ flexGrow: 1 }}>

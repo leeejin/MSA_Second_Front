@@ -22,7 +22,7 @@ export default function Login() {
             emailError: email === '',
             passwordError: password === '',
         };
-        if (!emailError && !passwordError) {
+        if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
                 dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), nickname: response.data.nickname } }); //리덕스에 로그인 정보 업데이트
@@ -41,7 +41,7 @@ export default function Login() {
     async function callLoginAPI() {
         //백엔드로 보낼 로그인 데이터
         const formData = {
-            email: email,
+            username: email,
             password: password
         }
         const response = await axios.post(Constant.serviceURL + `/login`, formData, { withCredentials: true });
@@ -52,16 +52,19 @@ export default function Login() {
         <div className="container">
             <div>
                 <input
-                    error={emailError}
-                    helperText={emailError && '이메일을 제대로 입력해주세요.'}
+                    type="email"
                     onChange={(e) => { setEmail(e.target.value) }}
                 />
+                {
+                    emailError && <p>이메일을 제대로 입력해주세요.</p>
+                }
                 <input
                     type="password"
-                    error={passwordError}
-                    helperText={passwordError && '비밀번호를 제대로 입력해주세요.'}
                     onChange={(e) => { setPassword(e.target.value) }}
                 />
+                {
+                    passwordError && <p>비밀번호를 제대로 입력해주세요.</p>
+                }
                 {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
                 <button variant="contained" sx={{ mt: 2 }} onClick={(e) => submit(e)}>로그인</button>
             </div>
