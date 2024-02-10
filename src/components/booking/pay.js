@@ -14,6 +14,7 @@ export default function PayCheck() {
         <div className="container">
             <h3>결제창</h3>
             <div>
+                <h5>예약확인</h5>
                 {
                     contents.map((info) =>
                         <div key={info.id}>
@@ -30,9 +31,13 @@ export default function PayCheck() {
                 }
             </div>
             <div>
-                <button onClick={handlePay}>결제</button>
-                <button onClick={() => { navigate(-1) }}>취소</button>
+                <h5>결제</h5>
+                <div>
+                    <button onClick={handlePay}>결제</button>
+                    <button onClick={() => { navigate(-1) }}>취소</button>
+                </div>
             </div>
+
         </div>
     )
 }
