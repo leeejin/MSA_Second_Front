@@ -35,10 +35,10 @@ export default function Datepicker({ depTime, handleDateChange }) {
         <div style={{ display: 'flex' }}>
             <DatePicker
                 className="datepicker" //input style class
-                withPortal //모바일 버전으로 바꿔줌
+               // withPortal //모바일 버전으로 바꿔줌
                 shouldCloseOnSelect //시간선택하면 닫아짐
-                showTimeSelect //시간도 선택할 수 있게 함
-                timeCaption="시간" //시간 Caption
+                // showTimeSelect //시간도 선택할 수 있게 함
+                // timeCaption="시간" //시간 Caption
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
                 selected={depTime} //선택하는 날짜

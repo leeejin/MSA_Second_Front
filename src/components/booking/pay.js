@@ -1,15 +1,34 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useLocation } from 'react-router';
 //결제 페이지
-const PayCheck = ({ depAirPort, arrAirPort }) => {
+export default function PayCheck() {
     const navigate = useNavigate();
-    
-    const handlePay=()=>{
-        console.log("결제를 해요");
+    const location = useLocation();
+    const { contents, cost, selectedId } = location.state;
+    console.log(contents);
+    const handlePay = () => {
+        console.log("결제완료");
     }
     return (
         <div className="container">
-            <h3>결제창은 나중에 해야할듯 결제되면 마이페이지에 결제내역 보여주는 창으로 갈까요 ? 이런거도 넣고 그쪽으로 이동시키는게 좋을듯</h3>
+            <h3>결제창</h3>
+            <div>
+                {
+                    contents.map((info) =>
+                        <div key={info.id}>
+                            <p>{info.airlineNm} ({info.vihicleId})</p>
+
+                            <p>도착 : {info.arrAirportNm}</p>
+                            <p>도착시간 : {info.arrPlandTime}</p>
+                            <p>출발 : {info.depAirportNm}</p>
+                            <p>출발시간 :  {info.depPlandTime}</p>
+                            <p>잔여석 : {info.seatCapacity}</p>
+                            <p>총 요금: {cost}</p>
+                        </div>
+                    )
+                }
+            </div>
             <div>
                 <button onClick={handlePay}>결제</button>
                 <button onClick={() => { navigate(-1) }}>취소</button>
@@ -17,5 +36,3 @@ const PayCheck = ({ depAirPort, arrAirPort }) => {
         </div>
     )
 }
-
-export default PayCheck;

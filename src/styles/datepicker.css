@@ -2,13 +2,14 @@ body {
 
     .react-datepicker {
         border: none;
-        border-radius: 0;
+        border-radius: 50%;
 
         .react-datepicker__header {
             background-color: #1976d2;
             color: white;
             border-bottom: none;
-            border-radius: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
 
             .react-datepicker__day-names {
                 display: flex;
@@ -50,12 +51,11 @@ body {
     display: flex;
     align-items: center;
     border: none;
-    border-radius: 4px;
-    background-color: #1976d2;
+    border-radius: 5px;
     box-sizing: border-box;
     padding: 10px;
-    color: white;
     text-align: center;
+    color:#1976d2;
     padding-right: 14px;
 
     &:hover {
@@ -63,7 +63,7 @@ body {
     }
 
     &:focus {
-        outline: 2px solid #1976d2;
+        outline: none;
     }
 }
 

@@ -14,14 +14,14 @@ export default function Main() {
 
     const navigate = useNavigate();
 
+    const level = Constant.getSeatLevel();
     const airport = AirPort.response.body.items.item; // 공항 목록
-    const airLine = AirLine.response.body.items.item; // 항공사
-    const [chooseAirLine, setChooseAirLine] = useState(AirLine.response.body.items.item[0].airlineId); //항공사
     const [depAirPort, setDepAirPort] = useState(AirPort.response.body.items.item[0].airportId); // 출발지
     const [arrAirPort, setArrAirPort] = useState(AirPort.response.body.items.item[1].airportId); // 도착지
-    const [chooseAirLineNm, setChooseAirLineNm] = useState(AirLine.response.body.items.item[0].airlineNm); //항공사
+
     const [depAirPortNm, setDepAirPortNm] = useState(AirPort.response.body.items.item[0].airportNm); // 출발지
     const [arrAirPortNm, setArrAirPortNm] = useState(AirPort.response.body.items.item[1].airportNm); // 도착지
+    const [seatLevel, setSeatLevel] = useState(level[0].value);
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [contents, setContents] = useState([]);
 
@@ -31,7 +31,7 @@ export default function Main() {
         }).catch((error) => {
             console.log("정보를 불러들이는데 실패");
         })
-    }, [depTime, depAirPort, arrAirPort, chooseAirLine])
+    }, [depTime, depAirPort, arrAirPort])
 
     const [errorMessage, setErrorMessage] = useState(false); //에러메시지
     const [dateErrorMessage, setDateErrorMessage] = useState(false) //날짜에러 메시지
@@ -53,14 +53,7 @@ export default function Main() {
             ))}
         </select>
     );
-    //항공사 변경 핸들러
-    const handleChooseAirLineChange = (event) => {
-        const selectedAirlineId = event.target.value;
-        setChooseAirLine(selectedAirlineId);
-        // 객체에서 공항 이름을 찾아 상태를 업데이트
-        const selectedAirline = getSelectedAirline(selectedAirlineId);
-        if (selectedAirline) setChooseAirLineNm(selectedAirline.airlineNm);
-    };
+
     // 해당 ID를 가진 공항 객체를 찾음
     const getSelectedAirport = (selectedAirportId) => {
         const selectedAirport = AirPort.response.body.items.item.find(
@@ -68,14 +61,11 @@ export default function Main() {
         );
         return selectedAirport;
     }
-    // 해당 ID를 가진 항공사 객체를 찾음
-    const getSelectedAirline = (selectedAirlineId) => {
-        const selectedAirline = AirLine.response.body.items.item.find(
-            (airline) => airline.airlineId === selectedAirlineId
-        );
-        return selectedAirline;
-    }
 
+
+    const handleSeatChange = (e) => {
+        setSeatLevel(e.target.value);
+    }
     //출발 날짜 핸들러
     const handleDateChange = (date) => {
         setDepTime(date);
@@ -101,16 +91,8 @@ export default function Main() {
             setDateErrorMessage(false);
             navigate(`/Reserve`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 App.js 임시적으로 풀어놓음
                 state: {
-                    chooseAirLine: chooseAirLine,
-                    depAirPort: depAirPort,
-                    arrAirPort: arrAirPort,
-                    depTime: depTime,
-                    chooseAirLineNm: chooseAirLineNm,
-                    depAirPortNm: depAirPortNm,
-                    arrAirPortNm: arrAirPortNm,
-                    charge: contents.charge,
-                    arrTime: contents.arrTime,
-                    seatCapacity: contents.seatCapacity
+                    contents: contents,
+                    seatLevel: seatLevel
                 }
             });
         } else {
@@ -123,18 +105,35 @@ export default function Main() {
     async function callPostAirInfoAPI() {
         //백엔드로 보낼 데이터 : 출발지, 도착지, 항공사, 날짜
         // const formData = {
-        //     airLine: chooseAirLine,
-        //     depAirport: depAirPort,
-        //     arrAirport: arrAirPort,
-        //     depTime: depTime,
+        //     depAirport: depAirPort, //출발지
+        //     arrAirport: arrAirPort, //도착지
+        //     depTime: depTime, //날짜
         // };
         // const response = axios.post(Constant.serviceURL + `실시간데이터를 가지고 있는 URL`, formData, { withCredentials: true })
-        return {
-            charge: 0, // 가격
-            seatCapacity: 0, //좌석 수
-            vihicleId: 0, //무슨 아이디지 ??
-            arrTime: new Date('2024-03-16 16:20') //도착시간
-        };
+        return [{
+            id: 1,
+            economyCharge: null,
+            prestigeCharge: null,
+            vihicleId: "TW901",
+            seatCapacity: null,
+            airlineNm: "티웨이항공",
+            arrAirportNm: "제주",
+            depAirportNm: "광주",
+            arrPlandTime: 202402151005,
+            depPlandTime: 202402150915,
+        }, {
+            id: 2,
+            economyCharge: 57900,
+            prestigeCharge: 82900,
+            vihicleId: "KE1603",
+            seatCapacity: null,
+            airlineNm: "대한항공",
+            arrAirportNm: "제주",
+            depAirportNm: "광주",
+            arrPlandTime: 202402151035,
+            depPlandTime: 202402150940,
+        },
+        ];
     }
 
     return (
@@ -146,7 +145,7 @@ export default function Main() {
             {
                 dateErrorMessage && <div className="message danger-color">날짜를 선택해주세요 </div>
             }
-            <div>
+            <div style={{ background: '#1976d2' }}>
                 <div>
                     <label>출발지</label>
                     <AirportSelect
@@ -165,29 +164,26 @@ export default function Main() {
                     />
                 </div>
                 <div>
-                    <label>항공사</label>
+                    <label>좌석등급</label>
                     <select
-                        value={chooseAirLine}
-                        onChange={handleChooseAirLineChange}
-                        size="small">
-                        {airLine.map((ap) => (
-                            <option key={ap.airlineId} value={ap.airlineId}>
-                                {ap.airlineNm}
-                            </option>
-                        ))}
+                        value={seatLevel}
+                        onChange={(e) => handleSeatChange(e)}>
+                        {
+                            level.map((level, i) =>
+                                <option key={level.key} value={level.value}>
+                                    {level.name}
+                                </option>)
+                        }
                     </select>
                 </div>
                 <div>
-                    <label>좌석수</label>
-                    <p>{contents.seatCapacity}석</p>
+                    <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                 </div>
+                <button onClick={handlePay}>검색</button>
             </div>
 
 
-            <div>
-                <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
-            </div>
-            <button onClick={handlePay}>예약</button>
+
         </div>
     );
 }
