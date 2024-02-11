@@ -54,30 +54,23 @@ export default function Login() {
                 <div className='innerBox'>
                     <h3 className='componentTitle'>로그인</h3>
                     <div>
-                        <div>
-                            <p>아이디</p>
-                            <input
-                             className="full-width"
-                                type="email"
-                                onChange={(e) => { setEmail(e.target.value) }}
-                            />
+                        <span>아이디</span>
+                        <input
+                            type="email"
+                            onChange={(e) => { setEmail(e.target.value) }}
+                        />
 
-                            {
-                                emailError && <p>'이메일을 제대로 입력해주세요.'</p>
-                            }
-                        </div>
-
-                        <div>
-                            <p>비밀번호</p>
-                            <input
-                                className="full-width"
-                                type="password"
-                                onChange={(e) => { setPassword(e.target.value) }}
-                            />
-                            {
-                                passwordError && <p>'비밀번호를 제대로 입력해주세요.'</p>
-                            }
-                        </div>
+                        {
+                            emailError && <p>'이메일을 제대로 입력해주세요.'</p>
+                        }
+                        <p>비밀번호</p>
+                        <input
+                            type="password"
+                            onChange={(e) => { setPassword(e.target.value) }}
+                        />
+                        {
+                            passwordError && <p>'비밀번호를 제대로 입력해주세요.'</p>
+                        }
 
                         {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
                         <div>

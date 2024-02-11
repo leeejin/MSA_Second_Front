@@ -37,17 +37,18 @@
 }
 
 .innerBox {
-    height: 100%;
-    padding-top: 10%;
-}
-
-.innerBox>div {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 50%;
-    /* innerBox의 높이에 맞춰서 중앙 정렬을 하려면 이 속성이 필요합니다. */
+    padding-top: 10%;
+}
+
+.innerBox div {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .componentTitle {
@@ -67,7 +68,7 @@
 .menubar-container {
     position: fixed;
     width: 100%;
-    padding:10px;
+    padding: 10px;
     background: white;
     top: 0;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
