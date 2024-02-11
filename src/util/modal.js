@@ -23,9 +23,9 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
     const handleModalVisible = () => {
         handleOpenClose();
     };
-    return (
-        <div className="black-wrap" onClick={handleModalVisible}>
-            <div>
+    return (<div>
+     <div className="black-wrap" onClick={handleModalVisible} />
+            <div className="white-wrap">
                 <div>{message}</div>
                 <div id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
                     <button onClick={handleConfirm}>예</button>
@@ -40,7 +40,9 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
                     </div>
                 )}
             </div>
-        </div>
+       
+    </div>
+       
     );
 };
 
