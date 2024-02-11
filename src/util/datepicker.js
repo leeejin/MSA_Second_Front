@@ -42,7 +42,7 @@ export default function Datepicker({ depTime, handleDateChange }) {
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
                 selected={depTime} //선택하는 날짜
-                dateFormat="yyyy-MM-dd aa h:mm" //데이터 타입 ex) 2024-02-09 오전 8:00
+                dateFormat="yyyy년MM월dd일" //데이터 타입 ex) 2024년02월09일
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
                 onChange={(date) => handleDateChange(date)} //선택하는 날짜가 바뀌면
