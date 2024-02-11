@@ -145,7 +145,7 @@ export default function Main() {
             {
                 dateErrorMessage && <div className="message danger-color">날짜를 선택해주세요 </div>
             }
-            <div >
+            <div>
                 <div>
                     <label>출발지</label>
                     <AirportSelect
