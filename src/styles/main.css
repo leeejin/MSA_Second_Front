@@ -1,21 +1,3 @@
-.component-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.component-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.component-footer {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-}
-
 .loading {
     display: flex;
     justify-content: center;
@@ -37,4 +19,61 @@
 
 .warning-color {
     color: yellow;
+}
+
+/** 배경색 */
+.background {
+    width: 100%;
+    height: 100vh;
+    background-color: #d6e6d0;
+}
+
+/** 배경안에 컨테이너*/
+.backBox {
+    width: 50%;
+    margin: auto;
+    height: 100%;
+    background: white;
+}
+
+.innerBox {
+    height: 100%;
+    padding-top: 10%;
+}
+
+.innerBox>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    /* innerBox의 높이에 맞춰서 중앙 정렬을 하려면 이 속성이 필요합니다. */
+}
+
+.componentTitle {
+    font-size: 24px;
+    text-align: center;
+}
+
+.login-button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.menubar-container {
+    position: fixed;
+    width: 100%;
+    padding:10px;
+    background: white;
+    top: 0;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.menubar-container div {
+    display: flex;
+    justify-content: space-between;
 }

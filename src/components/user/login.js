@@ -16,16 +16,13 @@ export default function Login() {
     const [passwordError, setPasswordError] = useState(false);
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
     console.log("변경")
-    const handleLocation = () => {
-        navigate("/Signup");
-    }
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
             emailError: email === '',
             passwordError: password === '',
         };
-        if (!errors.emailError && !errors.passwordError) {
+        if (!emailError && !passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
                 dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), nickname: response.data.nickname } }); //리덕스에 로그인 정보 업데이트
@@ -52,31 +49,50 @@ export default function Login() {
     }
 
     return (
-        <div className="container">
-            <div>
-                <input
-                    onChange={(e) => { setEmail(e.target.value) }}
-                />
-                {
-                    emailError && <p className="message danger-color">이메일을 제대로 입력해주세요.</p>
-                }
-                <input
-                    type="password"
-                    onChange={(e) => { setPassword(e.target.value) }}
-                />
-                {
-                    passwordError && <p className="message danger-color">비밀번호를 제대로 입력해주세요.</p>
-                }
-                {
-                    loginError && <p className="message danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>
-                }
-                <button variant="contained" sx={{ mt: 2 }} onClick={(e) => submit(e)}>로그인</button>
+        <div className='background'>
+            <div className='backBox'>
+                <div className='innerBox'>
+                    <h3 className='componentTitle'>로그인</h3>
+                    <div>
+                        <div>
+                            <p>아이디</p>
+                            <input
+                             className="full-width"
+                                type="email"
+                                onChange={(e) => { setEmail(e.target.value) }}
+                            />
+
+                            {
+                                emailError && <p>'이메일을 제대로 입력해주세요.'</p>
+                            }
+                        </div>
+
+                        <div>
+                            <p>비밀번호</p>
+                            <input
+                                className="full-width"
+                                type="password"
+                                onChange={(e) => { setPassword(e.target.value) }}
+                            />
+                            {
+                                passwordError && <p>'비밀번호를 제대로 입력해주세요.'</p>
+                            }
+                        </div>
+
+                        {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                        <div>
+                            <span onClick={() => { navigate('/Signup') }}>
+                                회원가입 하기
+                            </span>
+                        </div>
+                        <div className='login-button'>
+                            <button onClick={(e) => submit(e)}>로그인</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <p>
-                <span>계정이 없으신가요? </span>
-                <button onClick={handleLocation}>회원가입</button>
-            </p>
+
         </div>
     );
 }
