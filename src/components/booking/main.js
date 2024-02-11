@@ -144,7 +144,7 @@ export default function Main() {
         }
     }
     return (
-        <div >
+        <div>
             <div>
             {
                 errorMessages.locationError && <div className="message danger-color">출발지와 도착지가 같습니다</div>
@@ -152,7 +152,7 @@ export default function Main() {
             {
                 errorMessages.dateError && <div className="message danger-color">날짜를 선택해주세요</div>
             }
-            <div>
+            <div className="center-wrap">
                 <div>
                     <label>출발지</label>
                     <AirportSelect
