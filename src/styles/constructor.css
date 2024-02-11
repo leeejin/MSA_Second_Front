@@ -14,9 +14,7 @@ div {
     box-sizing: border-box;
 }
 
-button {
- 
-}
+button {}
 
 table {
     width: 100%;
@@ -25,12 +23,22 @@ table {
 }
 
 input {
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--black-color);
+    ;
     border-top: none;
     border-left: none;
     border-right: none;
-    padding:10px;
-    &:focus{
+    padding: 10px;
+
+    &:focus {
         outline: none;
     }
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    text-align: center;
 }

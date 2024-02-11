@@ -69,7 +69,7 @@ export default function Login() {
                             onChange={(e) => { setPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.password && <p className="danger-color">비밀번호를 제대로 입력해주세요.</p>
+                            errorMessage.password && <p>비밀번호를 제대로 입력해주세요.</p>
                         }
 
                         {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}

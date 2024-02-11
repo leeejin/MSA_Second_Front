@@ -1,0 +1,11 @@
+:root {
+    --main-color: #ff6347;
+    --secondary-color: #008080;
+    --background-color: #d6e6d0;
+    --black-color:black;
+    --white-color:white;
+    --button-color:#ffffff;
+    --danger-color:red;
+    --special-color:#1976d2;
+    --warning-color:yellow;
+}
