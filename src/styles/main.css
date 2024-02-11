@@ -44,12 +44,13 @@
     padding-top: 15%;
 }
 
-.innerBox-div {
-    width: 60%;
+.innerBox {
+    width: 100%;
     align-items: center;
 }
 
-.innerBox-div div {
+.innerBox div{
+    width:70%;
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;

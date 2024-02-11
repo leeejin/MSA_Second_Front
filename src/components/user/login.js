@@ -52,44 +52,40 @@ export default function Login() {
             <div className='backBox'>
                 <div className='innerBox'>
                     <h3 className='componentTitle'>로그인</h3>
+                    <div >
+                        <label>아이디</label>
+                        <input
+                            type="email"
+                            onChange={(e) => { setEmail(e.target.value) }}
+                        />
+                        {
+                            errorMessage.email && <p className="danger-color">아이디를 제대로 입력해주세요.</p>
+                        }
+                    </div>
+                    <div>
+                        <label>비밀번호</label>
+                        <input
+                            type="password"
+                            onChange={(e) => { setPassword(e.target.value) }}
+                        />
+                        {
+                            errorMessage.password && <p className="danger-color">비밀번호를 제대로 입력해주세요.</p>
+                        }
 
-                    <div className="innerBox-div">
-                        <div>
-                            <label>아이디</label>
-                            <input
-                                type="email"
-                                onChange={(e) => { setEmail(e.target.value) }}
-                            />
-                            {
-                                errorMessage.email && <p className="danger-color">아이디를 제대로 입력해주세요.</p>
-                            }
-                        </div>
-                        <div>
-                            <label>비밀번호</label>
-                            <input
-                                type="password"
-                                onChange={(e) => { setPassword(e.target.value) }}
-                            />
-                            {
-                                errorMessage.password && <p className="danger-color">비밀번호를 제대로 입력해주세요.</p>
-                            }
-
-                            {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
-
-                        </div>
-                        <div>
-                            <label className="btn" onClick={() => { navigate('/Signup') }}>
-                                회원가입 하기
-                            </label>
-                        </div>
-                        <div style={{ clear: 'both' }} />
-
-                        <div>
-                            <button className="btn login-button" onClick={(e) => submit(e)}>로그인</button>
-                        </div>
-
+                        {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
 
                     </div>
+                    <div>
+                        <span className="btn" onClick={() => { navigate('/Signup') }}>
+                            회원가입 하기
+                        </span>
+                    </div>
+
+                    <div>
+                        <button className="btn login-button" onClick={(e) => submit(e)}>로그인</button>
+                    </div>
+
+
                 </div>
             </div>
 
