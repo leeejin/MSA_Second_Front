@@ -16,13 +16,16 @@ export default function Login() {
     const [passwordError, setPasswordError] = useState(false);
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
     console.log("변경")
+    const handleLocation = () => {
+        navigate("/Signup");
+    }
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
             emailError: email === '',
             passwordError: password === '',
         };
-        if (!emailError && !passwordError) {
+        if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
                 dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), nickname: response.data.nickname } }); //리덕스에 로그인 정보 업데이트
@@ -52,23 +55,27 @@ export default function Login() {
         <div className="container">
             <div>
                 <input
-                    error={emailError}
-                    helperText={emailError && '이메일을 제대로 입력해주세요.'}
                     onChange={(e) => { setEmail(e.target.value) }}
                 />
+                {
+                    emailError && <p className="message danger-color">이메일을 제대로 입력해주세요.</p>
+                }
                 <input
                     type="password"
-                    error={passwordError}
-                    helperText={passwordError && '비밀번호를 제대로 입력해주세요.'}
                     onChange={(e) => { setPassword(e.target.value) }}
                 />
-                {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                {
+                    passwordError && <p className="message danger-color">비밀번호를 제대로 입력해주세요.</p>
+                }
+                {
+                    loginError && <p className="message danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>
+                }
                 <button variant="contained" sx={{ mt: 2 }} onClick={(e) => submit(e)}>로그인</button>
             </div>
 
             <p>
                 <span>계정이 없으신가요? </span>
-                <button href="/Signup">회원가입</button>
+                <button onClick={handleLocation}>회원가입</button>
             </p>
         </div>
     );
