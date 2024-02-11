@@ -12,8 +12,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState({ email: false, password: false });
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
     console.log("변경")
     const submit = async (e) => {
@@ -22,7 +21,7 @@ export default function Login() {
             emailError: email === '',
             passwordError: password === '',
         };
-        if (!emailError && !passwordError) {
+        if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
                 dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), nickname: response.data.nickname } }); //리덕스에 로그인 정보 업데이트
@@ -31,10 +30,10 @@ export default function Login() {
             }).catch((error) => {
                 console.log(error);
                 setLoginError(true);// 로그인 실패 시 loginError 상태를 true로 설정
+                setErrorMessage({ email: errors.emailError, password: errors.passwordError })
             });
         } else {
-            setEmailError(errors.emailError);
-            setPasswordError(errors.passwordError);
+            setErrorMessage({ email: errors.emailError, password: errors.passwordError })
         }
     }
 
@@ -53,34 +52,43 @@ export default function Login() {
             <div className='backBox'>
                 <div className='innerBox'>
                     <h3 className='componentTitle'>로그인</h3>
-                    <div>
-                        <span>아이디</span>
-                        <input
-                            type="email"
-                            onChange={(e) => { setEmail(e.target.value) }}
-                        />
 
-                        {
-                            emailError && <p>'이메일을 제대로 입력해주세요.'</p>
-                        }
-                        <p>비밀번호</p>
-                        <input
-                            type="password"
-                            onChange={(e) => { setPassword(e.target.value) }}
-                        />
-                        {
-                            passwordError && <p>'비밀번호를 제대로 입력해주세요.'</p>
-                        }
-
-                        {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                    <div className="innerBox-div">
                         <div>
-                            <span onClick={() => { navigate('/Signup') }}>
+                            <label>아이디</label>
+                            <input
+                                type="email"
+                                onChange={(e) => { setEmail(e.target.value) }}
+                            />
+                            {
+                                errorMessage.email && <p className="danger-color">아이디를 제대로 입력해주세요.</p>
+                            }
+                        </div>
+                        <div>
+                            <label>비밀번호</label>
+                            <input
+                                type="password"
+                                onChange={(e) => { setPassword(e.target.value) }}
+                            />
+                            {
+                                errorMessage.password && <p className="danger-color">비밀번호를 제대로 입력해주세요.</p>
+                            }
+
+                            {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+
+                        </div>
+                        <div>
+                            <label className="btn" onClick={() => { navigate('/Signup') }}>
                                 회원가입 하기
-                            </span>
+                            </label>
                         </div>
-                        <div className='login-button'>
-                            <button onClick={(e) => submit(e)}>로그인</button>
+                        <div style={{ clear: 'both' }} />
+
+                        <div>
+                            <button className="btn login-button" onClick={(e) => submit(e)}>로그인</button>
                         </div>
+
+
                     </div>
                 </div>
             </div>

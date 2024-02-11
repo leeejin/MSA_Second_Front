@@ -41,14 +41,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 10%;
+    padding-top: 15%;
 }
 
-.innerBox div {
-    width: 80%;
+.innerBox-div {
+    width: 60%;
+    align-items: center;
+}
+
+.innerBox-div div {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    margin-bottom: 10px;
 }
 
 .componentTitle {
@@ -56,13 +60,20 @@
     text-align: center;
 }
 
-.login-button {
-    margin-left: auto;
-    margin-right: auto;
+/* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
+.btn{
+    &:hover{
+        cursor: pointer;
+    }
 }
-
-.full-width {
+/* 로그인 버튼 */
+.login-button {
     width: 100%;
+    border-radius: 15px;
+    border: none;
+    padding: 15px;
+    color: #ffffff;
+
 }
 
 .menubar-container {
