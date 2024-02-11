@@ -70,10 +70,10 @@ export default function Main() {
     }
     /** 좌석 선택 컴포넌트 */
     const SeatLevelSelect = ({ value, onChange, level }) => (
-        <select value={value} onChange={onChange}>
+        <select value={value} onChange={onChange} >
             {
                 level.map((level) =>
-                    <option key={level.key} value={level.value}>
+                    <option key={level.key} value={level.value} >
                         {level.name}
                     </option>)
             }
@@ -144,15 +144,14 @@ export default function Main() {
         }
     }
     return (
-        <div className="container">
-
+        <div style={{marginTop:'44px'}}>
             {
                 errorMessages.locationError && <div className="message danger-color">출발지와 도착지가 같습니다</div>
             }
             {
                 errorMessages.dateError && <div className="message danger-color">날짜를 선택해주세요</div>
             }
-            <div style={{ background: '#1976d2' }}>
+            <div>
                 <div>
                     <label>출발지</label>
                     <AirportSelect
@@ -179,6 +178,7 @@ export default function Main() {
                     />
                 </div>
                 <div>
+                    <label>가는날</label>
                     <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                 </div>
                 <button onClick={handlePay}>검색</button>

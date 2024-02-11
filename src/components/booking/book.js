@@ -30,19 +30,19 @@ export default function ModalBookCheck() {
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = () => {
         let filteredData = contents.filter(item => item.id === selectedId);
-        callPostBookInfoAPI(filteredData).then((response) => {
-            if (response) //서버로부터 예약확인을 받았다면 
-                setOpen(false);
-                navigate(`/Pay/${selectedId}`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 App.js 임시적으로 풀어놓음
+        // callPostBookInfoAPI(filteredData).then((response) => {
+        //     if (response) //서버로부터 예약확인을 받았다면 
+        //         setOpen(false);
+            navigate(`/Pay/${selectedId}`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 App.js 임시적으로 풀어놓음
                 state: {
                     contents: filteredData,
                     selectedId: selectedId,
                     cost: cost,
                 }
             });
-        }).catch(() => {
-            console.log("무슨이유로 예약정보가 서버로 안감");
-        })
+        // }).catch(() => {
+        //     console.log("무슨이유로 예약정보가 서버로 안감");
+        // })
     }
     /** 예약보내는 API */
     async function callPostBookInfoAPI(filteredData) {
@@ -59,13 +59,13 @@ export default function ModalBookCheck() {
             seatCapacity: filteredData.seatCapacity,
             vihicleId: filteredData.vihicleId
         };
-        // try {
-        //     const response = axios.post(Constant.serviceURL + `예약URL/${selectedId}`, formData, { withCredentials: true })
-        // return response;
-        // }
-        // catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const response = axios.post(Constant.serviceURL + `예약URL/${selectedId}`, formData, { withCredentials: true })
+            return response;
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
     return (
         <div>

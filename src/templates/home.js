@@ -8,7 +8,7 @@ export default function Home({ children }) {
   return (
     <div>
       <Menubar />
-      <div style={{ marginTop: '50px' }}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 };
