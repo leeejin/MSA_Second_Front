@@ -144,7 +144,8 @@ export default function Main() {
         }
     }
     return (
-        <div style={{marginTop:'44px'}}>
+        <div >
+            <div>
             {
                 errorMessages.locationError && <div className="message danger-color">출발지와 도착지가 같습니다</div>
             }
@@ -183,6 +184,8 @@ export default function Main() {
                 </div>
                 <button onClick={handlePay}>검색</button>
             </div>
+            </div>
+          
         </div>
     );
 }
