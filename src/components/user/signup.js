@@ -125,7 +125,7 @@ export default function Signup() {
                 onChange={(e) => { setPassword(e.target.value) }}
             />
             {
-                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
+               passwordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
             }
             <input
                 placeholder="비밀번호 확인"
