@@ -86,7 +86,7 @@ export default function Signup() {
                     <div className='innerBox'>
                         <h3 className='componentTitle'>회원가입</h3>
                         <div>
-                            <label>이름</label>
+                            <p>이름</p>
                             <input
                                 placeholder="이름"
                                 onChange={(e) => { setName(e.target.value) }}
@@ -96,7 +96,7 @@ export default function Signup() {
                             }
                         </div>
                         <div>
-                            <label>닉네임</label>
+                            <p>닉네임</p>
                             <input
                                 size="small"
                                 placeholder="닉네임"
@@ -107,17 +107,18 @@ export default function Signup() {
                             }
                         </div>
                         <div>
-                            <label>이메일</label>
-                            <div style={{display:'flex',flexDirection:'row',margin:0}}>
+                            <p>이메일</p>
+                            <div style={{ flexDirection: 'row'}}>
                                 <input
                                     placeholder='이메일'
                                     onChange={(e) => { setEmail(e.target.value) }}
                                 />
                                 <p>@</p>
                                 <select
+                                
                                     value={select}
                                     onChange={(e) => { setSelect(e.target.value) }}
-                                   >
+                                >
                                     {emailMenus.map((email, i) => (
                                         <option key={i} value={email.value}>
                                             {email.value}
@@ -131,7 +132,7 @@ export default function Signup() {
                             }
                         </div>
                         <div>
-                            <label>비밀번호</label>
+                            <p>비밀번호</p>
                             <input
                                 placeholder="비밀번호"
                                 type="password"
@@ -142,7 +143,7 @@ export default function Signup() {
                             }
                         </div>
                         <div>
-                            <label>비밀번호 확인</label>
+                            <p>비밀번호 확인</p>
                             <input
                                 placeholder="비밀번호 확인"
                                 type="password"
@@ -158,6 +159,7 @@ export default function Signup() {
                         <div>
                             <button className="btn btn-grey" variant="contained" onClick={handleOpenClose}>회원가입</button>
                         </div>
+
                     </div>
                 </div>
             </div>

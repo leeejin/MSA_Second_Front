@@ -27,11 +27,13 @@
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
 
-.center-wrap {}
+
+.center-wrap input {
+    width: 100%;
+}
 
 .grey-color {
-    color: var(--grey-color);
-
+    color: var(--black-color);
 }
 
 .danger-color {
@@ -48,26 +50,25 @@
 
 /** 배경색 */
 .background {
-    width: 100%;
-    height: 100vh;
     background-color: var(--background-color);
 }
 
 /** 배경안에 컨테이너*/
 .backBox {
     max-width: 450px;
-    height: 100%;
+    height: 100vh;
     margin: auto;
     background: var(--white-color);
 }
 
 /* 안에 있는 박스컨테이너*/
 .innerBox {
+    background: var(--white-color);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 15%;
+    padding-top: 20%;
 }
 
 .innerBox div {
@@ -75,29 +76,31 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
-    margin-top: 20px;
 }
 
 .componentTitle {
     font-size: 24px;
     text-align: center;
+    margin-bottom: 15%;
 }
 
 /* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
 .btn {
+    width: 100%;
+    border-radius: 15px;
+    border: none;
+
     &:hover {
         cursor: pointer;
     }
 }
 
-/* 로그인 버튼 */
+/* 회색 버튼 스타일*/
 .btn-grey {
-    width: 100%;
-    border-radius: 15px;
-    border: none;
-    margin-top: 40px;
+    margin-top: 10%;
     padding: 15px;
     color: var(--button-color);
+    background-color: var(--grey-color);
 }
 
 /* 메뉴바 컨테이너 */
@@ -110,9 +113,28 @@
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
 
+/* 메뉴바 각 아이템 위치 배정 */
 .menubar-container div {
     display: flex;
     justify-content: space-between;
+}
+
+/* 메뉴바 각 아이템 스타일 */
+.nav-item {
+    border-radius: 15px;
+    padding: 5px;
+    margin: 5px;
+    margin-top: 20px;
+    border: none;
+    background-color: var(--grey-color);
+    color: var(--white-color);
+    text-decoration: none;
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--hovering-color);
+        color: var(--button-color);
+    }
 }
 
 .box-container {
@@ -121,6 +143,5 @@
     border-radius: 15px;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)
 }
-.message{
-    font-size: small;
-}
+
+.message {}
