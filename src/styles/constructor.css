@@ -1,20 +1,25 @@
 @font-face {
-    font-family: 'jua';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+    font-family: 'Pretendard';
+    src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
 
 body {
     margin: 0;
-    font-family: 'jua';
+    font-family: 'Pretendard';
+    font-size: 14px;
+    background-color: var(--background-color)
 }
 
 div {
     box-sizing: border-box;
 }
-
-button {}
+p{
+    margin:2px;
+}
+button {
+}
 
 table {
     width: 100%;
@@ -23,8 +28,7 @@ table {
 }
 
 input {
-    border-bottom: 2px solid var(--black-color);
-    ;
+    border-bottom: 1px solid var(--black-color);
     border-top: none;
     border-left: none;
     border-right: none;

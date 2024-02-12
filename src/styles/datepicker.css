@@ -76,6 +76,7 @@ body {
     &:hover {
         border-radius: 50%;
         background-color: rgba(var(--white-color), 0.08);
+
         background-color: rgba(white, 0.08);
     }
 }

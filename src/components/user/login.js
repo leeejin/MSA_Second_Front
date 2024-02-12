@@ -14,7 +14,6 @@ export default function Login() {
 
     const [errorMessage, setErrorMessage] = useState({ email: false, password: false });
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
-    console.log("변경")
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
@@ -52,41 +51,42 @@ export default function Login() {
             <div className='backBox'>
                 <div className='innerBox'>
                     <h3 className='componentTitle'>로그인</h3>
-                    <div >
-                        <label>아이디</label>
+
+                    <div>
+                        <p>아이디</p>
                         <input
                             type="email"
                             onChange={(e) => { setEmail(e.target.value) }}
                         />
                         {
-                            errorMessage.email && <p className="danger-color">아이디를 제대로 입력해주세요.</p>
+                            errorMessage.email && <p className="message danger-color">아이디를 제대로 입력해주세요.</p>
                         }
                     </div>
                     <div>
-                        <label>비밀번호</label>
+                        <p>비밀번호</p>
                         <input
                             type="password"
                             onChange={(e) => { setPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.password && <p>비밀번호를 제대로 입력해주세요.</p>
+                            errorMessage.password && <p className="message danger-color">비밀번호를 제대로 입력해주세요.</p>
                         }
 
-                        {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
-
+                        {loginError && <p className="message danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
                     </div>
                     <div>
-                        <span className="btn" onClick={() => { navigate('/Signup') }}>
+                        <span className="btn btn-span grey-color" onClick={() => { navigate('/Signup') }}>
                             회원가입 하기
                         </span>
                     </div>
-
                     <div>
-                        <button className="btn login-button" onClick={(e) => submit(e)}>로그인</button>
+                        <button className="btn btn-grey" onClick={(e) => submit(e)}>로그인</button>
                     </div>
-
-
                 </div>
+
+
+
+
             </div>
 
 

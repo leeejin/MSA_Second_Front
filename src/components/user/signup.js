@@ -81,65 +81,88 @@ export default function Signup() {
             {
                 open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
-            <div>
-                <input
-                    placeholder="이름"
-                    onChange={(e) => { setName(e.target.value) }}
-                />
-                {
-                    nameError && <p className="message danger-color">'이름을 입력하세요. (2~5자 이내)'</p>
-                }
-                <input
-                    size="small"
-                    placeholder="닉네임"
-                    onChange={(e) => { setNickname(e.target.value) }}
-                />
-                {
-                    nicknameError && <p className="message danger-color">'닉네임을 입력하세요. (2~5자 이내)'</p>
-                }
-                <div>
-                    <input
-                        size="small"
-                        placeholder='이메일'
-                        onChange={(e) => { setEmail(e.target.value) }}
-                        sx={{ flex: 1 }}
-                    />
-                    <p style={{ flex: 0.1, textAlign: 'center' }}>@</p>
-                    <select
-                        value={select}
-                        onChange={(e) => { setSelect(e.target.value) }}>
-                        {emailMenus.map((email, i) => (
-                            <option key={i} value={email.value}>
-                                {email.value}
-                            </option>
-                        ))}
-                    </select>
-                    {
-                        emailError && <p className="message danger-color">'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
-                    }
+            <div className='background'>
+                <div className='backBox'>
+                    <div className='innerBox'>
+                        <h3 className='componentTitle'>회원가입</h3>
+                        <div>
+                            <p>이름</p>
+                            <input
+                                placeholder="이름"
+                                onChange={(e) => { setName(e.target.value) }}
+                            />
+                            {
+                                nameError && <p className="message danger-color">'이름을 입력하세요. (2~5자 이내)'</p>
+                            }
+                        </div>
+                        <div>
+                            <p>닉네임</p>
+                            <input
+                                size="small"
+                                placeholder="닉네임"
+                                onChange={(e) => { setNickname(e.target.value) }}
+                            />
+                            {
+                                nicknameError && <p className="message danger-color">'닉네임을 입력하세요. (2~5자 이내)'</p>
+                            }
+                        </div>
+                        <div>
+                            <p>이메일</p>
+                            <div style={{ flexDirection: 'row'}}>
+                                <input
+                                    placeholder='이메일'
+                                    onChange={(e) => { setEmail(e.target.value) }}
+                                />
+                                <p>@</p>
+                                <select
+                                
+                                    value={select}
+                                    onChange={(e) => { setSelect(e.target.value) }}
+                                >
+                                    {emailMenus.map((email, i) => (
+                                        <option key={i} value={email.value}>
+                                            {email.value}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {
+                                emailError && <p className="message danger-color">'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
+                            }
+                        </div>
+                        <div>
+                            <p>비밀번호</p>
+                            <input
+                                placeholder="비밀번호"
+                                type="password"
+                                onChange={(e) => { setPassword(e.target.value) }}
+                            />
+                            {
+                                passwordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
+                            }
+                        </div>
+                        <div>
+                            <p>비밀번호 확인</p>
+                            <input
+                                placeholder="비밀번호 확인"
+                                type="password"
+                                onChange={(e) => { setConfirmPassword(e.target.value) }}
+                            />
+                            {
+                                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요.'</p>
+                            }
+                            {
+                                DuplicateCheck === true && <p className="message danger-color">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
+                            }
+                        </div>
+                        <div>
+                            <button className="btn btn-grey" variant="contained" onClick={handleOpenClose}>회원가입</button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <input
-                placeholder="비밀번호"
-                type="password"
-                onChange={(e) => { setPassword(e.target.value) }}
-            />
-            {
-               passwordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
-            }
-            <input
-                placeholder="비밀번호 확인"
-                type="password"
-                onChange={(e) => { setConfirmPassword(e.target.value) }}
-            />
-            {
-                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요.'</p>
-            }
-            {
-                DuplicateCheck === true && <p className="message danger-color">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
-            }
-            <button variant="contained" onClick={handleOpenClose}>회원가입</button>
-
         </div>
     )
 }

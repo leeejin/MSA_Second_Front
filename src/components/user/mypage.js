@@ -13,8 +13,8 @@ export default function MyPage() {
 
 
     const handleLocation = (selectedBox) => {
-        if (selectedBox === 'reserveList') navigate('/ReservedList');
-        else if (selectedBox === 'payList') navigate('/PaidList');
+        if (selectedBox === 'reserveList') navigate(`/ReservedList/${userId}`);
+        else if (selectedBox === 'payList') navigate(`/PaidList/${userId}`);
     }
 
     const BoxListContainer = ({ onClick, listname, selectedBox }) => {

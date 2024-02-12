@@ -51,8 +51,13 @@ export default function PaidList() {
     }
     //결제 취소하는 API
     async function callPostPayListAPI(id) {
-        const response = axios.post(Constant.serviceURL + `결제URL/${id}`, { withCredentials: true })
-        return response;
+        try{
+            const response = axios.delete(Constant.serviceURL + `결제URL/${id}`, { withCredentials: true })
+            return response;
+        }catch(error){
+            console.error(error);
+        }
+       
     }
     return (
         <div className="background">
