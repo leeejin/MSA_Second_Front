@@ -21,7 +21,7 @@ export default function ReservedList() {
     const handleLocation = () => {
         navigate(-1);
     }
-    const handleCancel = async(id) => {
+    const handleCancel = async (id) => {
         try {
             await callPostPayListAPI(id);
             alert('예약취소가 완료되었습니다.');
@@ -62,13 +62,12 @@ export default function ReservedList() {
                     <h3>예약목록페이지</h3>
                     <div className="box-container">
                         {
-                            contents.map((reservedlist,i) => (
+                            contents.map((reservedlist, i) => (
                                 <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handleCancel={handleCancel} />
                             ))
                         }
                     </div>
                 </div>
-
             </div>
         </div>
     )
