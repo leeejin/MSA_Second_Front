@@ -1,22 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-<<<<<<< HEAD
-=======
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #1976d2',
-    borderRadius: '10px',
-    boxShadow: 24,
-    p: 4,
-};
-
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => {
     const navigate = useNavigate();
 
@@ -26,15 +10,9 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
     const handleModalVisible = () => {
         handleOpenClose();
     };
-<<<<<<< HEAD
     return (<div>
      <div className="black-wrap" onClick={handleModalVisible} />
             <div className="white-wrap">
-=======
-    return (
-        <div className="black-wrap" onClick={handleModalVisible}>
-            <div>
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
                 <div>{message}</div>
                 <div id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
                     <button onClick={handleConfirm}>예</button>
@@ -49,13 +27,9 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
                     </div>
                 )}
             </div>
-<<<<<<< HEAD
        
     </div>
        
-=======
-        </div>
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     );
 };
 
