@@ -27,7 +27,6 @@ export default function MyPage() {
     }
 
     return (
-<<<<<<< HEAD
         <div className="background">
             <div className="backBox">
                 <div className="innerBox">
@@ -40,10 +39,6 @@ export default function MyPage() {
                 </div>
 
             </div>
-=======
-        <div className="container">
-            <h1>{nickname}님의 마이페이지</h1>
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
         </div>
     )
 }
