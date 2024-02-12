@@ -106,6 +106,7 @@ export default function Main() {
     }
     /** 출발지,도착지,항공사,날짜가 바뀔때마다 API요청 */
     async function callPostAirInfoAPI() {
+
         /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
         const formData = {
             depAirport: airports.dep.id, //출발지
@@ -113,7 +114,7 @@ export default function Main() {
             depTime: depTime, //날짜
         };
         try {
-            // const response = axios.post(Constant.serviceURL + `/실시간데이터를 가지고 있는 URL`, formData, { withCredentials: true })
+            const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
             return [{
                 id: 1,
                 economyCharge: null,
