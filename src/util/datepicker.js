@@ -35,6 +35,7 @@ export default function Datepicker({ depTime, handleDateChange }) {
         <div style={{ display: 'flex' }}>
             <DatePicker
                 className="datepicker" //input style class
+<<<<<<< HEAD
                 showIcon
                 placeholderText='날짜를 선택하세요'
                 icon={
@@ -67,6 +68,16 @@ export default function Datepicker({ depTime, handleDateChange }) {
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
                 selected={depTime} //선택하는 날짜
                 dateFormat="yyyy년MM월dd일" //데이터 타입 ex) 2024년02월09일
+=======
+                withPortal //모바일 버전으로 바꿔줌
+                shouldCloseOnSelect //시간선택하면 닫아짐
+                showTimeSelect //시간도 선택할 수 있게 함
+                timeCaption="시간" //시간 Caption
+                locale={ko} //한국어
+                selectsRange={false} //Date 범위 설정 (편도니까 false)
+                selected={depTime} //선택하는 날짜
+                dateFormat="yyyy-MM-dd aa h:mm" //데이터 타입 ex) 2024-02-09 오전 8:00
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
                 onChange={(date) => handleDateChange(date)} //선택하는 날짜가 바뀌면

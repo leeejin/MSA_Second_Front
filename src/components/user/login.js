@@ -40,7 +40,7 @@ export default function Login() {
     async function callLoginAPI() {
         //백엔드로 보낼 로그인 데이터
         const formData = {
-            email: email,
+            username: email,
             password: password
         }
         const response = await axios.post(Constant.serviceURL + `/login`, formData, { withCredentials: true });
@@ -48,6 +48,7 @@ export default function Login() {
     }
 
     return (
+<<<<<<< HEAD
         <div className='background'>
             <div className='backBox'>
                 <div className='innerBox'>
@@ -90,6 +91,32 @@ export default function Login() {
             </div>
 
 
+=======
+        <div className="container">
+            <div>
+                <input
+                    type="email"
+                    onChange={(e) => { setEmail(e.target.value) }}
+                />
+                {
+                    emailError && <p>이메일을 제대로 입력해주세요.</p>
+                }
+                <input
+                    type="password"
+                    onChange={(e) => { setPassword(e.target.value) }}
+                />
+                {
+                    passwordError && <p>비밀번호를 제대로 입력해주세요.</p>
+                }
+                {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                <button variant="contained" sx={{ mt: 2 }} onClick={(e) => submit(e)}>로그인</button>
+            </div>
+
+            <p>
+                <span>계정이 없으신가요? </span>
+                <button href="/Signup">회원가입</button>
+            </p>
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
         </div>
     );
 }

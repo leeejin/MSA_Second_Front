@@ -4,6 +4,10 @@
   "private": true,
   "proxy": "http://apis.data.go.kr",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "@mui/material": "^5.15.7",
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

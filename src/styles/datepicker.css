@@ -1,4 +1,5 @@
 body {
+<<<<<<< HEAD
     .react-datepicker {
         border: none;
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
@@ -8,6 +9,18 @@ body {
             border-bottom: none;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
+=======
+
+    .react-datepicker {
+        border: none;
+        border-radius: 0;
+
+        .react-datepicker__header {
+            background-color: #1976d2;
+            color: white;
+            border-bottom: none;
+            border-radius: 0;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
 
             .react-datepicker__day-names {
                 display: flex;
@@ -16,10 +29,39 @@ body {
                 height: 40px;
 
                 .react-datepicker__day-name {
+<<<<<<< HEAD
                     color: var(--white-color);
                 }
             }
         }
+=======
+                    color: white;
+                }
+            }
+        }
+
+        .react-datepicker-time__header {
+            color: white;
+        }
+
+        .react-datepicker__triangle {
+            display: none;
+        }
+
+        .react-datepicker__day--outside-month {
+            cursor: default;
+            visibility: hidden;
+        }
+
+        .react-datepicker__time-list {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .react-datepicker__time-list::-webkit-scrollbar {
+            display: none;
+        }
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     }
 }
 
@@ -27,10 +69,19 @@ body {
     display: flex;
     align-items: center;
     border: none;
+<<<<<<< HEAD
     box-sizing: border-box;
     padding: 10px;
     text-align: center;
     border-bottom: 2px solid var(--black-color);
+=======
+    border-radius: 4px;
+    background-color: #1976d2;
+    box-sizing: border-box;
+    padding: 10px;
+    color: white;
+    text-align: center;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     padding-right: 14px;
 
     &:hover {
@@ -38,7 +89,11 @@ body {
     }
 
     &:focus {
+<<<<<<< HEAD
         outline: none;
+=======
+        outline: 2px solid #1976d2;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     }
 }
 
@@ -49,7 +104,11 @@ body {
     padding: 0 12px 0 24px;
 
     .year-month {
+<<<<<<< HEAD
         color: var(--white-color);
+=======
+        color: white;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
         font-size: larger;
     }
 
@@ -58,23 +117,39 @@ body {
 
 .selectedDay,
 .unselectedDay {
+<<<<<<< HEAD
     color: var(--white-color);
 }
 
 .selectedDay {
     background-color: var(--background-color);
+=======
+    color: white;
+}
+
+.selectedDay {
+    background-color: #1976d2;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     border-radius: 50%;
     font-weight: 700;
 
     &:hover {
         border-radius: 50%;
+<<<<<<< HEAD
         background-color: var(--white-color);
+=======
+        background-color: white;
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     }
 }
 
 .unselectedDay {
     &:hover {
         border-radius: 50%;
+<<<<<<< HEAD
         background-color: rgba(var(--white-color), 0.08);
+=======
+        background-color: rgba(white, 0.08);
+>>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
     }
 }
