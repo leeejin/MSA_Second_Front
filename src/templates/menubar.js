@@ -40,7 +40,6 @@ export default function Menubar() {
         }
     };
     return (
-<<<<<<< HEAD
         <div className="menubar-container">
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
@@ -62,30 +61,6 @@ export default function Menubar() {
                 }
                 </div>
                 
-=======
-        <div>
-            {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
-            }
-          
-            <div style={{ flexGrow: 1 }}>
-                <div>
-                    <div sx={{ flexGrow: 1 }}>
-                        <Link to="/">로고</Link>
-                    </div>
-                    {
-                        userId !== 0 ? <>
-                            <button color="inherit" onClick={() => { navigate('/MyPage') }}>마이페이지</button>
-                            <button color="inherit" onClick={handleOpenClose}>로그아웃</button>
-                        </>
-                            : <>
-                                <button color="inherit" onClick={() => { navigate('/Signup') }}>회원가입</button>
-                                <button color="inherit" onClick={() => { navigate('/Login') }}>로그인</button>
-                            </>
-
-                    }
-                </div>
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
             </div>
         </div>
     );

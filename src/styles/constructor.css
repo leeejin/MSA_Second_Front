@@ -23,7 +23,6 @@ table {
 }
 
 input {
-<<<<<<< HEAD
     border-bottom: 2px solid var(--black-color);
     ;
     border-top: none;
@@ -43,12 +42,3 @@ ul {
 li {
     text-align: center;
 }
-=======
-    padding: 5px;
-    border: 1px solid black;
-    border-radius: 5px;
-}
-
-
-.container {}
->>>>>>> f465aade644923a6019bf68c52f26d28d42406f8
