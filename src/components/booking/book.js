@@ -60,7 +60,7 @@ export default function ModalBookCheck() {
             vihicleId: filteredData.vihicleId
         };
         try {
-            const response = axios.post(Constant.serviceURL + `예약URL/${selectedId}`, formData, { withCredentials: true })
+            const response = axios.post(Constant.serviceURL + `예약URL/${filteredData.id}`, formData, { withCredentials: true })
             return response;
         }
         catch (error) {

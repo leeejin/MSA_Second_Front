@@ -54,8 +54,8 @@ export default function Menubar() {
                         <button color="inherit" onClick={handleOpenClose}>로그아웃</button>
                     </>
                         : <>
-                            <button color="inherit" onClick={() => { navigate('/Signup') }}>회원가입</button>
-                            <button color="inherit" onClick={() => { navigate('/Login') }}>로그인</button>
+                            <button className="login" onClick={() => { navigate('/Signup') }}>회원가입</button>
+                            <button className="signup" onClick={() => { navigate('/Login') }}>로그인</button>
                         </>
 
                 }
