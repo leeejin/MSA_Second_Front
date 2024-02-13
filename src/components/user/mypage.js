@@ -10,35 +10,38 @@ export default function MyPage() {
 
     const [subBoxVisible, setSubBoxVisible] = useState({ reserveList: false, payList: false });
 
-    
+
 
     const handleLocation = (selectedBox) => {
         if (selectedBox === 'reserveList') navigate(`/ReservedList/${userId}`);
         else if (selectedBox === 'payList') navigate(`/PaidList/${userId}`);
     }
-
     const BoxListContainer = ({ onClick, listname, selectedBox }) => {
         return (
-            <li className="btn" onClick={onClick}>
+            <div className="btn" onClick={onClick}>
                 <h3>{listname}</h3>
-            </li>
+            </div>
 
         )
     }
 
     return (
-        <div className="background">
-            <div className="backBox">
-                <div className="innerBox">
-                    <h3>{nickname}님의 마이페이지</h3>
-                    <ul className="box-container">
-                        <BoxListContainer listname="예약목록" selectedBox='reserveList' onClick={() => handleLocation('reserveList')} />
-                        <hr />
-                        <BoxListContainer listname="결제목록" selectedBox='payList' onClick={() => handleLocation('payList')} />
-                    </ul>
-                </div>
-
+        <div className="backBox-100">
+            <div className="page-header">
+                <h3 className="componentTitle">마이페이지</h3>
             </div>
+            <div>
+                <div className="mypage-menubar">
+                    <BoxListContainer listname="예약목록" selectedBox='reserveList' onClick={() => handleLocation('reserveList')} />
+                    <BoxListContainer listname="결제목록" selectedBox='payList' onClick={() => handleLocation('payList')} />
+                </div>
+                <div>
+
+                </div>
+            </div>
+
+
+
         </div>
     )
 }

@@ -4,7 +4,7 @@ import axios from 'axios';
 import store from '../../util/redux_storage';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
-
+import undo from '../../styles/image/undo.png';
 import Plane from '../../styles/image/plane.png'
 /** 결제한 목록을 보여주는 함수 */
 export default function PaidList() {
@@ -79,22 +79,21 @@ export default function PaidList() {
 
     }
     return (
-        <div className="background">
+        <div>
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
             <div className="backBox">
+                <div className="page-header">
+                    <img src={undo} onClick={handleLocation} />
+                    <h3 className="componentTitle">결제목록페이지</h3>
+                </div>
                 <div className="innerBox">
-                    <button onClick={handleLocation}>뒤로가기</button>
-                    <h3>결제목록페이지</h3>
-
                     {
                         contents.map((paidlist, i) => (
                             <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                         ))
                     }
-
-
 
                 </div>
                 <div>

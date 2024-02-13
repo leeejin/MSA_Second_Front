@@ -71,25 +71,43 @@
 
 /* 안에 있는 박스컨테이너*/
 .innerBox {
+    width: 70%;
     background: var(--white-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 100px;
+    margin: auto;
+    overflow: hidden;
+
+    div {
+        width: 100%;
+        margin-bottom: 10px;
+
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+    }
 }
 
-.innerBox div {
-    width: 70%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
+.page-header {
+    padding-top: 75px;
+
+    img {
+        width: 40px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
+
+
 
 .componentTitle {
-    font-size: 24px;
+    font-size: 1.6rem;
     text-align: center;
-    margin-bottom: 15%;
+    align-items: center;
+    justify-content: center;
 }
 
 /* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
@@ -101,14 +119,6 @@
     &:hover {
         cursor: pointer;
     }
-}
-
-/* 회색 버튼 스타일*/
-.btn-grey {
-    margin-top: 10%;
-    padding: 15px;
-    color: var(--button-color);
-    background-color: var(--grey-color);
 }
 
 /* 메뉴바 컨테이너 */
@@ -147,22 +157,21 @@
 
 .box-container {
     display: block;
-    border-radius: 15px;
     padding: 5px;
     margin-bottom: 5px;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)
 }
 
-.box-container td {
-    padding: 5px;
-}
-
-.box-container tr:nth-child(1) td:nth-child(2) {
-    border-left: 1px solid var(--grey-color);
-}
-
-.box-container tr:nth-child(1) {
-    border-bottom: 1px solid var(--grey-color);
+.mypage-menubar {
+    width:150px;
+    top: 20%;
+    padding: 15px;
+    text-align: center;
+    background-color: var(--background-color);
 }
 
 .message {}
+
+
+@media screen {
+    
+}

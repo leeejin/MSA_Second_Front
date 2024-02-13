@@ -4,8 +4,29 @@ import axios from 'axios';
 import store from '../../util/redux_storage';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
-
 import Plane from '../../styles/image/plane.png'
+import styled from 'styled-components';
+import Undo from '../../styles/image/undo.png'
+
+/** 티켓테이블 디자인 */
+const TicketTable = styled.table`
+    display: block;
+    border-radius: 15px;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color:var(--white-color);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    td{
+        padding:5px;
+    }
+    tr:nth-child(1) td:nth-child(2) {
+        border-left: 1px solid var(--grey-color);
+    }
+    
+    tr:nth-child(1) {
+        border-bottom: 1px solid var(--grey-color);
+    }
+`;
 /** 결제한 목록을 보여주는 함수 */
 export default function ReservedList() {
     const navigate = useNavigate();
@@ -16,13 +37,8 @@ export default function ReservedList() {
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
 
     useEffect(() => {
-        const script = document.createElement('script');
-        script.src = "https://cdn.iamport.kr/v1/iamport.js";
-        script.async = true;
-        document.head.appendChild(script);
-        return () => {
-            document.head.removeChild(script);
-        }
+        const { IMP } = window;
+        IMP.init('imp85467664');
     }, []);
 
     useEffect(() => {
@@ -58,65 +74,55 @@ export default function ReservedList() {
     }
     /** 결제 함수 */
     const handlePay = async (reservedlist) => {
-        window.IMP.init("imp85467664"); //가맹점 식별 코드 
-
-        const merchant_uid = "0" + new Date().getTime(); //고유 주문 번호
+        const { IMP } = window;
+        const merchant_uid = 1; // 이부분을 예약번호로 해야함!! 예약서비스에 저장된 예약번호와 동일(백엔드에서 예약하기할 때 예약번호를 보내줄예정)
         const amount = reservedlist.price;
 
-        window.IMP.request_pay({
-            pg: "kakaopay", //등록된 pg 사
-            pay_method: "card", // 결제방식: card(신용카드), trans(실시간계좌이체), vbank(가상계좌), phone(소액결제)
-            merchant_uid: merchant_uid, // 주문번호
-            name: "항공예약", //상품명
-            amount: amount, //금액
-            buyer_name: userId,  //주문자
-            buyer_tel: "01063030402", //필수입력 휴대폰번호
+        // 사전 검증 로직 추가: 서버에 결제 예정 금액 등록 요청
+        await axios.post("http://localhost:8088/payments/prepare", {
+            merchant_uid,
+            amount
+        });
 
-
-        }, function (response) { //결제가 되었다면 
-            if (response.success) {
-                //백엔드에도 결제데이터 보내야함
-                callPostPayAPI().then((response) => {
-
-                    console.log(response);
-                    alert("결제 성공 결제목록페이지로 가면 확인가능");
-                }).catch((error) => {
-                    console.error(error + "백엔드로 데이터 안감 개 큰일인데");
-                })
+        IMP.request_pay({
+            pg: "kakaopay",
+            pay_method: "card",
+            merchant_uid,
+            name: "항공예약",
+            amount,
+            buyer_email: "",
+            buyer_name: "홍길동",
+            buyer_tel: "010-4242-4242",
+            buyer_addr: "서울특별시 강남구 신사동",
+            buyer_postcode: "01181"
+        }, async rsp => {
+            if (rsp.success) {
+                console.log('Payment succeeded');
+                // 결제 성공 시 결제 정보를 서버에 저장
+                const formData = {
+                    imp_uid: rsp.imp_uid,
+                    merchant_uid: rsp.merchant_uid,
+                }
+                try {
+                    const response = await axios.post("http://localhost:8088/payments/validate", formData, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log('Payment information saved successfully');
+                } catch (error) {
+                    console.error('Failed to save payment information', error);
+                }
             } else {
-                console.log('결제 에러', response.error_msg);
+                console.error(`Payment failed. Error: ${rsp.error_msg}`);
             }
         });
     };
-    /** 결제하는 API */
-    async function callPostPayAPI() {
-        /** 백엔드로 보낼 결제데이터 */
-        const formData = {
-
-        }
-        try {
-            const response = await axios.post(Constant.serviceURL + `/payments/prepare`, formData, { withCredentials: true });
-            return response;
-        } catch (error) {
-            console.error(error);
-        }
-    }
     /** 예약 목록 불러오는 API */
     async function callGetPaidListAPI() {
         try {
             //const response = axios.get(Constant.serviceURL+`/예약목록`,{ withCredentials: true })
             return [{
-                id: 1,
-                price: 5000,
-                vihicleId: "TW901",
-                seatCapacity: null,
-                airlineNm: "티웨이항공",
-                arrAirportNm: "제주",
-                depAirportNm: "광주",
-                arrPlandTime: 202402151005,
-                depPlandTime: 202402150915,
-                status: '결제 전'
-            }, {
                 id: 1,
                 price: 5000,
                 vihicleId: "TW901",
@@ -149,10 +155,11 @@ export default function ReservedList() {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
             }
             <div className="backBox">
+                <div className="page-header">
+                    <img src={Undo} onClick={handleLocation} />
+                    <h3 className="componentTitle">예약목록페이지</h3>
+                </div>
                 <div className="innerBox">
-                    <button onClick={handleLocation}>뒤로가기</button>
-                    <h3>예약목록페이지</h3>
-
                     {
                         contents.map((reservedlist, i) => (
                             <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handlePay={handlePay} handleOpenClose={handleOpenClose} />
@@ -180,36 +187,39 @@ const ReservedListItem = ({ reservedlist, handlePay, handleOpenClose }) => {
         return formattedTime;
     }
     return (
-        <table className="box-container">
-            <tr>
-                <td>
-                    <h3>{reservedlist.airlineNm}</h3>
-                    <p>{reservedlist.vihicleId}</p>
-                </td>
-                <td>
-                    <h1 className="special-color">{reservedlist.depAirportNm}</h1>
-                    <p >{handleChangeDate(reservedlist.depPlandTime)}</p>
+        <TicketTable>
+            <tbody>
+                <tr>
+                    <td>
+                        <h3>{reservedlist.airlineNm}</h3>
+                        <p>{reservedlist.vihicleId}</p>
+                    </td>
+                    <td>
+                        <h1 className="special-color">{reservedlist.depAirportNm}</h1>
+                        <p >{handleChangeDate(reservedlist.depPlandTime)}</p>
 
-                </td>
-                <td>
-                    <img src={Plane} width={'40px'} />
-                </td>
-                <td>
-                    <h1 className="special-color">{reservedlist.arrAirportNm}</h1>
-                    <p>{handleChangeDate(reservedlist.arrPlandTime)}</p>
-                </td>
-            </tr>
-            <tr>
-                <td colspan={2}>
-                    <h2>₩ {reservedlist.price.toLocaleString()}</h2>
-                </td>
-                <td colspan={2}>
+                    </td>
+                    <td>
+                        <img src={Plane} width={'40px'} />
+                    </td>
+                    <td>
+                        <h1 className="special-color">{reservedlist.arrAirportNm}</h1>
+                        <p>{handleChangeDate(reservedlist.arrPlandTime)}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={2}>
+                        <h2>₩ {reservedlist.price.toLocaleString()}</h2>
+                    </td>
+                    <td colSpan={2}>
 
-                    {reservedlist.status === '결제 전' && <button onClick={() => handlePay(reservedlist)}>결제</button>}
-                    <button onClick={() => handleOpenClose(reservedlist.id)}>취소</button>
-                </td>
-            </tr>
-        </table>
+                        {reservedlist.status === '결제 전' && <button onClick={() => handlePay(reservedlist)}>결제</button>}
+                        <button onClick={() => handleOpenClose(reservedlist.id)}>취소</button>
+                    </td>
+                </tr>
+            </tbody>
+
+        </TicketTable>
 
     )
 }
