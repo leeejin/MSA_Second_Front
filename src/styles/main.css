@@ -10,6 +10,8 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.2);
     position: fixed;
+    top: 0;
+    left: 0;
     padding: 30px;
     transition: all 1s;
 }
@@ -61,27 +63,71 @@
     background: var(--white-color);
 }
 
-/* 안에 있는 박스컨테이너*/
-.innerBox {
+/** 배경안에 컨테이너 다른 컨테이너*/
+.backBox-100 {
+    width: 85%;
+    height: 100vh;
+    padding-top: 70px;
+    float: right;
     background: var(--white-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 20%;
 }
 
-.innerBox div {
+/* 안에 있는 박스컨테이너*/
+.innerBox {
     width: 70%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
+    background: var(--white-color);
+    margin: auto;
+    overflow: hidden;
+
+    div {
+        width: 100%;
+        margin-bottom: 10px;
+
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+    }
+}
+
+.doButton {
+    font-size: 20px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.page-header {
+    padding-top: 75px;
+
+    img {
+        width: 40px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 .componentTitle {
-    font-size: 24px;
+    font-size: 1.6rem;
     text-align: center;
-    margin-bottom: 15%;
+    align-items: center;
+    justify-content: center;
+}
+
+.componentContent {
+    height: 600px;
+
+    table {
+        width: 70%;
+        align-items: center;
+        margin: auto;
+        margin-bottom: 15px;
+    }
 }
 
 /* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
@@ -93,14 +139,6 @@
     &:hover {
         cursor: pointer;
     }
-}
-
-/* 회색 버튼 스타일*/
-.btn-grey {
-    margin-top: 10%;
-    padding: 15px;
-    color: var(--button-color);
-    background-color: var(--grey-color);
 }
 
 /* 메뉴바 컨테이너 */
@@ -138,10 +176,65 @@
 }
 
 .box-container {
-    width: 40%;
+    display: block;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.mypage-menubar {
+    float: left;
+    width: 15%;
+    margin-top: 70px;
+    background-color: var(--background-color);
+
+}
+
+.p {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    align-items: center;
     padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)
+    color: var(--black-color);
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--white-color);
+        color: var(--hovering-color);
+    }
+}
+
+.sub-menu-selected {
+    background-color: var(--white-color);
+    color: var(--hovering-color);
 }
 
 .message {}
+
+@media screen and (max-width : 768px) {
+    .mypage-menubar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        flex-direction: row;
+
+        .p {
+            width: 50%;
+            display: flex;
+            flex-direction: row;
+        }
+    }
+
+    .backBox-100 {
+        width: 100%;
+        padding-top: 0px;
+    }
+
+    .componentContent {
+        height: 500px;
+
+        table {
+            width: 100%;
+        }
+    }
+}

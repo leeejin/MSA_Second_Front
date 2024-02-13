@@ -3,7 +3,8 @@ import DatePicker from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
 import dayjs from 'dayjs';
 import "react-datepicker/dist/react-datepicker.css";
-
+import { IoArrowRedoSharp } from "react-icons/io5";
+import { IoArrowUndoSharp } from "react-icons/io5";
 export default function Datepicker({ depTime, handleDateChange }) {
     const minDate = new Date(dayjs().add(1, 'day'));
     const maxDate = new Date(dayjs().add(3, 'month'));
@@ -80,25 +81,18 @@ export default function Datepicker({ depTime, handleDateChange }) {
                     nextMonthButtonDisabled,
                 }) => (
                     <div className="customHeaderContainer">
-                        <button
-                            type='button'
+                        <IoArrowUndoSharp 
+                            className="doButton"
                             onClick={decreaseMonth}
-                            disabled={prevMonthButtonDisabled}
-                        >
-                            prev
-                            {/* 여기 prev지우고 Icon 삽입 */}
-                        </button>
+                            disabled={prevMonthButtonDisabled} />
                         <div className="year-month">
                             <h3>{YEARS}년 {MONTHS[date.getMonth()]}</h3>
                         </div>
-                        <button
-                            type='button'
+
+                        <IoArrowRedoSharp 
+                            className="doButton"
                             onClick={increaseMonth}
-                            disabled={nextMonthButtonDisabled}
-                        >
-                            next
-                            {/* 여기 next지우고 Icon 삽입 */}
-                        </button>
+                            disabled={nextMonthButtonDisabled} />
                     </div>
                 )}
             />

@@ -11,7 +11,7 @@ export default function PayCheck() {
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
 
     const handleReservedList = () => {
-        navigate(`/ReservedList/${userId}`); //수정해야함
+        navigate(`/MyPage/${userId}`); //수정해야함
     }
     return (
         <div>

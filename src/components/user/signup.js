@@ -1,8 +1,22 @@
 import React, { useState, useRef } from 'react';
+import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
-
+/** 동작하는 버튼 스타일 */
+const HandleButton = styled.button`
+    border-radius: 15px;
+    border: none;
+    margin-top: 10%;
+    padding: 15px;
+    color: var(--button-color);
+    background-color: var(--grey-color);
+    &:hover {
+        cursor: pointer;
+        background-color: #c4c4c4;
+    }
+}
+`;
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
 
@@ -83,8 +97,10 @@ export default function Signup() {
             }
             <div className='background'>
                 <div className='backBox'>
-                    <div className='innerBox'>
+                    <div className="page-header">
                         <h3 className='componentTitle'>회원가입</h3>
+                    </div>
+                    <div className='innerBox'>
                         <div>
                             <p>이름</p>
                             <input
@@ -92,30 +108,29 @@ export default function Signup() {
                                 onChange={(e) => { setName(e.target.value) }}
                             />
                             {
-                                nameError && <p className="message danger-color">'이름을 입력하세요. (2~5자 이내)'</p>
+                                nameError && <p className="message danger-color">이름을 입력하세요. (2~5자 이내)</p>
                             }
                         </div>
                         <div>
                             <p>닉네임</p>
                             <input
-                                size="small"
                                 placeholder="닉네임"
                                 onChange={(e) => { setNickname(e.target.value) }}
                             />
                             {
-                                nicknameError && <p className="message danger-color">'닉네임을 입력하세요. (2~5자 이내)'</p>
+                                nicknameError && <p className="message danger-color">닉네임을 입력하세요. (2~5자 이내)</p>
                             }
                         </div>
                         <div>
                             <p>이메일</p>
-                            <div style={{ flexDirection: 'row'}}>
+                            <div style={{display:'inline-flex'}}>
                                 <input
                                     placeholder='이메일'
                                     onChange={(e) => { setEmail(e.target.value) }}
                                 />
                                 <p>@</p>
                                 <select
-                                
+
                                     value={select}
                                     onChange={(e) => { setSelect(e.target.value) }}
                                 >
@@ -128,7 +143,7 @@ export default function Signup() {
                             </div>
 
                             {
-                                emailError && <p className="message danger-color">'이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)'</p>
+                                emailError && <p className="message danger-color">이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)</p>
                             }
                         </div>
                         <div>
@@ -139,7 +154,7 @@ export default function Signup() {
                                 onChange={(e) => { setPassword(e.target.value) }}
                             />
                             {
-                                passwordError && <p className="message danger-color">'비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)'</p>
+                                passwordError && <p className="message danger-color">비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)</p>
                             }
                         </div>
                         <div>
@@ -150,14 +165,14 @@ export default function Signup() {
                                 onChange={(e) => { setConfirmPassword(e.target.value) }}
                             />
                             {
-                                confirmPasswordError && <p className="message danger-color">'비밀번호를 입력하세요.'</p>
+                                confirmPasswordError && <p className="message danger-color">비밀번호를 입력하세요.</p>
                             }
                             {
                                 DuplicateCheck === true && <p className="message danger-color">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
                             }
                         </div>
                         <div>
-                            <button className="btn btn-grey" variant="contained" onClick={handleOpenClose}>회원가입</button>
+                            <HandleButton onClick={handleOpenClose}>회원가입</HandleButton>
                         </div>
 
                     </div>
