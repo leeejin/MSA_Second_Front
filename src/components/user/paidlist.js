@@ -96,12 +96,8 @@ export default function PaidList() {
                                 <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                             ))
                         }
+                    </div>
 
-                    </div>
-                    <div>
-                        <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
-                        <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
-                    </div>
                 </>
             }
 
@@ -124,7 +120,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
         return formattedTime;
     }
     return (
-        <table className="box-container">
+        <table >
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>

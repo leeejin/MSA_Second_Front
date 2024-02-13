@@ -35,10 +35,15 @@ export default function MyPage() {
             </div>
             <div className="backBox-100">
                 <h3 className="componentTitle">마이페이지</h3>
-                {
-                    subBoxVisible.reserveList === true ? <ReservedList /> : <PayList />
-                }
-
+                <div className="componentContent">
+                    {
+                        subBoxVisible.reserveList === true ? <ReservedList /> : <PayList />
+                    }
+                </div>
+                <div>
+                            <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
+                            <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
+                        </div>
 
             </div>
         </div>
