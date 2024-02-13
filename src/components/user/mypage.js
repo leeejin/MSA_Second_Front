@@ -10,8 +10,7 @@ export default function MyPage() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
     const [nickname, setNickname] = useState(store.getState().nickname); //리덕스에 있는 nickname를 가져옴
-
-    const [open, setOpen] = useState({ //모달창
+    const [open, setOpen] = useState({
         payCancel: false,
         reserveCancle: false
     })

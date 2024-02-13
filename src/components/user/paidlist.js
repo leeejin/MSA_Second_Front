@@ -4,9 +4,9 @@ import axios from 'axios';
 import store from '../../util/redux_storage';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
-import undo from '../../styles/image/undo.png';
 import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
+
 const SubThead = styled.span`
     color:grey;
 `;
@@ -34,10 +34,7 @@ export default function PaidList() {
         setOpen(prev => !prev); //예약확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
     }, []);
-    /** 뒤로가기 함수 */
-    const handleLocation = () => {
-        navigate(`/MyPage/${userId}`);
-    }
+
     /** 결제취소 함수 */
     const handleSubmit = async (id) => {
         try {
@@ -129,39 +126,44 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
     return (
         <table className="box-container">
             <thead>
-                <th>편명 <SubThead>Flight</SubThead></th>
-                <th>출발 <SubThead>From</SubThead></th>
-                <th />
-                <th>도착 <SubThead>To</SubThead></th>
+                <tr>
+                    <th>편명 <SubThead>Flight</SubThead></th>
+                    <th>출발 <SubThead>From</SubThead></th>
+                    <th />
+                    <th>도착 <SubThead>To</SubThead></th>
+                </tr>
             </thead>
-            <tr>
-                <td>
-                    <p>{paidlist.vihicleId}</p>
-                    <p>Operated by {paidlist.vihicleId.substring(0, 2)}</p>
-                    <h3>{paidlist.airlineNm}</h3>
-                </td>
-                <td>
-                    <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                    <p >{handleChangeDate(paidlist.depPlandTime)}</p>
+            <tbody>
+                <tr>
+                    <td>
+                        <p>{paidlist.vihicleId}</p>
+                        <p>Operated by {paidlist.vihicleId.substring(0, 2)}</p>
+                        <h3>{paidlist.airlineNm}</h3>
+                    </td>
+                    <td>
+                        <h1 className="special-color">{paidlist.depAirportNm}</h1>
+                        <p >{handleChangeDate(paidlist.depPlandTime)}</p>
 
-                </td>
-                <td>
-                    <img src={Plane} width={'40px'} />
-                </td>
-                <td>
-                    <h1 className="special-color">{paidlist.arrAirportNm}</h1>
-                    <p>{handleChangeDate(paidlist.arrPlandTime)}</p>
-                </td>
-            </tr>
-            <tr>
-                <td colspan={2}>
-                    <h2>₩ {paidlist.price.toLocaleString()}</h2>
-                </td>
-                <td colspan={2}>
+                    </td>
+                    <td>
+                        <img src={Plane} width={'40px'} />
+                    </td>
+                    <td>
+                        <h1 className="special-color">{paidlist.arrAirportNm}</h1>
+                        <p>{handleChangeDate(paidlist.arrPlandTime)}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colSpan={2}>
+                        <h2>₩ {paidlist.price.toLocaleString()}</h2>
+                    </td>
+                    <td colSpan={2}>
 
-                    <button onClick={() => handleOpenClose(paidlist.id)}>결제취소</button>
-                </td>
-            </tr>
+                        <button onClick={() => handleOpenClose(paidlist.id)}>결제취소</button>
+                    </td>
+                </tr>
+            </tbody>
+
         </table>
 
     )

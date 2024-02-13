@@ -6,7 +6,6 @@ import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import styled from 'styled-components';
-import Undo from '../../styles/image/undo.png'
 
 /** 티켓테이블 디자인 */
 const TicketTable = styled.table`
@@ -134,7 +133,7 @@ export default function ReservedList() {
                 depPlandTime: 202402150915,
                 status: '결제 전'
             },{
-                id: 1,
+                id: 2,
                 price: 5000,
                 vihicleId: "TW901",
                 seatCapacity: null,

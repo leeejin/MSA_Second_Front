@@ -89,7 +89,12 @@
         width: 100%;
     }
 }
-
+.doButton{
+    font-size: 20px;
+    &:hover{
+        cursor: pointer;
+    }
+}
 .page-header {
     padding-top: 75px;
 
