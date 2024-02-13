@@ -13,6 +13,7 @@ const HandleButton = styled.button`
     background-color: var(--grey-color);
     &:hover {
         cursor: pointer;
+        background-color: #c4c4c4;
     }
 }
 `;

@@ -6,6 +6,10 @@ import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import undo from '../../styles/image/undo.png';
 import Plane from '../../styles/image/plane.png'
+import styled from "styled-components";
+const SubThead = styled.span`
+    color:grey;
+`;
 /** 결제한 목록을 보여주는 함수 */
 export default function PaidList() {
     const navigate = useNavigate();
@@ -14,12 +18,13 @@ export default function PaidList() {
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         callGetPaidListAPI().then((response) => {
             setContents(response);
-            console.log(response);
+            setLoading(false);
         }).catch((error) => {
             console.log("먼이유로 예약 목록 못받아옴");
         })
@@ -81,26 +86,28 @@ export default function PaidList() {
     return (
         <div>
             {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
-            }
-            <div className="backBox">
-                <div className="page-header">
-                    <img src={undo} onClick={handleLocation} />
-                    <h3 className="componentTitle">결제목록페이지</h3>
-                </div>
-                <div className="innerBox">
+                loading ? <div className="loading">
+                    <p>로딩중</p>
+                </div> : <>
                     {
-                        contents.map((paidlist, i) => (
-                            <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
-                        ))
+                        open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
                     }
 
-                </div>
-                <div>
-                    <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
-                    <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
-                </div>
-            </div>
+                    <div>
+                        {
+                            contents.map((paidlist, i) => (
+                                <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
+                            ))
+                        }
+
+                    </div>
+                    <div>
+                        <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
+                        <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
+                    </div>
+                </>
+            }
+
         </div>
     )
 }
@@ -122,10 +129,10 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
     return (
         <table className="box-container">
             <thead>
-                <th>편명 <span>Flight</span></th>
-                <th>출발 <span>From</span></th>
+                <th>편명 <SubThead>Flight</SubThead></th>
+                <th>출발 <SubThead>From</SubThead></th>
                 <th />
-                <th>도착 <span>To</span></th>
+                <th>도착 <SubThead>To</SubThead></th>
             </thead>
             <tr>
                 <td>

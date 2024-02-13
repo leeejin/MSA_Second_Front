@@ -10,7 +10,6 @@ import Undo from '../../styles/image/undo.png'
 
 /** 티켓테이블 디자인 */
 const TicketTable = styled.table`
-    display: block;
     border-radius: 15px;
     padding: 5px;
     margin-bottom: 5px;
@@ -35,16 +34,17 @@ export default function ReservedList() {
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const { IMP } = window;
         IMP.init('imp85467664');
     }, []);
 
     useEffect(() => {
+        setLoading(true);
         callGetPaidListAPI().then((response) => {
             setContents(response);
-            console.log(response);
+            setLoading(false);
         }).catch((error) => {
             console.log("먼이유로 예약 목록 못받아옴");
         })
@@ -133,6 +133,17 @@ export default function ReservedList() {
                 arrPlandTime: 202402151005,
                 depPlandTime: 202402150915,
                 status: '결제 전'
+            },{
+                id: 1,
+                price: 5000,
+                vihicleId: "TW901",
+                seatCapacity: null,
+                airlineNm: "티웨이항공",
+                arrAirportNm: "제주",
+                depAirportNm: "광주",
+                arrPlandTime: 202402151005,
+                depPlandTime: 202402150915,
+                status: '결제 전'
             }];
         } catch (error) {
             console.error(error);
@@ -152,24 +163,24 @@ export default function ReservedList() {
     return (
         <div>
             {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
-            }
-            <div className="backBox">
-                <div className="page-header">
-                    <img src={Undo} onClick={handleLocation} />
-                    <h3 className="componentTitle">예약목록페이지</h3>
-                </div>
-                <div className="innerBox">
+                loading ? <div className="loading">
+                    <p>로딩중</p>
+                </div> : <>
                     {
-                        contents.map((reservedlist, i) => (
-                            <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handlePay={handlePay} handleOpenClose={handleOpenClose} />
-                        ))
+                        open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
                     }
 
-                </div>
-            </div>
+                    <div>
+                        {
+                            contents.map((reservedlist, i) => (
+                                <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handlePay={handlePay} handleOpenClose={handleOpenClose} />
+                            ))
+                        }
 
-        </div>
+                    </div>
+                </>
+            }
+        </div >
     )
 }
 

@@ -63,9 +63,10 @@
 
 /** 배경안에 컨테이너 다른 컨테이너*/
 .backBox-100 {
-    width: 100%;
+    width: 85%;
     height: 100vh;
-    margin: auto;
+    padding-top: 70px;
+    float: right;
     background: var(--white-color);
 }
 
@@ -100,8 +101,6 @@
         }
     }
 }
-
-
 
 .componentTitle {
     font-size: 1.6rem;
@@ -162,16 +161,46 @@
 }
 
 .mypage-menubar {
-    width:150px;
-    top: 20%;
-    padding: 15px;
-    text-align: center;
+    float: left;
+    width: 15%;
+    margin-top: 70px;
     background-color: var(--background-color);
+    
 }
-
+.p {
+    display:flex;
+    flex-direction: column;
+    text-decoration: none;
+    align-items: center;
+    padding: 15px;
+    color:var(--black-color);
+    &:hover {
+        cursor: pointer;
+        background-color: var(--white-color);
+        color: var(--hovering-color);
+    }
+}
+.sub-menu-selected{
+    background-color: var(--white-color);
+    color: var(--hovering-color);
+}
 .message {}
 
+@media screen and (max-width : 768px) {
+    .mypage-menubar {
+        width: 100%;
+        height: 60px;
+        display: flex;
+        flex-direction: row;
+        .p {
+            width:50%;
+            display:flex;
+            flex-direction: row;
+        }
+    }
 
-@media screen {
-    
+    .backBox-100 {
+        width: 100%;
+        padding-top: 0px;
+    }
 }
