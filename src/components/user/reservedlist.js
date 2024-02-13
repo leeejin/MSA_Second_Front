@@ -6,7 +6,7 @@ import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import styled from 'styled-components';
-
+import Pagination from '../../util/pagenation';
 /** 티켓테이블 디자인 */
 const TicketTable = styled.table`
     border-radius: 15px;
@@ -34,6 +34,11 @@ export default function ReservedList() {
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [loading, setLoading] = useState(true);
+    //페이지네이션
+    const itemCountPerPage = 2;//한페이지당 보여줄 아이템 갯수
+    const pageCountPerPage = 5;//보여줄 페이지 갯수
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
+    const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
     useEffect(() => {
         const { IMP } = window;
         IMP.init('imp85467664');
@@ -53,10 +58,13 @@ export default function ReservedList() {
         setOpen(prev => !prev); //예약확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
     }, []);
-    /** 뒤로가기 함수 */
-    const handleLocation = () => {
-        navigate(`/MyPage/${userId}`);
-    }
+    /** 페이지네이션 함수 */
+    const setCurrentPageFunc = (page) => {
+        let lastOffset = (page - 1) * itemCountPerPage;
+        setCurrentPage(page);
+        setOffset(lastOffset);
+    };
+
     /** 예약취소 함수 */
     const handleSubmit = async (id) => {
         try {
@@ -132,7 +140,7 @@ export default function ReservedList() {
                 arrPlandTime: 202402151005,
                 depPlandTime: 202402150915,
                 status: '결제 전'
-            },{
+            }, {
                 id: 2,
                 price: 5000,
                 vihicleId: "TW901",
@@ -159,26 +167,32 @@ export default function ReservedList() {
         }
 
     }
+    if (loading) return (<div className="loading"><p>로딩중</p></div>);
     return (
         <div>
+
             {
-                loading ? <div className="loading">
-                    <p>로딩중</p>
-                </div> : <>
-                    {
-                        open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
-                    }
-
-                    <div>
-                        {
-                            contents.map((reservedlist, i) => (
-                                <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handlePay={handlePay} handleOpenClose={handleOpenClose} />
-                            ))
-                        }
-
-                    </div>
-                </>
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
             }
+
+            <div className="componentContent">
+                {
+                    contents.map((reservedlist, i) => (
+                        <ReservedListItem key={reservedlist.id} reservedlist={reservedlist} handlePay={handlePay} handleOpenClose={handleOpenClose} />
+                    ))
+                }
+            </div>
+            <div className="footer">
+                {contents.length > 0 && (
+                    <Pagination
+                        itemCount={contents.length}
+                        pageCountPerPage={pageCountPerPage}
+                        itemCountPerPage={itemCountPerPage}
+                        currentPage={currentPage}
+                        clickListener={setCurrentPageFunc}
+                    />
+                )}
+            </div>
         </div >
     )
 }

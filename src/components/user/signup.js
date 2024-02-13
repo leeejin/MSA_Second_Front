@@ -17,6 +17,10 @@ const HandleButton = styled.button`
     }
 }
 `;
+/**이메일 스타일 */
+const Flex = styled.div`
+    display:inline-flex;
+`;
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
 
@@ -123,7 +127,7 @@ export default function Signup() {
                         </div>
                         <div>
                             <p>이메일</p>
-                            <div style={{display:'inline-flex'}}>
+                            <Flex>
                                 <input
                                     placeholder='이메일'
                                     onChange={(e) => { setEmail(e.target.value) }}
@@ -140,7 +144,7 @@ export default function Signup() {
                                         </option>
                                     ))}
                                 </select>
-                            </div>
+                            </Flex>
 
                             {
                                 emailError && <p className="message danger-color">이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)</p>
