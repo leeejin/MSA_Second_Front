@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => {
     const navigate = useNavigate();
-
+    
     return (<div>
         <div className="black-wrap" onClick={handleOpenClose} />
         <div className="white-wrap">
