@@ -20,6 +20,8 @@ const HandleButton = styled.button`
 /**이메일 스타일 */
 const Flex = styled.div`
     display:inline-flex;
+    width:100%;
+
 `;
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
@@ -101,11 +103,9 @@ export default function Signup() {
             }
             <div className='background'>
                 <div className='backBox'>
-                    <div className="page-header">
-                        <h3 className='componentTitle'>회원가입</h3>
-                    </div>
                     <div className='innerBox'>
-                        <div>
+                        <h3 className='componentTitle'>회원가입</h3>
+                        <div className="subBox">
                             <p>이름</p>
                             <input
                                 placeholder="이름"
@@ -114,8 +114,8 @@ export default function Signup() {
                             {
                                 nameError && <p className="message danger-color">이름을 입력하세요. (2~5자 이내)</p>
                             }
-                        </div>
-                        <div>
+
+
                             <p>닉네임</p>
                             <input
                                 placeholder="닉네임"
@@ -124,8 +124,6 @@ export default function Signup() {
                             {
                                 nicknameError && <p className="message danger-color">닉네임을 입력하세요. (2~5자 이내)</p>
                             }
-                        </div>
-                        <div>
                             <p>이메일</p>
                             <Flex>
                                 <input
@@ -149,8 +147,6 @@ export default function Signup() {
                             {
                                 emailError && <p className="message danger-color">이메일을 입력하세요. (영대소문자, 숫자 포함해야 함)</p>
                             }
-                        </div>
-                        <div>
                             <p>비밀번호</p>
                             <input
                                 placeholder="비밀번호"
@@ -160,8 +156,6 @@ export default function Signup() {
                             {
                                 passwordError && <p className="message danger-color">비밀번호를 입력하세요. (8~25자 이내, 알파벳 소문자, 대문자, 숫자, 특수문자 중 하나 이상 포함해야 함)</p>
                             }
-                        </div>
-                        <div>
                             <p>비밀번호 확인</p>
                             <input
                                 placeholder="비밀번호 확인"
@@ -174,11 +168,9 @@ export default function Signup() {
                             {
                                 DuplicateCheck === true && <p className="message danger-color">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</p>
                             }
-                        </div>
-                        <div>
                             <HandleButton onClick={handleOpenClose}>회원가입</HandleButton>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>

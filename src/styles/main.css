@@ -53,10 +53,11 @@
 
 /** 배경안에 컨테이너*/
 .backBox {
+    display:block;
     max-width: 450px;
-    height: 100vh;
+    height:100vh;
     margin: auto;
-    background: var(--white-color);
+    background-color: var(--white-color);
 }
 
 .footer {
@@ -73,21 +74,23 @@
 
 /* 안에 있는 박스컨테이너*/
 .innerBox {
-    width: 70%;
+    width: 100%;
     background: var(--white-color);
     margin: auto;
     overflow: hidden;
-
-    div {
-        width: 100%;
+    .subBox {
+        margin: auto;
+        overflow: hidden;
+        width: 70%;
         margin-bottom: 10px;
 
     }
-
+    
     input,
     select,
     button {
         width: 100%;
+        margin-bottom: 15px;
     }
 }
 
@@ -99,12 +102,9 @@
     }
 }
 
-.page-header {
-    padding-top: 75px;
-}
 
 .componentTitle {
-    padding-top: 75px;
+    padding-top: 70px;
     font-size: 1.6rem;
     text-align: center;
     align-items: center;

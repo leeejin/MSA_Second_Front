@@ -71,11 +71,10 @@ export default function Login() {
 
     return (
         <div className='backBox'>
-            <div className='page-header'>
-                <h3 className='componentTitle'>로그인</h3>
-            </div>
+
             <div className='innerBox'>
-                <div>
+                <h3 className='componentTitle'>로그인</h3>
+                <div className="subBox">
                     <p>아이디</p>
                     <input
                         type="email"
@@ -84,8 +83,6 @@ export default function Login() {
                     {
                         errorMessage.email && <p className="message danger-color">아이디를 제대로 입력해주세요.</p>
                     }
-                </div>
-                <div>
                     <p>비밀번호</p>
                     <input
                         type="password"
@@ -96,13 +93,11 @@ export default function Login() {
                     }
 
                     {loginError && <p className="message danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
-                </div>
-                <div>
+
                     <SubButton onClick={() => { navigate('/Signup') }}>
                         회원가입 하기
                     </SubButton>
-                </div>
-                <div>
+
                     <HandleButton onClick={(e) => submit(e)}>로그인</HandleButton>
                 </div>
             </div>
