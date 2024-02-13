@@ -10,7 +10,7 @@ export default function MyPage() {
 
     const [subBoxVisible, setSubBoxVisible] = useState({ reserveList: false, payList: false });
 
-
+    
 
     const handleLocation = (selectedBox) => {
         if (selectedBox === 'reserveList') navigate(`/ReservedList/${userId}`);
