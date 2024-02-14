@@ -1,0 +1,74 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "00",
+            "resultMsg": "NORMAL SERVICE."
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "airportId": "NAARKJB",
+                        "airportNm": "무안"
+                    },
+                    {
+                        "airportId": "NAARKJJ",
+                        "airportNm": "광주"
+                    },
+                    {
+                        "airportId": "NAARKJK",
+                        "airportNm": "군산"
+                    },
+                    {
+                        "airportId": "NAARKJY",
+                        "airportNm": "여수"
+                    },
+                    {
+                        "airportId": "NAARKNW",
+                        "airportNm": "원주"
+                    },
+                    {
+                        "airportId": "NAARKNY",
+                        "airportNm": "양양"
+                    },
+                    {
+                        "airportId": "NAARKPC",
+                        "airportNm": "제주"
+                    },
+                    {
+                        "airportId": "NAARKPK",
+                        "airportNm": "김해"
+                    },
+                    {
+                        "airportId": "NAARKPS",
+                        "airportNm": "사천"
+                    },
+                    {
+                        "airportId": "NAARKPU",
+                        "airportNm": "울산"
+                    },
+                    {
+                        "airportId": "NAARKSI",
+                        "airportNm": "인천"
+                    },
+                    {
+                        "airportId": "NAARKSS",
+                        "airportNm": "김포"
+                    },
+                    {
+                        "airportId": "NAARKTH",
+                        "airportNm": "포항"
+                    },
+                    {
+                        "airportId": "NAARKTN",
+                        "airportNm": "대구"
+                    },
+                    {
+                        "airportId": "NAARKTU",
+                        "airportNm": "청주"
+                    }
+                ]
+            }
+        }
+    }
+}

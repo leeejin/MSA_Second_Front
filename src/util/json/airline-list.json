@@ -1,0 +1,54 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "00",
+            "resultMsg": "NORMAL SERVICE."
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "airlineId": "AAR",
+                        "airlineNm": "아시아나항공"
+                    },
+                    {
+                        "airlineId": "ABL",
+                        "airlineNm": "에어부산"
+                    },
+                    {
+                        "airlineId": "ASV",
+                        "airlineNm": "에어서울"
+                    },
+                    {
+                        "airlineId": "ESR",
+                        "airlineNm": "이스타항공"
+                    },
+                    {
+                        "airlineId": "FGW",
+                        "airlineNm": "플라이강원"
+                    },
+                    {
+                        "airlineId": "HGG",
+                        "airlineNm": "하이에어"
+                    },
+                    {
+                        "airlineId": "JJA",
+                        "airlineNm": "제주항공"
+                    },
+                    {
+                        "airlineId": "JNA",
+                        "airlineNm": "진에어"
+                    },
+                    {
+                        "airlineId": "KAL",
+                        "airlineNm": "대한항공"
+                    },
+                    {
+                        "airlineId": "TWB",
+                        "airlineNm": "티웨이항공"
+                    }
+                ]
+            }
+        }
+    }
+}
