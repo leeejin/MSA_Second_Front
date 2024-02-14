@@ -7,6 +7,7 @@ import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
 import Pagination from '../../util/pagenation';
+import Spinner from '../../styles/image/loading.gif';
 const SubThead = styled.span`
     color:grey;
 `;
@@ -90,7 +91,9 @@ export default function PaidList() {
         }
 
     }
-    if (loading) return (<div className="loading"><p>로딩중</p></div>);
+    if (loading) return (<div className="loading">
+    <img src={Spinner} alt="로딩" width="100px" />
+    </div>);
     return (
         <div>
             {

@@ -13,9 +13,9 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
         <div className="black-wrap" onClick={handleOpenClose} />
         <div className="white-wrap">
             <div>{message}</div>
-            <div id="modal-modal-description" sx={{ mt: 2, textAlign: 'center' }}>
+            <div>
                 <button onClick={handleSubmit}>예</button>
-                <button sx={{ color: 'gray' }} onClick={handleOpenClose}>아니오</button>
+                <button onClick={handleOpenClose}>아니오</button>
             </div>
             {subOpen === true && (
                 <div>
