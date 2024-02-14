@@ -1,0 +1,119 @@
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 680px;
+}
+
+.black-wrap {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    position: fixed;
+    padding: 30px;
+    transition: all 1s;
+}
+
+.white-wrap {
+    border-radius: 5px;
+    position: fixed;
+    padding: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 1s;
+    background: white;
+    z-index: 5;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.center-wrap {
+   
+}
+
+.danger-color {
+    color: var(--danger-color);
+}
+
+.special-color {
+    color: var(--special-color);
+}
+
+.warning-color {
+    color: var(--warning-color);
+}
+
+/** 배경색 */
+.background {
+    width: 100%;
+    height: 100vh;
+    background-color:var(--background-color);
+}
+
+/** 배경안에 컨테이너*/
+.backBox {
+    width: 50%;
+    height: 100%;
+    margin: auto;
+    background: var(--white-color);
+}
+
+/* 안에 있는 박스컨테이너*/
+.innerBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15%;
+}
+
+.innerBox div {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.componentTitle {
+    font-size: 24px;
+    text-align: center;
+}
+
+/* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
+.btn {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+/* 로그인 버튼 */
+.login-button {
+    width: 100%;
+    border-radius: 15px;
+    border: none;
+    padding: 15px;
+    color: var(--button-color);
+
+}
+
+/* 메뉴바 컨테이너 */
+.menubar-container {
+    position: fixed;
+    width: 100%;
+    padding: 10px;
+    background: var(--white-color);
+    top: 0;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+.menubar-container div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.box-container{
+    width:40%;
+    padding:15px;
+    border-radius: 15px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16)
+}
