@@ -14,20 +14,7 @@ const SubButton = styled.span`
         cursor: pointer;
     }
 `;
-/** 동작하는 버튼 스타일 */
-const HandleButton = styled.button`
-    border-radius: 15px;
-    border: none;
-    margin-top: 10%;
-    padding: 15px;
-    color: var(--button-color);
-    background-color: var(--grey-color);
-    &:hover {
-        cursor: pointer;
-        background-color: #c4c4c4;
-    }
-}
-`;
+
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -116,7 +103,7 @@ export default function Login() {
                             회원가입 하기
                         </SubButton>
 
-                        <HandleButton onClick={(e) => submit(e)}>로그인</HandleButton>
+                        <button className="handle-button" onClick={(e) => submit(e)}>로그인</button>
                     </div>
                 </div>
             </div>

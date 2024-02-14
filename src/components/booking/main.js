@@ -15,8 +15,6 @@ const SelectBox = styled.div`
   align-self: center;
   border-bottom:2px solid var(--black-color);
   cursor: pointer;
-  
- 
 `;
 const IconWrapper = styled.div`
     display: inline-block;

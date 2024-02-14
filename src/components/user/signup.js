@@ -3,69 +3,16 @@ import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
-/** 동작하는 버튼 스타일 */
-const HandleButton = styled.button`
-    border-radius: 15px;
-    border: none;
-    margin-top: 10%;
-    padding: 15px;
-    color: var(--button-color);
-    background-color: var(--grey-color);
-    &:hover {
-        cursor: pointer;
-        background-color: #c4c4c4;
-    }
-}
-`;
+
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
-
-const SelectBox = styled.div`
-  position: relative;
-  top:-8px;
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  align-self: center;
-  border:1px solid var(--black-color);
-  cursor: pointer;
-  &::before {
-    content: "⌵";
-    position: absolute;
-    top: 1px;
-    right: 8px;
-    color: var(--hovering-color);
-    font-size: 20px;
-  }
-`;
 const SelectOptions = styled.ul`
-  position: absolute;
-  list-style: none;
-  top: 25px;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
   max-height: ${(props) => (props.show ? "none" : "0")};
-  padding: 0;
-  border-radius: 20px;
-  background-color: var(--white-color);
-  color: var(--black-color);
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 `;
-const Option = styled.li`
-padding:5px;
-margin-left:auto;
-margin-right:auto;
-transition: background-color 0.2s ease-in;
-&:hover {
-  cursor:pointer;
-  background-color: var(--hovering-color);
-  color:var(--white-color);
-}
-`;
+
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
 
@@ -210,24 +157,26 @@ export default function Signup() {
                                 onChange={(e) => { setEmail(e.target.value) }}
                             />
                             <p>@</p>
-                            <SelectBox
+                            <div
                                 ref={selectBoxRef}
-                                className={`${isShowOptions ? 'active' : ''}`}
+                                className={`${isShowOptions ? 'select-box active' : 'select-box'}`}
                                 onClick={() => setShowOptions((prev) => !prev)}>
                                 <label>{select}</label>
-                                <SelectOptions show={isShowOptions}>
+                                <SelectOptions 
+                                className="select-option"
+                                show={isShowOptions}>
                                     {emailMenus.map((email, i) => (
-                                        <Option
+                                        <li
+                                        className="option"
                                             onClick={(e) => handleOnChangeSelectValue(e)}
                                             key={email.key}
                                             value={email.value}>
                                             {email.value}
-                                        </Option>
+                                        </li>
                                     ))}
                                 </SelectOptions>
-                            </SelectBox>
+                            </div>
                         </Flex>
-
                         {
                             errorMessage.email && <h3 className="white-wrap">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
                         }
@@ -252,7 +201,7 @@ export default function Signup() {
                         {
                             DuplicateCheck === true && <h3 className="white-wrap">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
                         }
-                        <HandleButton onClick={handleOpenClose}>회원가입</HandleButton>
+                        <button className="handle-button" onClick={handleOpenClose}>회원가입</button>
 
                     </div>
                 </div>

@@ -252,7 +252,18 @@
     background-color: var(--white-color);
     color: var(--hovering-color);
 }
-
+.handle-button{
+    border-radius: 15px;
+    border: none;
+    margin-top: 10%;
+    padding: 15px;
+    color: var(--button-color);
+    background-color: var(--grey-color);
+    &:hover {
+        cursor: pointer;
+        background-color: #c4c4c4;
+    }
+}
 @media screen and (max-width : 768px) {
     
     .mypage-menubar {
