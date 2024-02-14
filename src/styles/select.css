@@ -1,13 +1,15 @@
 .select-box {
     position: relative;
     top: -8px;
-    width: 100%;
     padding: 8px;
-    border-radius: 5px;
     align-self: center;
-    border: 1px solid var(--black-color);
     cursor: pointer;
+}
 
+.email-style {
+    border: 1px solid var(--black-color);
+    width: 100%;
+    border-radius: 5px;
     &::before {
         content: "⌵";
         position: absolute;
@@ -25,7 +27,7 @@
     left: 0;
     width: 100%;
     overflow: hidden;
-    padding: 0;
+    padding: 0px;
     border-radius: 20px;
     background-color: var(--white-color);
     color: var(--black-color);
@@ -42,5 +44,18 @@
         cursor: pointer;
         background-color: var(--hovering-color);
         color: var(--white-color);
+    }
+}
+
+.level-style {
+    margin:auto;
+    margin-bottom: 5px;
+    width: 100px;
+    border: 1px solid var(--grey-color);
+    border-radius: 20px;
+
+    &:hover {
+        background-color: var(--white-color);
+        color: var(--hovering-color);
     }
 }

@@ -91,9 +91,7 @@ export default function PaidList() {
         }
 
     }
-    if (loading) return (<div className="loading">
-    <img src={Spinner} alt="로딩" width="100px" />
-    </div>);
+   
     return (
         <div>
             {
