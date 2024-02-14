@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
@@ -19,9 +19,53 @@ const HandleButton = styled.button`
 `;
 /**이메일 스타일 */
 const Flex = styled.div`
-    display:inline-flex;
-    width:100%;
+  display: inline-flex;
+  width: 100%;
+`;
 
+const SelectBox = styled.div`
+  position: relative;
+  top:-8px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  align-self: center;
+  border:1px solid var(--black-color);
+  cursor: pointer;
+  &::before {
+    content: "⌵";
+    position: absolute;
+    top: 1px;
+    right: 8px;
+    color: var(--hovering-color);
+    font-size: 20px;
+  }
+`;
+const SelectOptions = styled.ul`
+  position: absolute;
+  list-style: none;
+  top: 25px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  max-height: ${(props) => (props.show ? "none" : "0")};
+  padding: 0;
+  border-radius: 5px;
+  background-color: var(--background-color);
+  color: var(--black-color);
+`;
+const Option = styled.li`
+  font-size: 14px;
+  padding: 6px 8px;
+  transition: background-color 0.2s ease-in;
+  border-bottom:1px dashed var(--hovering-color);
+  &:last-child{
+    border-bottom: 0 none;
+  }
+  &:hover {
+    background-color: var(--white-color);
+    color:var(--hovering-color);
+  }
 `;
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
@@ -41,6 +85,26 @@ export default function Signup() {
     const [disabled, setDisabled] = useState(true); // 버튼의 초기 상태는 비활성화(disabled)로 설정합니다.
     const [DuplicateCheck, setDuplicateCheck] = useState(false);
 
+    /** 셀렉트 전용 */
+    const [isShowOptions, setShowOptions] = useState(false);
+    const selectBoxRef = useRef(null);
+    const handleOnChangeSelectValue = (e) => {
+        setSelect(e.target.getAttribute("value"));
+    };
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
+                setShowOptions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, []);
+
+    /** 모달 창 뜨기전에 검사 */
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
         const errors = {
@@ -113,82 +177,87 @@ export default function Signup() {
         }
     }
     return (
-        <div className="container">
+        <div>
             {
                 open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
             <div className='background' />
-                <div className='backBox'>
-                    <div className='innerBox'>
-                        <h3 className='componentTitle'>회원가입</h3>
-                        <div className="subBox">
-                            <p>이름</p>
-                            <input
-                                placeholder="이름"
-                                onChange={(e) => { setName(e.target.value) }}
-                                autoFocus
-                            />
-                            {
-                                errorMessage.name && <h3 className="white-wrap">이름은 2~5자 이내여야합니다. </h3>
-                            }
+            <div className='backBox'>
+                <div className='innerBox'>
+                    <h3 className='componentTitle'>회원가입</h3>
+                    <div className="subBox">
+                        <p>이름</p>
+                        <input
+                            placeholder="이름"
+                            onChange={(e) => { setName(e.target.value) }}
+                            autoFocus
+                        />
+                        {
+                            errorMessage.name && <h3 className="white-wrap">이름은 2~5자 이내여야합니다. </h3>
+                        }
 
-
-                            <p>닉네임</p>
+                        <p>닉네임</p>
+                        <input
+                            placeholder="닉네임"
+                            onChange={(e) => { setNickname(e.target.value) }}
+                        />
+                        {
+                            errorMessage.nickname && <h3 className="white-wrap">닉네임은 2~5자 이내여야합니다. </h3>
+                        }
+                        <p>이메일</p>
+                        <Flex>
                             <input
-                                placeholder="닉네임"
-                                onChange={(e) => { setNickname(e.target.value) }}
+                                placeholder='이메일'
+                                onChange={(e) => { setEmail(e.target.value) }}
                             />
-                            {
-                                errorMessage.nickname && <h3 className="white-wrap">닉네임은 2~5자 이내여야합니다. </h3>
-                            }
-                            <p>이메일</p>
-                            <Flex>
-                                <input
-                                    placeholder='이메일'
-                                    onChange={(e) => { setEmail(e.target.value) }}
-                                />
-                                <p>@</p>
-                                <select
-                                    value={select}
-                                    onChange={(e) => { setSelect(e.target.value) }}
-                                >
+                            <p>@</p>
+                            <SelectBox
+                                ref={selectBoxRef}
+                                className={`${isShowOptions ? 'active' : ''}`}
+                                onClick={() => setShowOptions((prev) => !prev)}>
+                                <label>{select}</label>
+                                <SelectOptions show={isShowOptions}>
                                     {emailMenus.map((email, i) => (
-                                        <option key={i} value={email.value}>
+                                        <Option
+                                            onClick={(e) => handleOnChangeSelectValue(e)}
+                                            key={email.key}
+                                            value={email.value}>
                                             {email.value}
-                                        </option>
+                                        </Option>
                                     ))}
-                                </select>
-                            </Flex>
+                                </SelectOptions>
+                            </SelectBox>
+                        </Flex>
 
-                            {
-                                errorMessage.email && <h3 className="white-wrap">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
-                            }
-                            <p>비밀번호</p>
-                            <input
-                                placeholder="비밀번호"
-                                type="password"
-                                onChange={(e) => { setPassword(e.target.value) }}
-                            />
-                            {
-                                errorMessage.password && <h3 className="white-wrap">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
-                            }
-                            <p>비밀번호 확인</p>
-                            <input
-                                placeholder="비밀번호 확인"
-                                type="password"
-                                onChange={(e) => { setConfirmPassword(e.target.value) }}
-                            />
-                            {
-                                errorMessage.confirmPassword && <p className="white-wrap">비밀번호 확인해주세요.</p>
-                            }
-                            {
-                                DuplicateCheck === true && <h3 className="white-wrap">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
-                            }
-                            <HandleButton onClick={handleOpenClose}>회원가입</HandleButton>
+                        {
+                            errorMessage.email && <h3 className="white-wrap">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
+                        }
+                        <p>비밀번호</p>
+                        <input
+                            placeholder="비밀번호"
+                            type="password"
+                            onChange={(e) => { setPassword(e.target.value) }}
+                        />
+                        {
+                            errorMessage.password && <h3 className="white-wrap">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
+                        }
+                        <p>비밀번호 확인</p>
+                        <input
+                            placeholder="비밀번호 확인"
+                            type="password"
+                            onChange={(e) => { setConfirmPassword(e.target.value) }}
+                        />
+                        {
+                            errorMessage.confirmPassword && <p className="white-wrap">비밀번호 확인해주세요.</p>
+                        }
+                        {
+                            DuplicateCheck === true && <h3 className="white-wrap">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
+                        }
+                        <HandleButton onClick={handleOpenClose}>회원가입</HandleButton>
 
-                        </div>
                     </div>
                 </div>
+            </div>
         </div>
     )
 }
