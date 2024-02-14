@@ -87,7 +87,6 @@ export default function Datepicker({ depTime, handleDateChange }) {
                         </div>
                         <button
                            className="doButton"
-                         
                             onClick={increaseMonth}
                             disabled={nextMonthButtonDisabled}>
                             <IoArrowRedoSharp

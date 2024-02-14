@@ -1,10 +1,11 @@
 .loading {
-    display: flex;
-    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     align-items: center;
-    height: 680px;
-}
-
+    justify-content: center;
+  }
 .black-wrap {
     width: 100%;
     height: 100%;
@@ -48,9 +49,14 @@
 
 /** 배경색 */
 .background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-color: var(--background-color);
-}
-
+    z-index: -1;
+  }
 /** 배경안에 컨테이너*/
 .backBox {
     display: block;
@@ -66,10 +72,20 @@
 
 /** 배경안에 컨테이너 다른 컨테이너*/
 .backBox-100 {
-    width: 85%;
+    width: 100%;  /* 초기에는 너비를 100%로 설정합니다. */
     height: 100vh;
     float: right;
     background: var(--white-color);
+    animation: widthAnimation 0.5s forwards;  /* 애니메이션 적용 및 지속 시간 설정 */
+}
+
+@keyframes widthAnimation {
+    0% {
+        width: 100%;  /* 시작 시 너비를 100%로 설정합니다. */
+    }
+    100% {
+        width: 85%;  /* 최종 너비를 85%로 설정합니다. */
+    }
 }
 
 /* 안에 있는 박스컨테이너*/
@@ -181,12 +197,20 @@
 .mypage-menubar {
     position: fixed;
     width: 15%;
+    height:100vh;
     top: 73px;
-    left: 0;
+    left: -100%;  /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
     background-color: var(--background-color);
-
+    animation: slideIn 0.5s forwards;  /* 애니메이션 적용 및 지속 시간 설정 */
 }
-
+@keyframes slideIn {
+    0% {
+        left: -100%;  /* 시작 위치 */
+    }
+    100% {
+        left: 0;  /* 최종 위치 */
+    }
+}
 .p {
     display: flex;
     flex-direction: column;
@@ -230,6 +254,7 @@
 }
 
 @media screen and (max-width : 768px) {
+    
     .mypage-menubar {
         width: 100%;
         height: 60px;
@@ -244,8 +269,15 @@
     }
 
     .backBox-100 {
-        width: 100%;
-        padding-top: 0px;
+        width: 100%;  /* 초기에는 너비를 100%로 설정합니다. */
+        animation: widthAnimation 0.5s forwards;  /* 애니메이션 적용 및 지속 시간 설정 */
+    }
+    
+    @keyframes widthAnimation {
+      
+        100% {
+            width: 100%;  /* 최종 너비를 85%로 설정합니다. */
+        }
     }
 
     .componentTitle {

@@ -117,7 +117,7 @@ export default function Signup() {
             {
                 open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
-            <div className='background'>
+            <div className='background' />
                 <div className='backBox'>
                     <div className='innerBox'>
                         <h3 className='componentTitle'>회원가입</h3>
@@ -189,7 +189,6 @@ export default function Signup() {
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     )
 }
