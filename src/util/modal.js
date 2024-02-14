@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => {
     const navigate = useNavigate();
     
+    useEffect(()=>{
+        document.body.style.cssText=`overflow:hidden`;
+    },[])
     return (<div>
         <div className="black-wrap" onClick={handleOpenClose} />
         <div className="white-wrap">
