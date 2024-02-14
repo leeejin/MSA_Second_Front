@@ -50,22 +50,21 @@ const SelectOptions = styled.ul`
   overflow: hidden;
   max-height: ${(props) => (props.show ? "none" : "0")};
   padding: 0;
-  border-radius: 5px;
-  background-color: var(--background-color);
+  border-radius: 20px;
+  background-color: var(--white-color);
   color: var(--black-color);
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 `;
 const Option = styled.li`
-  font-size: 14px;
-  padding: 6px 8px;
-  transition: background-color 0.2s ease-in;
-  border-bottom:1px dashed var(--hovering-color);
-  &:last-child{
-    border-bottom: 0 none;
-  }
-  &:hover {
-    background-color: var(--white-color);
-    color:var(--hovering-color);
-  }
+padding:5px;
+margin-left:auto;
+margin-right:auto;
+transition: background-color 0.2s ease-in;
+&:hover {
+  cursor:pointer;
+  background-color: var(--hovering-color);
+  color:var(--white-color);
+}
 `;
 export default function Signup() {
     const emailMenus = Constant.getEmailMenus();
