@@ -27,7 +27,6 @@ export default function MyPage() {
 
     return (
         <div>
-
             <div className="mypage-menubar">
                 <NavLink className={subBoxVisible.reserveList ? "p sub-menu-selected" : "p"} onClick={() => handleLocation('reserveList')}>예약목록</NavLink>
                 <NavLink className={subBoxVisible.payList ? "p sub-menu-selected" : "p"} onClick={() => handleLocation('payList')}>결제목록</NavLink>

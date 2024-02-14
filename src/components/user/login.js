@@ -51,11 +51,24 @@ export default function Login() {
 
             }).catch((error) => {
                 console.log(error);
+                setErrorMessage({ email: errors.emailError, password: errors.passwordError });
                 setLoginError(true);// 로그인 실패 시 loginError 상태를 true로 설정
-                setErrorMessage({ email: errors.emailError, password: errors.passwordError })
+
+                setTimeout(() => {
+                    setLoginError(false);// 로그인 실패 시 loginError 상태를 true로 설정
+                    setErrorMessage({ email: false, password: false });
+                }, 1000);
+
             });
         } else {
-            setErrorMessage({ email: errors.emailError, password: errors.passwordError })
+            if (errors.emailError) {
+                setErrorMessage({ email: errors.emailError });
+            } else if (errors.passwordError) {
+                setErrorMessage({ password: errors.passwordError });
+            }
+            setTimeout(() => {
+                setErrorMessage({ email: false, password: false });
+            }, 1000);
         }
     }
 
@@ -79,9 +92,10 @@ export default function Login() {
                     <input
                         type="email"
                         onChange={(e) => { setEmail(e.target.value) }}
+                        autoFocus
                     />
                     {
-                        errorMessage.email && <p className="message danger-color">아이디를 제대로 입력해주세요.</p>
+                        errorMessage.email && <h3 className="white-wrap">아이디를 제대로 입력해주세요.</h3>
                     }
                     <p>비밀번호</p>
                     <input
@@ -89,10 +103,12 @@ export default function Login() {
                         onChange={(e) => { setPassword(e.target.value) }}
                     />
                     {
-                        errorMessage.password && <p className="message danger-color">비밀번호를 제대로 입력해주세요.</p>
+                        errorMessage.password && <h3 className="white-wrap">비밀번호를 제대로 입력해주세요.</h3>
                     }
 
-                    {loginError && <p className="message danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                    {
+                        loginError && <h3 className="white-wrap">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
+                    }
 
                     <SubButton onClick={() => { navigate('/Signup') }}>
                         회원가입 하기
