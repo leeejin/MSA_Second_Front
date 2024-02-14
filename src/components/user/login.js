@@ -83,40 +83,45 @@ export default function Login() {
     }
 
     return (
-        <div className='backBox'>
+        <>
+            <div className="background" />
+            <div className='backBox'>
 
-            <div className='innerBox'>
-                <h3 className='componentTitle'>로그인</h3>
-                <div className="subBox">
-                    <p>아이디</p>
-                    <input
-                        type="email"
-                        onChange={(e) => { setEmail(e.target.value) }}
-                        autoFocus
-                    />
-                    {
-                        errorMessage.email && <h3 className="white-wrap">아이디를 제대로 입력해주세요.</h3>
-                    }
-                    <p>비밀번호</p>
-                    <input
-                        type="password"
-                        onChange={(e) => { setPassword(e.target.value) }}
-                    />
-                    {
-                        errorMessage.password && <h3 className="white-wrap">비밀번호를 제대로 입력해주세요.</h3>
-                    }
+                <div className='innerBox'>
+                    <h3 className='componentTitle'>로그인</h3>
+                    <div className="subBox">
+                        <p>아이디</p>
+                        <input
+                            type="email"
+                            onChange={(e) => { setEmail(e.target.value) }}
+                            autoFocus
+                        />
+                        {
+                            errorMessage.email && <h3 className="white-wrap">아이디를 제대로 입력해주세요.</h3>
+                        }
+                        <p>비밀번호</p>
+                        <input
+                            type="password"
+                            onChange={(e) => { setPassword(e.target.value) }}
+                        />
+                        {
+                            errorMessage.password && <h3 className="white-wrap">비밀번호를 제대로 입력해주세요.</h3>
+                        }
 
-                    {
-                        loginError && <h3 className="white-wrap">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
-                    }
+                        {
+                            loginError && <h3 className="white-wrap">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
+                        }
 
-                    <SubButton onClick={() => { navigate('/Signup') }}>
-                        회원가입 하기
-                    </SubButton>
+                        <SubButton onClick={() => { navigate('/Signup') }}>
+                            회원가입 하기
+                        </SubButton>
 
-                    <HandleButton onClick={(e) => submit(e)}>로그인</HandleButton>
+                        <HandleButton onClick={(e) => submit(e)}>로그인</HandleButton>
+                    </div>
                 </div>
             </div>
-        </div>
+            
+        </>
+
     );
 }
