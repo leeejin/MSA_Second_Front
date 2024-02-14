@@ -42,6 +42,8 @@ export default function ReservedList() {
     useEffect(() => {
         const { IMP } = window;
         IMP.init('imp85467664');
+
+    
     }, []);
 
     useEffect(() => {
@@ -56,6 +58,7 @@ export default function ReservedList() {
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setOpen(prev => !prev); //예약확인 모달창 띄움
+        
         setSelectedData(data); //선택한 데이터의 객체 저장
     }, []);
     /** 페이지네이션 함수 */
