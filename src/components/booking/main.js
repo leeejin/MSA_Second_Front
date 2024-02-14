@@ -113,12 +113,12 @@ export default function Main() {
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
             const response = await callPostAirInfoAPI();
             setContents(response);
-            // navigate(`/Reserve`, {
-            //     state: {
-            //         contents: response, // 업데이트된 response를 직접 전달
-            //         seatLevel: seatLevel
-            //     }
-            // });
+            navigate(`/Reserve`, {
+                state: {
+                    contents: response, // 업데이트된 response를 직접 전달
+                    seatLevel: seatLevel
+                }
+            });
 
         } else {
             if (errors.locationError) {
