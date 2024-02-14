@@ -24,14 +24,6 @@ export default function Datepicker({ depTime, handleDateChange }) {
         '12월',
     ];
 
-    const decreaseMonth = () => {
-        // 이전 달로 이동하는 로직 작성
-    };
-
-    const increaseMonth = () => {
-        // 다음 달로 이동하는 로직 작성
-    };
-
     return (
         <div style={{ display: 'flex' }}>
             <DatePicker
@@ -81,18 +73,28 @@ export default function Datepicker({ depTime, handleDateChange }) {
                     nextMonthButtonDisabled,
                 }) => (
                     <div className="customHeaderContainer">
-                        <IoArrowUndoSharp 
-                            className="doButton"
+                        <button
+                          className="doButton"
+                           
                             onClick={decreaseMonth}
-                            disabled={prevMonthButtonDisabled} />
+                            disabled={prevMonthButtonDisabled}>
+                            <IoArrowUndoSharp
+                                className="doButton"
+                            />
+                        </button>
                         <div className="year-month">
                             <h3>{YEARS}년 {MONTHS[date.getMonth()]}</h3>
                         </div>
-
-                        <IoArrowRedoSharp 
-                            className="doButton"
+                        <button
+                           className="doButton"
+                         
                             onClick={increaseMonth}
-                            disabled={nextMonthButtonDisabled} />
+                            disabled={nextMonthButtonDisabled}>
+                            <IoArrowRedoSharp
+                             
+                            />
+                        </button>
+
                     </div>
                 )}
             />

@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => {
     const navigate = useNavigate();
     
-    useEffect(()=>{
-        document.body.style.cssText=`overflow:hidden`;
-    },[])
+    useEffect(() => {
+        document.body.style= `overflow: hidden`;
+        return () => document.body.style = `overflow: auto`
+      }, [])
+      
     return (<div>
         <div className="black-wrap" onClick={handleOpenClose} />
         <div className="white-wrap">

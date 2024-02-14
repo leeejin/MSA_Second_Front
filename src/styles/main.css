@@ -53,9 +53,9 @@
 
 /** 배경안에 컨테이너*/
 .backBox {
-    display:block;
+    display: block;
     max-width: 450px;
-    height:100vh;
+    height: 100vh;
     margin: auto;
     background-color: var(--white-color);
 }
@@ -78,6 +78,7 @@
     background: var(--white-color);
     margin: auto;
     overflow: hidden;
+
     .subBox {
         margin: auto;
         overflow: hidden;
@@ -85,7 +86,7 @@
         margin-bottom: 10px;
 
     }
-    
+
     input,
     select,
     button {
@@ -94,9 +95,11 @@
     }
 }
 
+/** 데이터 피커나 다른 prev,next 버튼 쓸때 사용하는 스타일 */
 .doButton {
     font-size: 20px;
-
+    border: none;
+    background: none;
     &:hover {
         cursor: pointer;
     }
@@ -210,7 +213,8 @@
     border: none;
     font-size: 1.4rem;
     border-radius: 20px;
-    &:hover{
+
+    &:hover {
         cursor: pointer;
     }
 }
