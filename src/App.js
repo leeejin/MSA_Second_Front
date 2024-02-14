@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import NonPage from './pages/nonPage';
+import Spinner from "../src/styles/image/loading.gif"
 const Home = React.lazy(() => import('./pages/main_page')); //로딩중이 끝나면 해당 경로로 날려버림
 const Reserve = React.lazy(() => import('./pages/reserve_page')); //로딩중이 끝나면 해당 경로로 날려버림
 const CompleteReserve = React.lazy(() => import('./pages/completeReserve_page')); //로딩중이 끝나면 해당 경로로 날려버림
@@ -10,8 +11,6 @@ const Login = React.lazy(() => import('./pages/login_page')); //로딩중이 끝
 const Signup = React.lazy(() => import('./pages/signup_page')); //로딩중이 끝나면 해당 경로로 날려버림
 
 const MyPage = React.lazy(() => import('./pages/mypage_page')); //로딩중이 끝나면 해당 경로로 날려버림
-const ReservedList = React.lazy(() => import('./pages/reservedlist_page')); //로딩중이 끝나면 해당 경로로 날려버림
-const PaidList = React.lazy(() => import('./pages/paidlist_page')); //로딩중이 끝나면 해당 경로로 날려버림
 
 
 const ConditionRoute = ({ element }) => {
@@ -27,8 +26,9 @@ const ConditionRoute = ({ element }) => {
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="loading">
-        <p>로딩중</p>
+      <Suspense fallback={
+      <div className="loading">
+      <img src={Spinner} alt="로딩" width="100px" />
       </div>}>
         <Routes>
           <Route path="/" element={<Home />} />

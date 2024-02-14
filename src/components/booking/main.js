@@ -1,10 +1,34 @@
-import React, { useState, useEffect, useCallback, forwardRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
 import axios from 'axios';
+import { TbArmchair2 } from "react-icons/tb";
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
-import AirLine from '../../util/json/airline-list';
 import Datepicker from '../../util/datepicker';
+const SelectLocation = styled.div`
+width: 100px;
+border:none;
+`;
+const SelectBox = styled.div`
+width: 200px;
+  border-bottom:2px solid var(--black-color);
+`;
+const IconWrapper = styled.div`
+    display: inline-block;
+`;
+const LocationLabel = styled.label`
+    font-size:1.6rem;
+`;
+const Label = styled.label`
+    padding-left:30px;
+`;
+const OptionLabel = styled.h3`
+    margin-left:10px
+`;
+const SelectOptions = styled.ul`
+  max-height: ${(props) => (props.show ? "none" : "0")};
+`;
 
 /** 메인페이지 - 여기서 예약조회 하기 위한 검색 */
 export default function Main() {
@@ -13,72 +37,67 @@ export default function Main() {
 
     const level = Constant.getSeatLevel(); // 좌석등급
     const airport = AirPort.response.body.items.item; // 공항 목록
+    const [dep, setDep] = useState( // 도착지 상태 저장할 변수
+        AirPort.response.body.items.item[0].airportNm
+    );
+    const [arr, setArr] = useState( // 도착지 상태 저장할 변수
+        AirPort.response.body.items.item[1].airportNm
+    );
 
-    const [airports, setAirports] = useState({ //출발지, 도착지 상태 저장할 변수
-        dep: { //출발
-            id: AirPort.response.body.items.item[0].airportId,
-            name: AirPort.response.body.items.item[0].airportNm
-        },
-        arr: { //도착
-            id: AirPort.response.body.items.item[1].airportId,
-            name: AirPort.response.body.items.item[1].airportNm
-        }
-    });
     const [seatLevel, setSeatLevel] = useState(level[0].value); //좌석등급
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [contents, setContents] = useState([]); //백에서 받은 출발지,도착지,출발날짜를 포함한 다른 데이터를 가진 객체 배열을 여기다가 저장
-    const [errorMessages, setErrorMessages] = useState({ locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
+    const [errorMessage, setErrorMessage] = useState({ locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
 
-    /**공항 핸들러 함수 */
-    const handleAirportChange = (type) => (e) => {
-        const selectedAirportId = e.target.value;
-        const selectedAirport = getSelectedAirport(selectedAirportId);
-        setAirports(prev => ({
-            ...prev,
-            [type]: { id: selectedAirportId, name: selectedAirport.airportNm }
-        }));
+    /** 셀렉트 전용 */
+    const [isShowDepOptions, setShowDepOptions] = useState(false);
+    const [isShowArrOptions, setShowArrOptions] = useState(false);
+    const [isShowOptions, setShowOptions] = useState(false);
+    const selectBoxRef = useRef([null, null, null]);
+    const handleOnChangeSelectValue = (e) => {
+        setSeatLevel(e.target.getAttribute("value"));
     };
-    /**공항 선택 컴포넌트 */
-    const AirportSelect = ({ value, onChange, airport }) => (
-        <select value={value} onChange={onChange}>
-            {
-                airport.map((ap) => (
-                    <option key={ap.airportId} value={ap.airportId}>
-                        {ap.airportNm}
-                    </option>
-                ))
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (selectBoxRef.current[1] && !selectBoxRef.current[1].contains(event.target)) {
+                setShowDepOptions(false);
             }
-        </select>
-    );
-    /** 해당 ID를 가진 공항 객체를 찾음 */
-    const getSelectedAirport = (selectedAirportId) => {
+            if (selectBoxRef.current[2] && !selectBoxRef.current[2].contains(event.target)) {
+                setShowArrOptions(false);
+            }
+            if (selectBoxRef.current[3] && !selectBoxRef.current[3].contains(event.target)) {
+                setShowOptions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutsideClick);
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, []);
+
+    const handleDepChange = (e) => {
+        setDep(e.target.getAttribute("value"));
+    }
+    const handleArrChange = (e) => {
+        setArr(e.target.getAttribute("value"));
+    }
+
+    /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
+    const getSelectedAirport = (selectedAirportNm) => {
         const selectedAirport = AirPort.response.body.items.item.find(
-            (airport) => airport.airportId === selectedAirportId
+            (airport) => airport.airportNm === selectedAirportNm
         );
-        return selectedAirport;
+        if (selectedAirport) {
+            return selectedAirport.airportId;
+        }
     }
     /**출발지와 도착지 리버스 핸들러 */
     const handleAirPortReverse = () => {
-        setAirports(prev => ({
-            dep: prev.arr,
-            arr: prev.dep
-        }));
+        setArr(dep);
+        setDep(arr);
     }
-    /** 좌석 핸들러 함수 */
-    const handleSeatChange = (e) => {
-        setSeatLevel(e.target.value);
-    }
-    /** 좌석 선택 컴포넌트 */
-    const SeatLevelSelect = ({ value, onChange, level }) => (
-        <select value={value} onChange={onChange} >
-            {
-                level.map((level) =>
-                    <option key={level.key} value={level.value} >
-                        {level.name}
-                    </option>)
-            }
-        </select>
-    );
+
     /** 출발 날짜 핸들러 */
     const handleDateChange = (date) => {
         setDepTime(date);
@@ -87,21 +106,29 @@ export default function Main() {
     const handlePay = async () => {
         /** 에러모음 */
         let errors = {
-            locationError: airports.dep.id === airports.arr.id, //출발지와 도착지가 똑같을 때
+            locationError: dep === arr, //출발지와 도착지가 똑같을 때
             dateError: depTime === null || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         }
         if (!errors.locationError && !errors.dateError) { //둘다 에러 아닐시
-            setErrorMessages({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
+            setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
             const response = await callPostAirInfoAPI();
             setContents(response);
-            navigate(`/Reserve`, {
-                state: {
-                    contents: response, // 업데이트된 response를 직접 전달
-                    seatLevel: seatLevel
-                }
-            });
+            // navigate(`/Reserve`, {
+            //     state: {
+            //         contents: response, // 업데이트된 response를 직접 전달
+            //         seatLevel: seatLevel
+            //     }
+            // });
+
         } else {
-            setErrorMessages(errors);
+            if (errors.locationError) {
+                setErrorMessage({ locationError: errors.locationError });
+            } else if (errors.dateError) {
+                setErrorMessage({ dateError: errors.dateError });
+            }
+            setTimeout(() => {
+                setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
+            }, 1000);
         }
     }
     /** 출발지,도착지,항공사,날짜가 바뀔때마다 API요청 */
@@ -109,10 +136,11 @@ export default function Main() {
 
         /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
         const formData = {
-            depAirport: airports.dep.id, //출발지
-            arrAirport: airports.arr.id, //도착지
+            depAirport: getSelectedAirport(dep), //출발지
+            arrAirport: getSelectedAirport(arr), //도착지
             depTime: depTime, //날짜
         };
+        console.log(formData);
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
             return [{
@@ -126,17 +154,6 @@ export default function Main() {
                 depAirportNm: "광주",
                 arrPlandTime: 202402151005,
                 depPlandTime: 202402150915,
-            }, {
-                id: 2,
-                economyCharge: 57900,
-                prestigeCharge: 82900,
-                vihicleId: "KE1603",
-                seatCapacity: null,
-                airlineNm: "대한항공",
-                arrAirportNm: "제주",
-                depAirportNm: "광주",
-                arrPlandTime: 202402151035,
-                depPlandTime: 202402150940,
             },
             ];
         }
@@ -145,48 +162,98 @@ export default function Main() {
         }
     }
     return (
-        <div >
-            <div>
+        <div>
+            <div className="background" style={{ height: '50%' }} />
+            <h3 className='componentTitle' />
             {
-                errorMessages.locationError && <div className="message danger-color">출발지와 도착지가 같습니다</div>
+                errorMessage.locationError && <h3 className="white-wrap">출발지와 도착지가 같습니다</h3>
             }
             {
-                errorMessages.dateError && <div className="message danger-color">날짜를 선택해주세요</div>
+                errorMessage.dateError && <h3 className="white-wrap">날짜를 선택해주세요</h3>
             }
             <div>
                 <div>
-                    <label>출발지</label>
-                    <AirportSelect
-                        value={airports.dep.id}
-                        onChange={handleAirportChange('dep')}
-                        airport={airport}
-                    />
+                    <p>출발지</p>
+                    <SelectLocation
+                        ref={el => selectBoxRef.current[1] = el}
+                        className={`${isShowDepOptions ? 'select-box active' : 'select-box'}`}
+                        onClick={() => setShowDepOptions((prev) => !prev)}>
+                        <LocationLabel>{dep}</LocationLabel>
+                        <SelectOptions
+                            className="select-option"
+                            show={isShowDepOptions}>
+                            {
+                                airport.map((ap) => (
+                                    <li
+                                        className="option"
+                                        onClick={(e) => handleDepChange(e)}
+                                        key={ap.airportId}
+                                        value={ap.airportNm}>
+                                        {ap.airportNm}
+                                    </li>
+                                ))
+                            }
+                        </SelectOptions>
+                    </SelectLocation>
                 </div>
-                <button className="reverseIcon" onClick={handleAirPortReverse}>~</button>
+                <button className="doButton" onClick={handleAirPortReverse}>~</button>
                 <div>
-                    <label>도착지</label>
-                    <AirportSelect
-                        value={airports.arr.id}
-                        onChange={handleAirportChange('arr')}
-                        airport={airport}
-                    />
+                    <p>도착지</p>
+                    <SelectLocation
+                        ref={el => selectBoxRef.current[2] = el}
+                        className={`${isShowArrOptions ? 'select-box active' : 'select-box'}`}
+                        onClick={() => setShowArrOptions((prev) => !prev)}>
+                        <LocationLabel>{arr}</LocationLabel>
+                        <SelectOptions
+                            className="select-option"
+                            show={isShowArrOptions}>
+                            {
+                                airport.map((ap) => (
+                                    <li
+                                        className="option"
+                                        onClick={(e) => handleArrChange(e)}
+                                        key={ap.airportId}
+                                        value={ap.airportNm}>
+                                        {ap.airportNm}
+                                    </li>
+                                ))
+                            }
+                        </SelectOptions>
+                    </SelectLocation>
                 </div>
                 <div>
-                    <label>좌석등급</label>
-                    <SeatLevelSelect
-                        value={seatLevel}
-                        onChange={(e) => handleSeatChange(e)}
-                        level={level}
-                    />
+                    <p>좌석등급</p>
+                    <SelectBox
+                        ref={el => selectBoxRef.current[3] = el}
+                        className={`${isShowOptions ? 'select-box active' : 'select-box'}`}
+                        onClick={() => setShowOptions((prev) => !prev)}>
+                        <IconWrapper>
+                            <TbArmchair2 />
+                            <Label>{seatLevel}</Label>
+                        </IconWrapper>
+                        <SelectOptions
+                            className="select-option"
+                            show={isShowOptions}>
+                            <OptionLabel>좌석 등급 선택</OptionLabel>
+                            {level.map((level) => (
+                                <li
+                                    className="option level-style"
+                                    onClick={(e) => handleOnChangeSelectValue(e)}
+                                    key={level.key}
+                                    value={level.value}>
+                                    {level.name}
+                                </li>
+                            ))}
+                        </SelectOptions>
+                    </SelectBox>
                 </div>
                 <div>
-                    <label>가는날</label>
+                    <p>가는날</p>
                     <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                 </div>
                 <button onClick={handlePay}>검색</button>
             </div>
-            </div>
-          
+
         </div>
     );
 }

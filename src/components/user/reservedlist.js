@@ -7,6 +7,7 @@ import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import styled from 'styled-components';
 import Pagination from '../../util/pagenation';
+import Spinner from '../../styles/image/loading.gif';
 /** 티켓테이블 디자인 */
 const TicketTable = styled.table`
     border-radius: 15px;
@@ -42,8 +43,6 @@ export default function ReservedList() {
     useEffect(() => {
         const { IMP } = window;
         IMP.init('imp85467664');
-
-    
     }, []);
 
     useEffect(() => {
@@ -170,7 +169,7 @@ export default function ReservedList() {
         }
 
     }
-    if (loading) return (<div className="loading"><p>로딩중</p></div>);
+   
     return (
         <div>
 
@@ -250,3 +249,4 @@ const ReservedListItem = ({ reservedlist, handlePay, handleOpenClose }) => {
 
     )
 }
+
