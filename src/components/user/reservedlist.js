@@ -115,7 +115,7 @@ export default function ReservedList() {
         const amount = reservedlist.price;
 
         // 사전 검증 로직 추가: 서버에 결제 예정 금액 등록 요청
-        await axios.post("http://localhost:8088/payments/prepare", {
+        await axios.post(Constant.serviceURL+`/payments/prepare`, {
             merchant_uid,
             amount
         });
@@ -138,7 +138,7 @@ export default function ReservedList() {
                     merchant_uid: rsp.merchant_uid,
                 }
                 try {
-                    const response = await axios.post("http://localhost:8088/payments/validate", formData, {
+                    const response = await axios.post(Constant.serviceURL+`/payments/validate`, formData, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
