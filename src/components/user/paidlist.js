@@ -19,24 +19,23 @@ export default function PaidList() {
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
-    const [loading, setLoading] = useState(true);
+    const [success, setSuccess] = useState({ cancel: false }); // 예약,결제 성공 메시지
     //페이지네이션
     const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
     const pageCountPerPage = 5; //보여줄 페이지 갯수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
+
     useEffect(() => {
-        setLoading(true);
         callGetPaidListAPI().then((response) => {
             setContents(response);
-            setLoading(false);
         }).catch((error) => {
             console.log("먼이유로 예약 목록 못받아옴");
         })
     }, [])
     /** 결제확인 함수 */
     const handleOpenClose = useCallback((data) => {
-        setOpen(prev => !prev); //예약확인 모달창 띄움
+        setOpen(prev => !prev); //결재취소 확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
 
     }, []);
@@ -50,11 +49,15 @@ export default function PaidList() {
     const handleSubmit = async (id) => {
         try {
             await callDeletePayListAPI(id);
-            alert('결제취소가 완료되었습니다.');
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             const updatedContents = await callGetPaidListAPI();
             setContents(updatedContents);
             setOpen(!open);
+
+            setSuccess(prev => ({ ...prev, cancel: !prev.cancel }));
+            setTimeout(() => {
+                setSuccess(prev => ({ ...prev, cancel: !prev.cancel }));
+            }, [1000])
         } catch (error) {
             console.log("예약 취소 중 오류 발생:", error);
             setOpen(!open);
@@ -91,9 +94,12 @@ export default function PaidList() {
         }
 
     }
-   
+
     return (
         <div>
+            {
+                success.cancel && <h3 className="white-wrap message">결제취소가 완료되었습니다!</h3>
+            }
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
@@ -143,7 +149,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>
-                    <th>출발 <SubThead>From</SubThead></th>
+                    <th >출발 <SubThead>From</SubThead></th>
                     <th />
                     <th>도착 <SubThead>To</SubThead></th>
                 </tr>

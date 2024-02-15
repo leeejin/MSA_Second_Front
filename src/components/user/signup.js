@@ -3,7 +3,20 @@ import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
+/** 메시지 박스 */
+const Message = styled.h3`
+    top: -100%;  /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
+    animation: slideIn 0.5s forwards;  /* 애니메이션 적용 및 지속 시간 설정 */
 
+@keyframes slideIn {
+    0% {
+        top: -100%;  /* 시작 위치 */
+    }
+    100% {
+        top: 10%;  /* 최종 위치 */
+    }
+}
+`;
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
@@ -139,7 +152,7 @@ export default function Signup() {
                             autoFocus
                         />
                         {
-                            errorMessage.name && <h3 className="white-wrap">이름은 2~5자 이내여야합니다. </h3>
+                            errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
                         }
 
                         <p>닉네임</p>
@@ -148,7 +161,7 @@ export default function Signup() {
                             onChange={(e) => { setNickname(e.target.value) }}
                         />
                         {
-                            errorMessage.nickname && <h3 className="white-wrap">닉네임은 2~5자 이내여야합니다. </h3>
+                            errorMessage.nickname && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
                         }
                         <p>이메일</p>
                         <Flex>
@@ -178,7 +191,7 @@ export default function Signup() {
                             </div>
                         </Flex>
                         {
-                            errorMessage.email && <h3 className="white-wrap">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
+                            errorMessage.email && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
                         }
                         <p>비밀번호</p>
                         <input
@@ -187,7 +200,7 @@ export default function Signup() {
                             onChange={(e) => { setPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.password && <h3 className="white-wrap">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
+                            errorMessage.password && <h3 className="white-wrap message">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
                         }
                         <p>비밀번호 확인</p>
                         <input
@@ -196,10 +209,10 @@ export default function Signup() {
                             onChange={(e) => { setConfirmPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.confirmPassword && <p className="white-wrap">비밀번호 확인해주세요.</p>
+                            errorMessage.confirmPassword && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
                         }
                         {
-                            DuplicateCheck === true && <h3 className="white-wrap">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
+                            DuplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
                         }
                         <button className="handle-button" onClick={handleOpenClose}>회원가입</button>
 
