@@ -24,13 +24,13 @@ export default function Signup() {
     const [info, setInfo] = useState({ //회원가입 정보 저장
         email: '',
         name: '',
-        nickname: '',
+
         password: '',
         confirmPassword: '',
     });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
 
-    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, }); //에러 메시지
+    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, password: false, confirmPassword: false, }); //에러 메시지
     const [DuplicateCheck, setDuplicateCheck] = useState(false);
 
     /** 셀렉트 전용 */
@@ -66,7 +66,6 @@ export default function Signup() {
         const errors = {
             emailError: !info.email.match(/^[a-zA-Z0-9]{4,12}$/),
             nameError: info.name.length < 2 || info.name.length > 5,
-            nicknameError: info.nickname.length < 2 || info.nickname.length > 5,
             passwordError: !info.password.match(/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/),
             confirmPasswordError: info.password !== info.confirmPassword
         };
@@ -78,8 +77,6 @@ export default function Signup() {
             //안되면 에러뜨게 함
             if (errors.nameError) {
                 setErrorMessage({ name: errors.nameError });
-            } else if (errors.nicknameError) {
-                setErrorMessage({ nickname: errors.nicknameError });
             } else if (errors.emailError) {
                 setErrorMessage({ email: errors.emailError });
             } else if (errors.passwordError) {
@@ -120,7 +117,7 @@ export default function Signup() {
         const formData = {
             username: info.email + '@' + select,
             name: info.name,
-            nickname: info.nickname,
+
             password: info.password
         };
         try {
@@ -144,9 +141,7 @@ export default function Signup() {
             {
                 errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
             }
-            {
-                errorMessage.nickname && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
-            }
+
             {
                 errorMessage.email && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
             }
@@ -170,12 +165,6 @@ export default function Signup() {
                             onChange={(e) => handleChangeInfo('name', e)}
                             autoFocus
                         />
-                        <p>닉네임</p>
-                        <input
-                            placeholder="닉네임"
-                            onChange={(e) => handleChangeInfo('nickname', e)}
-                        />
-
                         <p>이메일</p>
                         <Flex>
                             <input
