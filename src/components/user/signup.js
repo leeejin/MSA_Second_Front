@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 /**이메일 스타일 */
 const Flex = styled.div`
@@ -14,6 +15,7 @@ const SelectOptions = styled.ul`
 `;
 
 export default function Signup() {
+    const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
 
     const [open, setOpen] = useState(false);
@@ -93,9 +95,15 @@ export default function Signup() {
     }
     //API가기 전에 체크
     const handleSubmit = () => {
+        setSubOpen(true);
+    }
+
+    // 회원가입가기전에 체크 
+    const handleSignup = () => {
         callAddUserAPI().then((response) => { //백엔드로부터 무사히 response를 받았다면
             console.log('addUser', response);
-            setSubOpen(!subOpen) //회원가입성공하면 로그인페이지로 가게함 modal.js에 있음
+            setSubOpen(!subOpen) //회원가입성공하면 로그인페이지로 가게함 modal.js에 
+            navigate('/');
 
         }).catch(() => {
             setDuplicateCheck(true);
@@ -131,7 +139,7 @@ export default function Signup() {
     return (
         <div>
             {
-                open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
+                open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
             {
                 errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
