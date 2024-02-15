@@ -3,20 +3,7 @@ import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
 import axios from 'axios';
-/** 메시지 박스 */
-const Message = styled.h3`
-    top: -100%;  /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
-    animation: slideIn 0.5s forwards;  /* 애니메이션 적용 및 지속 시간 설정 */
 
-@keyframes slideIn {
-    0% {
-        top: -100%;  /* 시작 위치 */
-    }
-    100% {
-        top: 10%;  /* 최종 위치 */
-    }
-}
-`;
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
@@ -32,21 +19,22 @@ export default function Signup() {
     const [open, setOpen] = useState(false);
     const [subOpen, setSubOpen] = useState(false);
 
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [nickname, setNickname] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-
+    const [info, setInfo] = useState({ //회원가입 정보 저장
+        email: '',
+        name: '',
+        nickname: '',
+        password: '',
+        confirmPassword: '',
+    });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
 
-    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, });
-    const [disabled, setDisabled] = useState(true); // 버튼의 초기 상태는 비활성화(disabled)로 설정합니다.
+    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, }); //에러 메시지
     const [DuplicateCheck, setDuplicateCheck] = useState(false);
 
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
     const selectBoxRef = useRef(null);
+
     const handleOnChangeSelectValue = (e) => {
         setSelect(e.target.getAttribute("value"));
     };
@@ -63,23 +51,28 @@ export default function Signup() {
         };
     }, []);
 
+    /** Info 변화 */
+    const handleChangeInfo = (infoType, e) => {
+        setInfo((prev) => ({
+            ...prev,
+            [infoType]: e.target.value
+        }));
+    }
     /** 모달 창 뜨기전에 검사 */
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
         const errors = {
-            emailError: !email.match(/^[a-zA-Z0-9]{4,12}$/),
-            nameError: name.length < 2 || name.length > 5,
-            nicknameError: nickname.length < 2 || nickname.length > 5,
-            passwordError: !password.match(/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/),
-            confirmPasswordError: password !== confirmPassword
+            emailError: !info.email.match(/^[a-zA-Z0-9]{4,12}$/),
+            nameError: info.name.length < 2 || info.name.length > 5,
+            nicknameError: info.nickname.length < 2 || info.nickname.length > 5,
+            passwordError: !info.password.match(/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/),
+            confirmPasswordError: info.password !== info.confirmPassword
         };
 
         if (!errors.emailError && !errors.nameError && !errors.nicknameError && !errors.passwordError && !errors.confirmPasswordError) {
-            setDisabled(false); // 버튼을 활성화(disabled 해제)합니다.
             setOpen(!open); //모두 알맞는 형식을 지켰으면 회원가입 모달창 켜기
 
         } else {
-            setDisabled(true); // 버튼을 비활성화(disabled)합니다.
             //안되면 에러뜨게 함
             if (errors.nameError) {
                 setErrorMessage({ name: errors.nameError });
@@ -117,10 +110,10 @@ export default function Signup() {
     async function callAddUserAPI() {
         //회원가입할때 보낼 데이터
         const formData = {
-            username: email + '@' + select,
-            name: name,
-            nickname: nickname,
-            password: password
+            username: info.email + '@' + select,
+            name: info.name,
+            nickname: info.nickname,
+            password: info.password
         };
         try {
             const response = await axios.post(Constant.serviceURL + '/users/register', formData, { withCredentials: true });
@@ -140,6 +133,24 @@ export default function Signup() {
             {
                 open && <ModalComponent subOpen={subOpen} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
+            {
+                errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
+            }
+            {
+                errorMessage.nickname && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
+            }
+            {
+                errorMessage.email && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
+            }
+            {
+                errorMessage.password && <h3 className="white-wrap message">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
+            }
+            {
+                errorMessage.confirmPassword && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
+            }
+            {
+                DuplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
+            }
             <div className='background' />
             <div className='backBox'>
                 <div className='innerBox'>
@@ -148,26 +159,20 @@ export default function Signup() {
                         <p>이름</p>
                         <input
                             placeholder="이름"
-                            onChange={(e) => { setName(e.target.value) }}
+                            onChange={(e) => handleChangeInfo('name', e)}
                             autoFocus
                         />
-                        {
-                            errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
-                        }
-
                         <p>닉네임</p>
                         <input
                             placeholder="닉네임"
-                            onChange={(e) => { setNickname(e.target.value) }}
+                            onChange={(e) => handleChangeInfo('nickname', e)}
                         />
-                        {
-                            errorMessage.nickname && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
-                        }
+
                         <p>이메일</p>
                         <Flex>
                             <input
                                 placeholder='이메일'
-                                onChange={(e) => { setEmail(e.target.value) }}
+                                onChange={(e) => handleChangeInfo('email', e)}
                             />
                             <p>@</p>
                             <div
@@ -175,12 +180,12 @@ export default function Signup() {
                                 className={`${isShowOptions ? 'select-box email-style active' : 'select-box email-style'}`}
                                 onClick={() => setShowOptions((prev) => !prev)}>
                                 <label>{select}</label>
-                                <SelectOptions 
-                                className="select-option"
-                                show={isShowOptions}>
+                                <SelectOptions
+                                    className="select-option"
+                                    show={isShowOptions}>
                                     {emailMenus.map((email, i) => (
                                         <li
-                                        className="option"
+                                            className="option"
                                             onClick={(e) => handleOnChangeSelectValue(e)}
                                             key={email.key}
                                             value={email.value}>
@@ -190,31 +195,22 @@ export default function Signup() {
                                 </SelectOptions>
                             </div>
                         </Flex>
-                        {
-                            errorMessage.email && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
-                        }
+
                         <p>비밀번호</p>
                         <input
                             placeholder="비밀번호"
                             type="password"
-                            onChange={(e) => { setPassword(e.target.value) }}
+                            onChange={(e) => handleChangeInfo('password', e)}
                         />
-                        {
-                            errorMessage.password && <h3 className="white-wrap message">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
-                        }
+
                         <p>비밀번호 확인</p>
                         <input
                             placeholder="비밀번호 확인"
                             type="password"
-                            onChange={(e) => { setConfirmPassword(e.target.value) }}
+                            onChange={(e) => handleChangeInfo('confirmPassword', e)}
                         />
-                        {
-                            errorMessage.confirmPassword && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
-                        }
-                        {
-                            DuplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
-                        }
-                        <button className="handle-button" onClick={handleOpenClose}>회원가입</button>
+
+                        <button className="handle-button button-style" onClick={handleOpenClose}>회원가입</button>
 
                     </div>
                 </div>

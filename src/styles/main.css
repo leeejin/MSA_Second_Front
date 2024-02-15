@@ -32,21 +32,6 @@
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
 
-.grey-color {
-    color: var(--black-color);
-}
-
-.danger-color {
-    color: var(--danger-color);
-}
-
-.special-color {
-    color: var(--special-color);
-}
-
-.warning-color {
-    color: var(--warning-color);
-}
 
 /** 배경색 */
 .background {
@@ -149,6 +134,22 @@
         margin-bottom: 15px;
     }
 }
+.grey-color {
+    color: var(--black-color);
+}
+
+.danger-color {
+    color: var(--danger-color);
+}
+
+.special-color {
+    color: var(--special-color);
+}
+
+.warning-color {
+    color: var(--warning-color);
+}
+
 
 /* 버튼용으로 쓸거면 이 클래스 무조건 사용 */
 .btn {
@@ -185,17 +186,19 @@
     margin: 5px;
     margin-top: 20px;
     border: none;
+
+    text-decoration: none;
+    
+}
+.menu-item-style{
     background-color: var(--grey-color);
     color: var(--white-color);
-    text-decoration: none;
-
     &:hover {
         cursor: pointer;
         background-color: var(--hovering-color);
         color: var(--button-color);
     }
 }
-
 .box-container {
     display: block;
     padding: 5px;
@@ -287,10 +290,13 @@
 }
 
 .handle-button {
-    border-radius: 15px;
+    border-radius: 25px;
     border: none;
     margin-top: 10%;
     padding: 15px;
+}
+
+.button-style {
     color: var(--button-color);
     background-color: var(--grey-color);
 
