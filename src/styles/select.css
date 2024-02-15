@@ -55,6 +55,7 @@
     border-radius: 20px;
 
     &:hover {
+        border: 1px solid var(--hovering-color);
         background-color: var(--white-color);
         color: var(--hovering-color);
     }

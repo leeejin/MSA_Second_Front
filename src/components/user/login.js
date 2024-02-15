@@ -84,7 +84,7 @@ export default function Login() {
                             autoFocus
                         />
                         {
-                            errorMessage.email && <h3 className="white-wrap">아이디를 제대로 입력해주세요.</h3>
+                            errorMessage.email && <h3 className="white-wrap message">아이디를 제대로 입력해주세요.</h3>
                         }
                         <p>비밀번호</p>
                         <input
@@ -92,11 +92,11 @@ export default function Login() {
                             onChange={(e) => { setPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.password && <h3 className="white-wrap">비밀번호를 제대로 입력해주세요.</h3>
+                            errorMessage.password && <h3 className="white-wrap message">비밀번호를 제대로 입력해주세요.</h3>
                         }
 
                         {
-                            loginError && <h3 className="white-wrap">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
+                            loginError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
                         }
 
                         <SubButton onClick={() => { navigate('/Signup') }}>
@@ -107,7 +107,7 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-            
+
         </>
 
     );
