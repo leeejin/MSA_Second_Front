@@ -182,7 +182,7 @@ export default function ReservedList() {
                 open.cancel && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
             }
             {
-                open.pay && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseSecond} message={"결제 하시겠습니까?"} />
+                open.pay && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseSecond} message={"카카오페이로 결제 하시겠습니까?"} />
             }
             <div className="componentContent">
                 {
