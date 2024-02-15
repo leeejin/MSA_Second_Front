@@ -1,6 +1,13 @@
 import { React, Component } from "react";
-import {Pagination,Button} from '@mui/material';
+import styled from "styled-components";
 //< 1 2 3 4 > 와 같이 페이지 표시함
+
+const PageContainer=styled.div`
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    width:100%;
+`;
 export default class Pagenation extends Component {
     constructor(props) {
         super(props);
@@ -64,11 +71,11 @@ export default class Pagenation extends Component {
 
     render() {
         return (
-            <>
-                <Button onClick={this.leftPageClicked} style={{borderTopRightRadius:0,borderBottomRightRadius:0}} disabled={this.state.startPage === 1}>&lt;</Button>
+            <PageContainer>
+                <button className="doButton" onClick={this.leftPageClicked} style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={this.state.startPage === 1}>&lt;</button>
                 {this.pages.slice(this.state.startPage, this.state.endPage + 1).map((item, i) => <Numbering key={i} page={item} currentPage={this.state.currentPage} clickListener={(page) => this.pageNumberClicked(page)} />)}
-                <Button onClick={this.rightPageClicked} style={{borderTopLeftRadius:0,borderBottomLeftRadius:0}} disabled={this.state.endPage === this.maxPage}>&gt;</Button>
-            </>
+                <button className="doButton" onClick={this.rightPageClicked} style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }} disabled={this.state.endPage === this.maxPage}>&gt;</button>
+            </PageContainer>
         );
     }
 }
@@ -80,8 +87,8 @@ class Numbering extends Component {
 
     render() {
         return (
-            <button onClick={() => this.props.clickListener(this.props.page)} className={this.props.page == this.props.currentPage ?'pagination pagination-selected' :'pagination pagination-unselected'}>
-                <span style={{fontSize:'18px'}}>{this.props.page}</span>
+            <button onClick={() => this.props.clickListener(this.props.page)} className={this.props.page == this.props.currentPage ? 'pagination pagination-selected' : 'pagination pagination-unselected'}>
+                <span style={{ fontSize: '18px' }}>{this.props.page}</span>
             </button>
         );
     }

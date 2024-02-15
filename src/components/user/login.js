@@ -2,8 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import Constant from '../../util/constant_variables';
+import styled from "styled-components";
 import MyStorage from '../../util/redux_storage';
 import axios from 'axios';
+
+/* 회색 버튼 스타일*/
+const SubButton = styled.span`
+    float:right;
+    color: darkgrey;
+    &:hover {
+        cursor: pointer;
+    }
+`;
 
 export default function Login() {
     const navigate = useNavigate();
@@ -14,7 +24,6 @@ export default function Login() {
 
     const [errorMessage, setErrorMessage] = useState({ email: false, password: false });
     const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
-    console.log("변경")
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
@@ -29,18 +38,31 @@ export default function Login() {
 
             }).catch((error) => {
                 console.log(error);
+                setErrorMessage({ email: errors.emailError, password: errors.passwordError });
                 setLoginError(true);// 로그인 실패 시 loginError 상태를 true로 설정
-                setErrorMessage({ email: errors.emailError, password: errors.passwordError })
+
+                setTimeout(() => {
+                    setLoginError(false);// 로그인 실패 시 loginError 상태를 true로 설정
+                    setErrorMessage({ email: false, password: false });
+                }, 1000);
+
             });
         } else {
-            setErrorMessage({ email: errors.emailError, password: errors.passwordError })
+            if (errors.emailError) {
+                setErrorMessage({ email: errors.emailError });
+            } else if (errors.passwordError) {
+                setErrorMessage({ password: errors.passwordError });
+            }
+            setTimeout(() => {
+                setErrorMessage({ email: false, password: false });
+            }, 1000);
         }
     }
 
     async function callLoginAPI() {
         //백엔드로 보낼 로그인 데이터
         const formData = {
-            email: email,
+            username: email,
             password: password
         }
         const response = await axios.post(Constant.serviceURL + `/login`, formData, { withCredentials: true });
@@ -48,48 +70,45 @@ export default function Login() {
     }
 
     return (
-        <div className='background'>
+        <>
+            <div className="background" />
             <div className='backBox'>
+
                 <div className='innerBox'>
                     <h3 className='componentTitle'>로그인</h3>
-                    <div >
-                        <label>아이디</label>
+                    <div className="subBox">
+                        <p>아이디</p>
                         <input
                             type="email"
                             onChange={(e) => { setEmail(e.target.value) }}
+                            autoFocus
                         />
                         {
-                            errorMessage.email && <p className="danger-color">아이디를 제대로 입력해주세요.</p>
+                            errorMessage.email && <h3 className="white-wrap">아이디를 제대로 입력해주세요.</h3>
                         }
-                    </div>
-                    <div>
-                        <label>비밀번호</label>
+                        <p>비밀번호</p>
                         <input
                             type="password"
                             onChange={(e) => { setPassword(e.target.value) }}
                         />
                         {
-                            errorMessage.password && <p>비밀번호를 제대로 입력해주세요.</p>
+                            errorMessage.password && <h3 className="white-wrap">비밀번호를 제대로 입력해주세요.</h3>
                         }
 
-                        {loginError && <p className="danger-color">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</p>}
+                        {
+                            loginError && <h3 className="white-wrap">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
+                        }
 
-                    </div>
-                    <div>
-                        <span className="btn" onClick={() => { navigate('/Signup') }}>
+                        <SubButton onClick={() => { navigate('/Signup') }}>
                             회원가입 하기
-                        </span>
+                        </SubButton>
+
+                        <button className="handle-button" onClick={(e) => submit(e)}>로그인</button>
                     </div>
-
-                    <div>
-                        <button className="btn login-button" onClick={(e) => submit(e)}>로그인</button>
-                    </div>
-
-
                 </div>
             </div>
+            
+        </>
 
-
-        </div>
     );
 }

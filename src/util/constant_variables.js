@@ -15,9 +15,10 @@ export default class Constant {
     }
     static getSeatLevel() { //좌석등급
         return [
-            { key: 0, value: "이코노미", name: "이코노미" },
-            { key: 1, value: "프리스티지", name: "프리스티지" },
+            { key: 0, value: "일반석", name: "일반석" },
+            { key: 1, value: "프리스티지", name: "프리스티지석" },
 
         ];
     }
+
 }

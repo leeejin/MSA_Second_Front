@@ -3,12 +3,11 @@ body {
         border: none;
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
         .react-datepicker__header {
-            background-color: var(--background-color);
-            color: var(--white-color);
+            background-color: var(--white-color);
             border-bottom: none;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
-
+            padding:0;
             .react-datepicker__day-names {
                 display: flex;
                 justify-content: center;
@@ -16,9 +15,10 @@ body {
                 height: 40px;
 
                 .react-datepicker__day-name {
-                    color: var(--white-color);
+                    color: var(--darkgrey-color);
                 }
             }
+            
         }
     }
 }
@@ -49,7 +49,7 @@ body {
     padding: 0 12px 0 24px;
 
     .year-month {
-        color: var(--white-color);
+        color: var(--black-color);
         font-size: larger;
     }
 
@@ -76,5 +76,7 @@ body {
     &:hover {
         border-radius: 50%;
         background-color: rgba(var(--white-color), 0.08);
+
+        background-color: rgba(white, 0.08);
     }
 }
