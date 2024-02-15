@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";
-import { Link,NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,26 +55,26 @@ export default function Menubar() {
                     {
                         userId !== 0 ? <>
                             <NavLink
-                                    className="nav-item"
-                                    style={({ isActive }) => (isActive ? activeStyle : {})}
-                                    to={`/Mypage/${userId}`}
-                                >내정보</NavLink>
-                                <NavLink
-                                    className="nav-item"
-                                    style={({ isActive }) => (isActive ? activeStyle : {})}
-                                    onClick={() => {
-                                        handleOpenClose();
-                                    }}
-                                >로그아웃</NavLink>
+                                className="nav-item menu-item-style"
+                                style={({ isActive }) => (isActive ? activeStyle : {})}
+                                to={`/Mypage/${userId}`}
+                            >내정보</NavLink>
+                            <NavLink
+                                className="nav-item menu-item-style"
+                                style={({ isActive }) => (isActive ? activeStyle : {})}
+                                onClick={() => {
+                                    handleOpenClose();
+                                }}
+                            >로그아웃</NavLink>
                         </>
                             : <>
                                 <NavLink
-                                    className="nav-item"
+                                    className="nav-item menu-item-style"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Signup"}
                                 >회원가입</NavLink>
                                 <NavLink
-                                className="nav-item"
+                                    className="nav-item menu-item-style"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Login"}
                                 >로그인</NavLink>
