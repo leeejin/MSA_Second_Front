@@ -152,7 +152,6 @@ export default function Main() {
     return (
         <div>
             <div className="background" style={{ height: '50%' }} />
-            <h3 className='componentTitle' />
             {
                 errorMessage.locationError && <h3 className="white-wrap message">출발지와 도착지가 같습니다</h3>
             }

@@ -36,6 +36,15 @@ export default function ReservedList() {
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [success, setSuccess] = useState({ pay: false, cancel: false }); // 예약,결제 성공 메시지
+
+    /**결제 정보 */
+    const [payInfo, setPayInfo] = useState({
+        name: '',
+        email: '',
+        phone: '',
+
+    });
+    const [payModalVisible, setPayModalVisible] = useState(false); //결제 정보 모달창
     //페이지네이션
     const itemCountPerPage = 2;//한페이지당 보여줄 아이템 갯수
     const pageCountPerPage = 5;//보여줄 페이지 갯수
@@ -88,6 +97,17 @@ export default function ReservedList() {
             setOpen(prev => ({ ...prev, cancel: !prev.cancel }));
         }
     }
+    /** Info 변화 */
+    const handleChangeInfo = (infoType, e) => {
+        setPayInfo((prev) => ({
+            ...prev,
+            [infoType]: e.target.value
+        }));
+    }
+    const handleInfoModal = () => {
+        setOpen(false);
+        setPayModalVisible(!payModalVisible);
+    }
     /** 결제 함수 */
     const handlePay = async (reservedlist) => {
         const { IMP } = window;
@@ -106,11 +126,9 @@ export default function ReservedList() {
             merchant_uid,
             name: "항공예약",
             amount,
-            buyer_email: "",
-            buyer_name: "홍길동",
-            buyer_tel: "010-4242-4242",
-            buyer_addr: "서울특별시 강남구 신사동",
-            buyer_postcode: "01181"
+            buyer_email: payInfo.email,
+            buyer_name: payInfo.name,
+            buyer_tel: payInfo.phone,
         }, async rsp => {
             if (rsp.success) {
                 console.log('Payment succeeded');
@@ -175,14 +193,17 @@ export default function ReservedList() {
             {
                 success.pay && <h3 className="white-wrap message">결제가 완료되었습니다!</h3>
             }
-              {
+            {
                 success.cancel && <h3 className="white-wrap message">예약취소가 완료되었습니다!</h3>
             }
             {
                 open.cancel && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
             }
             {
-                open.pay && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseSecond} message={"결제 하시겠습니까?"} />
+                open.pay && <ModalComponent handleSubmit={handleInfoModal} handleOpenClose={handleOpenCloseSecond} message={"카카오페이로 결제 하시겠습니까?"} />
+            }
+            {
+                payModalVisible && <InfoModalComponent handleChangeInfo={handleChangeInfo} handlePay={handlePay} handleInfoModal={handleInfoModal} />
             }
             <div className="componentContent">
                 {
@@ -257,3 +278,41 @@ const ReservedListItem = ({ reservedlist, handleOpenClose, handleOpenCloseSecond
     )
 }
 
+/** 결제 확인 모달창 */
+const InfoModalComponent = ({ handleChangeInfo, handlePay, handleInfoModal }) => {
+
+    return (
+        <>
+            <div className="black-wrap" onClick={handleInfoModal} />
+            <div className="white-wrap">
+                <h3>결제정보</h3>
+                <p>이름</p>
+                <input
+                    placeholder="이름"
+                    onChange={(e) => handleChangeInfo("name", e)}
+                    autoFocus
+                />
+                <p>이메일</p>
+                <input
+                    type="email"
+                    placeholder="이메일"
+                    onChange={(e) => handleChangeInfo("email", e)}
+                />
+                <p>전화번호</p>
+                <input
+                    type=""
+                    placeholder="010-0000-0000"
+                    onChange={(e) => handleChangeInfo("phone", e)}
+                />
+                <div>
+                    <button onClick={handlePay}>확인</button>
+                    <button onClick={handleInfoModal}>취소</button>
+                </div>
+
+            </div>
+        </>
+
+
+
+    )
+}
