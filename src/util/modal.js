@@ -12,10 +12,10 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose ,handl
     return (<div>
         <div className="black-wrap" onClick={handleOpenClose} />
         <div className="white-wrap">
-            <div>{message}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '19px' }}>{message}</div>
             <div>
-                <button onClick={handleSubmit}>예</button>
-                <button onClick={handleOpenClose}>아니오</button>
+                <button className="handle-button-modal button-style-modal-1 button-container" onClick={handleSubmit}>예</button>
+                <button className="handle-button-modal button-style-modal-1 button-container" onClick={handleOpenClose}>아니오</button>
             </div>
             {subOpen === true && (
                 <div>
