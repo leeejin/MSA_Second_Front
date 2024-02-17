@@ -6,10 +6,21 @@
     cursor: pointer;
 }
 
+.select-location {
+    width: 100px;
+    border: none;
+}
+
+.select-level {
+    width: 200px;
+    border-bottom: 2px solid var(--black-color);
+}
+
 .email-style {
     border: 1px solid var(--black-color);
     width: 100%;
     border-radius: 5px;
+
     &::before {
         content: "⌵";
         position: absolute;
@@ -23,7 +34,7 @@
 .select-option {
     position: absolute;
     list-style: none;
-    top: 25px;
+    top: 30px;
     left: 0;
     width: 100%;
     overflow: hidden;
@@ -48,7 +59,7 @@
 }
 
 .level-style {
-    margin:auto;
+    margin: auto;
     margin-bottom: 5px;
     width: 100px;
     border: 1px solid var(--grey-color);

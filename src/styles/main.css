@@ -21,7 +21,7 @@
 }
 
 .white-wrap {
-    width:350px;
+    width: 350px;
     text-align: center;
     border-radius: 5px;
     position: fixed;
@@ -204,6 +204,7 @@
     }
 }
 
+
 .box-container {
     display: block;
     padding: 5px;
@@ -313,11 +314,11 @@
 
 /* 모달 */
 .handle-button-modal {
-    margin:5px;
+    margin: 5px;
     border-radius: 25px;
     border: none;
     width: 70px;
-    padding:10px;
+    padding: 10px;
     justify-content: center;
     align-items: center;
 }
@@ -331,6 +332,7 @@
         background-color: var(--hovering-color);
     }
 }
+
 .handle-button-cancelstyle-modal {
     color: var(--white-color);
     background-color: var(--grey-color);
@@ -339,6 +341,66 @@
         cursor: pointer;
         background-color: var(--darkgrey-color);
     }
+}
+
+.Mainbackground {
+    background-image: url(./image/main_pic.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color);
+    z-index: -1;
+}
+
+.mainpanel {
+    position: fixed;
+    left: 0%;
+    right: 0%;
+    top: 14.09%;
+    bottom: 0%;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    background: #FFFFFF;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 30px;
+}
+
+.parent-container {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-bottom: 50px;
+    margin-right: 50px;
+    display: flex;
+    align-items: center; /* 요소들을 수직 가운데 정렬 */
+}
+
+.parent-container > button {
+    margin-right: 10px; /* 요소들 사이의 간격 설정 */
+}
+
+.parent-container > div {
+    padding: 8px; /* 요소들 사이의 간격 설정 */
+}
+  
+.parent-container > div:last-child, button:last-child {
+    margin-right: 0; /* 마지막 요소의 오른쪽 간격 제거 */
+}
+  
+
+.logo {
+    content: url(./image/main_logo.png);
+    /* margin-top: 20px;
+    margin-left: 20px; */
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 5%;
+    height: 5%;
 }
 @media screen and (max-width : 768px) {
 
