@@ -75,14 +75,13 @@ export default function ModalBookCheck() {
             userId: userId, //예약하는 userId
             passenger: nickname, //예약하는 nickname
         };
-        return formData;
-        // try {
-        //     const response = axios.post(Constant.serviceURL + `/flightReservation/${filteredData.id}`, formData, { withCredentials: true })
-        //     return response;
-        // }
-        // catch (error) {
-        //     console.error(error);
-        // }
+        try {
+            const response = axios.post(Constant.serviceURL + `/flightReservation/${filteredData.id}`, formData, { withCredentials: true })
+            return response;
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
     return (
         <div>

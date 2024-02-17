@@ -96,12 +96,12 @@ export default function Main() {
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
             const response = await callPostAirInfoAPI();
             setContents(response);
-            // navigate(`/Reserve`, {
-            //     state: {
-            //         contents: response, // 업데이트된 response를 직접 전달
-            //         seatLevel: airport.level
-            //     }
-            // });
+            navigate(`/Reserve`, {
+                state: {
+                    contents: response, // 업데이트된 response를 직접 전달
+                    seatLevel: airport.level
+                }
+            });
 
         } else {
             if (errors.locationError) {
@@ -127,19 +127,7 @@ export default function Main() {
         console.log(formData);
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
-            return [{
-                id: 1,
-                economyCharge: null,
-                prestigeCharge: null,
-                vihicleId: "TW901",
-                seatCapacity: null,
-                airlineNm: "티웨이항공",
-                arrAirportNm: "제주",
-                depAirportNm: "광주",
-                arrPlandTime: 202402151005,
-                depPlandTime: 202402150915,
-            },
-            ];
+            return response;
         }
         catch (error) {
             console.error(error);
