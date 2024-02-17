@@ -7,12 +7,10 @@
 }
 
 .select-location {
-    width: 100px;
     border: none;
 }
 
 .select-level {
-    width: 200px;
     border-bottom: 2px solid var(--black-color);
 }
 

@@ -26,9 +26,6 @@ table {
     border-collapse: collapse;
 }
 
-thead{
-    background:var(--background-color);
-}
 input {
     border-bottom: 1px solid var(--black-color);
     border-top: none;
