@@ -3,11 +3,10 @@ import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from 'react-router-dom';
-import axios from 'axios';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
 import ModalComponent from '../util/modal';
-
+import axios from '../axiosInstance';
 
 export default function Menubar() {
     const dispatch = useDispatch();
@@ -23,7 +22,10 @@ export default function Menubar() {
         callLogoutAPI().then((response) => {
             if (response) {
                 dispatch({ type: "Logout" });
-                navigate("/");
+
+                localStorage.removeItem('authToken');
+                
+                window.location.href='/';
             }
         })
     };
@@ -36,7 +38,7 @@ export default function Menubar() {
     async function callLogoutAPI() {
         //로그아웃 로직 
         try {
-            const response = await axios.get(Constant.serviceURL + `/logout`, { withCredentials: true });
+            const response = await axios.post(Constant.serviceURL + `/users/logout`, { withCredentials: true });
             return response;
         }
         catch (error) {
