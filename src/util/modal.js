@@ -23,7 +23,7 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose }) => 
                     <div>
                         <p>회원가입이 성공적으로 완료되었습니다! 로그인 페이지로 가시겠습니까?</p>
                         <p>
-                            <button onClick={() => { navigate('/') }}>예</button>
+                            <button onClick={() => { navigate('/Login') }}>예</button>
                         </p>
                     </div>
                 )}
