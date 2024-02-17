@@ -45,10 +45,7 @@ export default function ReservedList() {
     const pageCountPerPage = 5;//보여줄 페이지 갯수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
-    useEffect(() => {
-        const { IMP } = window;
-        IMP.init('imp85467664');
-    }, []);
+   
 
     useEffect(() => {
         callGetReservedListAPI().then((response) => {
@@ -116,6 +113,7 @@ export default function ReservedList() {
     /** 결제 함수 */
     const handlePay = async (reservedlist) => {
         const { IMP } = window;
+        IMP.init('imp85467664');
         const merchant_uid = 1; // 이부분을 예약번호로 해야함!! 예약서비스에 저장된 예약번호와 동일(백엔드에서 예약하기할 때 예약번호를 보내줄예정)
         const amount = reservedlist.price;
 
