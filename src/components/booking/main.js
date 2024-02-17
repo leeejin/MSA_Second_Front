@@ -226,8 +226,16 @@ export default function Main() {
                             </tr>
                         </tbody>
                     </table>
-                    <button className="nav-item" onClick={handleSearch} >검색하기</button>
+                    <div>
+                        <button className="nav-item button-search" onClick={handleSearch} >검색하기</button>
+                    </div>
                 </div>
+            </div>
+            <div>
+
+            </div>
+            <div>
+                
             </div>
         </div>
 
