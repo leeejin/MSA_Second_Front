@@ -229,13 +229,13 @@ export default function ReservedList() {
                 success.pay && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다.</h3>
             }
             {
-                success.cancel && <h3 className="white-wrap message">예약취소가 완료되었습니다!</h3>
+                success.cancel && <h3 className="white-wrap message">예약취소가 완료되었습니다 !</h3>
             }
             {
-                open.cancel && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까?"} />
+                open.cancel && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약취소 하시겠습니까 ?"} />
             }
             {
-                open.pay && <ModalComponent handleSubmit={handleInfoModal} handleOpenClose={handleOpenCloseSecond} message={"카카오페이로 결제 하시겠습니까?"} />
+                open.pay && <ModalComponent handleSubmit={handleInfoModal} handleOpenClose={handleOpenCloseSecond} message={"카카오페이로 결제 하시겠습니까 ?"} />
             }
             {
                 payModalVisible && <InfoModalComponent handleChangeInfo={handleChangeInfo} handlePay={handlePay} handleInfoModal={handleInfoModal} autoHyphen2={autoHyphen2} />
@@ -302,8 +302,8 @@ const ReservedListItem = ({ reservedlist, handleOpenClose, handleOpenCloseSecond
                     </td>
                     <td colSpan={2}>
 
-                        {reservedlist.status === '결제 전' && <button onClick={() => handleOpenCloseSecond(reservedlist.id)}>결제</button>}
-                        <button onClick={() => handleOpenClose(reservedlist.id)}>취소</button>
+                        {reservedlist.status === '결제 전' && <button className="handle-button-modal handle-button-confirmstyle-modal" onClick={() => handleOpenCloseSecond(reservedlist.id)}>결제</button>}
+                        <button className="handle-button-modal handle-button-cancelstyle-modal" onClick={() => handleOpenClose(reservedlist.id)}>취소</button>
                     </td>
                 </tr>
             </tbody>

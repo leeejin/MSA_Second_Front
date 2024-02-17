@@ -180,7 +180,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td colSpan={2}>
 
-                        <button onClick={() => handleOpenClose(paidlist.id)}>결제취소</button>
+                        <button className="handle-button-modal handle-button-cancelstyle-modal" onClick={() => handleOpenClose(paidlist.id)}>취소</button>
                     </td>
                 </tr>
             </tbody>
