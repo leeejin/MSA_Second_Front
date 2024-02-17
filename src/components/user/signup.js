@@ -103,9 +103,10 @@ export default function Signup() {
         callAddUserAPI().then((response) => { //백엔드로부터 무사히 response를 받았다면
             console.log('addUser', response);
             setSubOpen(!subOpen) //회원가입성공하면 로그인페이지로 가게함 modal.js에 
-            navigate('/');
+            navigate('/Login');
 
-        }).catch(() => {
+        }).catch((error) => {
+            console.log(error)
             setDuplicateCheck(true);
             setOpen(false);
 
@@ -139,7 +140,7 @@ export default function Signup() {
     return (
         <div>
             {
-                open && <ModalComponent subOpen={subOpen}handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
+                open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
             {
                 errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>

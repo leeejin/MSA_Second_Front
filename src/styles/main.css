@@ -205,8 +205,14 @@
 }
 
 .button-search{
-    background-color:none;
-    border: 1px solid var(--white-color);
+    position:absolute;
+    top:50%;
+    left:50%;
+    padding:5px;
+    margin:5px;
+    border-radius: 15px;
+    background:none;
+    border: 2px solid var(--white-color);
     color: var(--white-color);
 
     &:hover {
@@ -365,7 +371,7 @@
 }
 
 .mainpanel {
-    padding:20px;
+    padding:30px;
     margin:auto;
     justify-content: center;
     align-items: center;
@@ -377,6 +383,7 @@
 }
 
 .parent-container {
+    position:relative;
     width: 90%;
     height:80%;
     margin: auto;
