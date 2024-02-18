@@ -56,14 +56,14 @@ export default function Main() {
 
 
     const [airports, setAirPorts] = useState({
-        dep: AirPort.response.body.items.item[0].airportNm,
-        arr: AirPort.response.body.items.item[1].airportNm,
-        level: level[0].value
+        dep: '출발',
+        arr: '도착',
+        level: '좌석을 선택하세요'
     })
 
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
-    const [errorMessage, setErrorMessage] = useState({ locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
-
+    const [errorMessage, setErrorMessage] = useState({ depError: false, arrError: false, locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
+    const [serverErrorMessage, setServerErrorMessage] = useState({ searchError: false })
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -123,30 +123,44 @@ export default function Main() {
     const handleSearch = async () => {
         /** 에러모음 */
         let errors = {
+            depError: airports.dep === '출발',
+            arrError: airports.arr === '도착',
+            levelError: airports.level === '좌석을 선택하세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
             dateError: depTime === null || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
-        }
-        if (!errors.locationError && !errors.dateError) { //둘다 에러 아닐시
+        };
+        if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
-
                 navigate(`/Reserve`, {
                     state: {
                         contents: response,
                         seatLevel: airport.level
                     }
                 });
+
+            }).catch((error) => {
+                setServerErrorMessage({ searchError: true });
+                setTimeout(() => {
+                    setServerErrorMessage({ searchError: false }); //에러 모두 false로 바꿈
+                }, 1000);
             })
 
 
         } else {
-            if (errors.locationError) {
-                setErrorMessage({ locationError: errors.locationError });
+            if (errors.depError) {
+                setErrorMessage({ depError: errors.depError });
+            } else if (errors.arrError) {
+                setErrorMessage({ arrError: errors.arrError });
+            } else if (errors.levelError) {
+                setErrorMessage({ levelError: errors.levelError });
             } else if (errors.dateError) {
                 setErrorMessage({ dateError: errors.dateError });
+            } else if (errors.locationError) {
+                setErrorMessage({ locationError: errors.locationError });
             }
             setTimeout(() => {
-                setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
+                setErrorMessage({ locationError: false, dateError: false, levelError: false, depError: false, arrError: false }); //에러 모두 false로 바꿈
             }, 1000);
         }
     }
@@ -175,14 +189,24 @@ export default function Main() {
     }
     return (
         <div>
-
+            {
+                errorMessage.depError && <h3 className="white-wrap message">출발지를 입력해주세요</h3>
+            }
+            {
+                errorMessage.arrError && <h3 className="white-wrap message">도착지를 입력해주세요</h3>
+            }
+            {
+                errorMessage.levelError && <h3 className="white-wrap message">좌석을 선택해주세요</h3>
+            }
             {
                 errorMessage.locationError && <h3 className="white-wrap message">출발지와 도착지가 같습니다</h3>
             }
             {
                 errorMessage.dateError && <h3 className="white-wrap message">날짜를 선택해주세요</h3>
             }
-
+            {
+                serverErrorMessage.searchError && <h3 className="white-wrap message">먼 이유로 검색이 불가능합니다</h3>
+            }
             <div className="mainbackground" >
                 <div className="mainpanel">
 
@@ -329,6 +353,7 @@ function FooterSlider({ footerData, handleReserve }) {
     ))
     return (
         <Carousel
+            showStatus={false}
             showArrows={false}
             autoPlay={true}
             infiniteLoop={true}
