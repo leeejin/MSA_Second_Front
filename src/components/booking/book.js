@@ -26,7 +26,7 @@ export default function ModalBookCheck() {
     useEffect(() => {
         console.log(selectedData);
     }, [selectedData])
-
+    
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setOpen(prev => !prev); //예약확인 모달창 띄움
