@@ -186,7 +186,7 @@ export default function Signup() {
                             <p>@</p>
                             <div
                                 ref={selectBoxRef}
-                                className={`${isShowOptions ? 'select-box email-style active' : 'select-box email-style'}`}
+                                className={`${isShowOptions ? 'select select-email active' : 'select select-email'}`}
                                 onClick={() => setShowOptions((prev) => !prev)}>
                                 <label>{select}</label>
                                 <SelectOptions

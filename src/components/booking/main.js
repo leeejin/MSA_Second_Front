@@ -7,8 +7,19 @@ import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
+const Footer = styled.div`
+background-image: url(${props => props.imageUrl});
+`;
 const Tr = styled.tr`
     text-align:center;
+
+    td:nth-child(3){
+        border-right:1px solid var(--grey-color);
+    }
+    td:nth-child(4),td:nth-child(5){
+      width:25%;
+    }
+   
 `;
 
 const MarkTd = styled.span`
@@ -33,13 +44,14 @@ const OptionLabel = styled.h3`
 const SelectOptions = styled.ul`
   max-height: ${(props) => (props.show ? "none" : "0")};
 `;
-
+const level = Constant.getSeatLevel(); // 좌석등급
+const airport = AirPort.response.body.items.item; // 공항 목록
+const footer = Constant.getSliderMenus(); //푸터 이미지 내용
 /** 메인페이지 - 여기서 예약조회 하기 위한 검색 */
 export default function Main() {
     const navigate = useNavigate();
 
-    const level = Constant.getSeatLevel(); // 좌석등급
-    const airport = AirPort.response.body.items.item; // 공항 목록
+
 
     const [airports, setAirPorts] = useState({
         dep: AirPort.response.body.items.item[0].airportNm,
@@ -94,6 +106,17 @@ export default function Main() {
     const handleDateChange = (date) => {
         setDepTime(date);
     }
+    /** 선택한거 나와있는 지역으로 바꾸기 */
+    const handleReserve = (value) => {
+        setAirPorts(prev => ({
+            ...prev,
+            arr: value
+        }));
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    };
     /** 검색 핸들러 */
     const handleSearch = async () => {
         /** 에러모음 */
@@ -184,11 +207,12 @@ export default function Main() {
                                         handleLocationChange={(e) => handleLocationChange("dep", e)}
                                     />
                                 </td>
-                                <td>
+                                <td style={{ textAlign: 'center' }}>
                                     <button className="doButton" onClick={handleAirPortReverse}><ReverseIcon src={reverse} /></button>
                                 </td>
-                                <td>
+                                <td style={{ borderRight: '1px solid var(--grey-color)' }}>
                                     <SelectComponent
+
                                         selectBoxRef={selectBoxRef}
                                         number={2}
                                         isShowOptions={isShowOptions.arr}
@@ -215,26 +239,34 @@ export default function Main() {
                             </tr>
                         </tbody>
                     </table>
+
                     <div>
                         <button className="button-search" onClick={handleSearch} >검색하기</button>
                     </div>
                 </div>
             </div>
             <div className="middlebackground">
-                    <h1>여기엔 뭘 넣지 ???</h1>
+                <h1>여기엔 뭘 넣지 ???</h1>
             </div>
-            <div className="footerbackground">
-                <div className="footerpanel">
-                    <div>
-                        <h1>이번 겨울</h1>
-                        <h1>감성 여행을 감행하다</h1>
-                        <h3>사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'</h3>
 
-                    </div>
 
-                </div>
+            {
+                footer.map(footer => (
+                    <Footer className="footerbackground" imageUrl={footer.imageUrl}>
+                        <div className="footerpanel">
+                            <div key={footer.key}>
+                                <h1>{footer.title}</h1>
+                                <h1>{footer.subTitle}</h1>
+                                <h3>{footer.content}</h3>
+                                <button className="button-reserve" onClick={() => handleReserve(footer.value)}>
+                                    예약하기
+                                </button>
+                            </div>
+                        </div>
+                    </Footer>
+                ))
+            }
 
-            </div>
         </div>
 
     );
@@ -245,7 +277,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
     return (
         <div
             ref={el => selectBoxRef.current[number] = el}
-            className={`${isShowOptions ? 'select-box select-location active' : 'select-box'} ${number === 3 && 'select-box2 select-level'}`}
+            className={`${isShowOptions ? 'select select-location active' : 'select select-location'} ${number === 3 && 'select select-level'}`}
             onClick={setShowOptions}>
             {
                 number === 3 ? <>
@@ -254,7 +286,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
                 </> : <LocationLabel>{airportsName}</LocationLabel>
             }
             <SelectOptions
-                className="select-option"
+                className={`${number === 3 ? "select-option select-option-level" : "select-option select-option-location"}`}
                 show={isShowOptions}>
                 {
                     number === 3 ? <>

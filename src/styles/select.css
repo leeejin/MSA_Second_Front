@@ -1,24 +1,23 @@
-.select-box {
+.select{
     position: relative;
-    top: -1px;
-    padding: 5px;
     align-items: center;
+    align-items: center;
+    margin:auto;
     cursor: pointer;
 }
-
 .select-location {
+    top: -1px;
+    padding: 5px;
     border: none;
+    text-align: center;
 }
-
-.select-level {
-    border-bottom: 2px solid var(--black-color);
-}
-
-.email-style {
+.select-email {
+    top: -8px;
+    padding: 8px;
     border: 1px solid var(--black-color);
     width: 100%;
     border-radius: 5px;
-
+    height:35px;
     &::before {
         content: "⌵";
         position: absolute;
@@ -28,13 +27,20 @@
         font-size: 20px;
     }
 }
+.select-level {
+    top: -1px;
+    padding: 5px;
+    border-bottom: 2px solid var(--black-color);
+    text-align: left;
+}
+
 
 .select-option {
     position: absolute;
     list-style: none;
     top: 30px;
     left: 0;
-    width: 100%;
+    width:100%;
     overflow: hidden;
     padding: 0px;
     border-radius: 20px;
@@ -42,7 +48,12 @@
     color: var(--black-color);
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
-
+.select-option-location {
+    width: 100px;
+}
+.select-option-level {
+    width: 150px;
+}
 .option {
     padding: 5px;
     margin-left: auto;

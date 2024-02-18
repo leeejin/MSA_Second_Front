@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import JeJu from '../styles/image/main_pic.jpg'; //감귤 이미지
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -18,6 +18,12 @@ export default class Constant {
             { key: 0, value: "일반석", name: "일반석" },
             { key: 1, value: "프리스티지석", name: "프리스티지석" },
 
+        ];
+    }
+
+    static getSliderMenus() {
+        return [
+            { key: 0, value: "제주", title: "이번 겨울", subTitle: "감성 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: JeJu }
         ];
     }
 
