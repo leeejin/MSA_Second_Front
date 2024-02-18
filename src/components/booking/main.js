@@ -123,8 +123,8 @@ export default function Main() {
     const handleSearch = async () => {
         /** 에러모음 */
         let errors = {
-            depError: airports.dep === '출발',
-            arrError: airports.arr === '도착',
+            depError: airports.dep === '출발' || airports.dep === '도착',
+            arrError: airports.arr === '도착' || airports.arr === '출발',
             levelError: airports.level === '좌석을 선택하세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
             dateError: depTime === null || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
