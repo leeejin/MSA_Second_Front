@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
@@ -7,15 +7,13 @@ import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
 /** 예약확인 목록 페이지 */
+const airport = AirPort.response.body.items.item; // 공항 목록
 export default function ModalBookCheck() {
 
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
 
-    const airport = AirPort.response.body.items.item; // 공항 목록
-
-    const [contents,setContents] = useState(location.state.contents);
-    const [seatLevel,setSeatLevel] = useState(location.state.seatLevel); // 다른 컴포넌트로부터 받아들인 데이터 정보
+    const {contents,seatLevel} = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
     const [nickname, setNickname] = useState(store.getState().nickname); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 모달창
@@ -26,7 +24,7 @@ export default function ModalBookCheck() {
     useEffect(() => {
         console.log(selectedData);
     }, [selectedData])
-    
+
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setOpen(prev => !prev); //예약확인 모달창 띄움
@@ -89,7 +87,7 @@ export default function ModalBookCheck() {
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약 하시겠습니까?"} />
             }
-            <div>
+            <div style={{ marginTop: '50%' }}>
                 {
                     contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                 }

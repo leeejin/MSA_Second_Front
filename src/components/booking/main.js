@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
-import { useMutation } from 'react-query';
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { TbArmchair2 } from "react-icons/tb";
@@ -59,8 +58,7 @@ export default function Main() {
         arr: '도착',
         level: '좌석을 선택하세요'
     })
-    const [loading, setLoading] = useState(false);
-    const [contents, setContents] = useState([]);
+
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, setErrorMessage] = useState({ depError: false, arrError: false, locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
     const [serverErrorMessage, setServerErrorMessage] = useState({ searchError: false })
@@ -89,17 +87,7 @@ export default function Main() {
             [locationType]: e.target.getAttribute("value")
         }));
     };
-    useEffect(() => {
-        if (loading) {
-            navigate(`/Reserve`, {
-                state: {
-                    contents: contents,
-                    seatLevel: airport.level
-                }
-            });
-            setLoading(false);
-        }
-    }, [loading, contents]);
+
     /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
     const getSelectedAirport = (selectedAirportNm) => {
         const selectedAirport = AirPort.response.body.items.item.find(
@@ -133,28 +121,29 @@ export default function Main() {
     const handleSearch = async () => {
         /** 에러모음 */
         let errors = {
-            depError: airports.dep === '출발' || airports.dep === '도착',
-            arrError: airports.arr === '도착' || airports.arr === '출발',
+            depError: airports.dep === '출발',
+            arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택하세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
             dateError: depTime === null || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
-            const year = depTime.getFullYear();
-            const month = String(depTime.getMonth() + 1).padStart(2, "0");
-            const day = String(depTime.getDate()).padStart(2, "0");
+            callPostAirInfoAPI().then((response) => {
+                navigate(`/Reserve`, {
+                    state: {
+                        contents: response.data,
+                        seatLevel: airport.level
+                    }
+                });
 
-            const formattedDate = year + month + day;
+            }).catch((error) => {
+                setServerErrorMessage({ searchError: true });
+                setTimeout(() => {
+                    setServerErrorMessage({ searchError: false }); //에러 모두 false로 바꿈
+                }, 1000);
+            })
 
-            /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
-            const formData = {
-                depAirport: getSelectedAirport(airports.dep), //출발지
-                arrAirport: getSelectedAirport(airports.arr), //도착지
-                seatLevel: airports.level, //좌석등급
-                depTime: formattedDate, //날짜
-            };
-            searchMutation.mutate(formData);
 
         } else {
             if (errors.depError) {
@@ -173,24 +162,23 @@ export default function Main() {
             }, 1000);
         }
     }
-    // useMutation 훅을 사용하여 mutation을 생성합니다.
-    const searchMutation = useMutation(callPostAirInfoAPI, {
-        onSuccess: async (data) => {
-            setLoading(true);
-            setContents(data);
-        },
-        onError: () => {
-            setServerErrorMessage({ searchError: true });
-            setTimeout(() => {
-                setServerErrorMessage({ searchError: false });
-            }, 1000);
-        }
-    });
     /** main.js 조회 데이터 API요청 */
-    async function callPostAirInfoAPI(formData) {
+    async function callPostAirInfoAPI() {
+        const year = depTime.getFullYear();
+        const month = String(depTime.getMonth() + 1).padStart(2, "0");
+        const day = String(depTime.getDate()).padStart(2, "0");
 
+        const formattedDate = year + month + day;
+
+        /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
+        const formData = {
+            depAirport: getSelectedAirport(airports.dep), //출발지
+            arrAirport: getSelectedAirport(airports.arr), //도착지
+            seatLevel: airports.level, //좌석등급
+            depTime: formattedDate, //날짜
+        };
         try {
-            const response = await axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
             return response;
         }
         catch (error) {
@@ -248,7 +236,6 @@ export default function Main() {
                                 </td>
                                 <td style={{ borderRight: '1px solid var(--grey-color)' }}>
                                     <SelectComponent
-
                                         selectBoxRef={selectBoxRef}
                                         number={2}
                                         isShowOptions={isShowOptions.arr}
@@ -348,7 +335,7 @@ function FooterSlider({ footerData, handleReserve }) {
         setCurrentIndex(index);
     }
     const renderSlides = footerData.map((footer) => (
-        <Footer key={footer.key} className="footerbackground" imageUrl={footer.imageUrl}>
+        <Footer className="footerbackground" imageUrl={footer.imageUrl}>
             <div className="footerpanel">
                 <div key={footer.key}>
                     <h1>{footer.title}</h1>

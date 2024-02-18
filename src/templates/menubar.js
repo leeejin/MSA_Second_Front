@@ -7,7 +7,7 @@ import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
 import ModalComponent from '../util/modal';
 import axios from '../axiosInstance';
-
+import logo from '../styles/image/main_logo.png';
 export default function Menubar() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -24,8 +24,8 @@ export default function Menubar() {
                 dispatch({ type: "Logout" });
 
                 localStorage.removeItem('authToken');
-                
-                window.location.href='/';
+
+                window.location.href = '/';
             }
         })
     };
@@ -45,14 +45,15 @@ export default function Menubar() {
             console.error('로그아웃 오류:', error);
         }
     };
-    return (
+    return (<>
+        {
+            open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까 ?"} />
+        }
         <div className="menubar-container">
-            {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까?"} />
-            }
+
 
             <div>
-                <Link to="/">로고</Link>
+                <Link to="/"><img src={logo} width={'100px'} /></Link>
                 <div>
                     {
                         userId !== 0 ? <>
@@ -64,9 +65,7 @@ export default function Menubar() {
                             <NavLink
                                 className="nav-item menu-item-style"
                                 style={({ isActive }) => (isActive ? activeStyle : {})}
-                                onClick={() => {
-                                    handleOpenClose();
-                                }}
+                                onClick={handleOpenClose}
                             >로그아웃</NavLink>
                         </>
                             : <>
@@ -87,5 +86,7 @@ export default function Menubar() {
 
             </div>
         </div>
+    </>
+
     );
 }
