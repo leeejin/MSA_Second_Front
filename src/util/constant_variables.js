@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import JeJu from '../styles/image/main_pic.jpg'; //감귤 이미지
+import Busan from '../styles/image/busan.jpg'; //부산 이미지
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -23,7 +24,8 @@ export default class Constant {
 
     static getSliderMenus() {
         return [
-            { key: 0, value: "제주", title: "이번 겨울", subTitle: "감성 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: JeJu }
+            { key: 0, value: "제주", title: "이번 겨울", subTitle: "감성 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: JeJu },
+            { key: 0, value: "부산", title: "이번 겨울", subTitle: "개쌉 애Zㅣ는 여행 ", content: "바다 많은 '부산'", imageUrl: Busan },
         ];
     }
 

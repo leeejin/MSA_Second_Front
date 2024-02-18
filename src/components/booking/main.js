@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useRef, forwardRef } from 'rea
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 import { TbArmchair2 } from "react-icons/tb";
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
@@ -250,22 +252,7 @@ export default function Main() {
             </div>
 
 
-            {
-                footer.map(footer => (
-                    <Footer className="footerbackground" imageUrl={footer.imageUrl}>
-                        <div className="footerpanel">
-                            <div key={footer.key}>
-                                <h1>{footer.title}</h1>
-                                <h1>{footer.subTitle}</h1>
-                                <h3>{footer.content}</h3>
-                                <button className="button-reserve" onClick={() => handleReserve(footer.value)}>
-                                    예약하기
-                                </button>
-                            </div>
-                        </div>
-                    </Footer>
-                ))
-            }
+            <FooterSlider footerData={footer} handleReserve={handleReserve} />
 
         </div>
 
@@ -319,4 +306,36 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
             </SelectOptions>
         </div>
     )
+}
+/** footer 슬라이더 */
+function FooterSlider({ footerData, handleReserve }) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    function handleChange(index) {
+        setCurrentIndex(index);
+    }
+    const renderSlides = footerData.map((footer) => (
+        <Footer className="footerbackground" imageUrl={footer.imageUrl}>
+            <div className="footerpanel">
+                <div key={footer.key}>
+                    <h1>{footer.title}</h1>
+                    <h1>{footer.subTitle}</h1>
+                    <h3>{footer.content}</h3>
+                    <button className="button-reserve" onClick={() => handleReserve(footer.value)}>
+                        예약하기
+                    </button>
+                </div>
+            </div>
+        </Footer>
+    ))
+    return (
+        <Carousel
+            showArrows={false}
+            autoPlay={true}
+            infiniteLoop={true}
+            showThumbs={false}
+            onChange={handleChange}
+            className="w-[400px] lg:hidden">
+            {renderSlides}
+        </Carousel>
+    );
 }
