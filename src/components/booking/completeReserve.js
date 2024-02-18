@@ -7,7 +7,8 @@ import store from '../../util/redux_storage';
 export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { contents, cost } = location.state;
+    const [contents, setContents] = useState(location.state.contents);
+    const [cost, setCost] = useState(location.state.cost);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
 
     const handleReservedList = () => {

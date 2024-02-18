@@ -11,6 +11,9 @@ import Spinner from '../../styles/image/loading.gif';
 const SubThead = styled.span`
     color:grey;
 `;
+  //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
+  const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
+  const pageCountPerPage = 5; //보여줄 페이지 갯수
 /** 결제한 목록을 보여주는 함수 */
 export default function PaidList() {
     const navigate = useNavigate();
@@ -20,9 +23,9 @@ export default function PaidList() {
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [success, setSuccess] = useState({ cancel: false }); // 예약,결제 성공 메시지
+    
+    
     //페이지네이션
-    const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
-    const pageCountPerPage = 5; //보여줄 페이지 갯수
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
 

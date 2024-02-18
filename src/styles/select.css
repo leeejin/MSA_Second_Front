@@ -1,8 +1,8 @@
 .select-box {
     position: relative;
-    top: -8px;
-    padding: 8px;
-    align-self: center;
+    top: -1px;
+    padding: 5px;
+    align-items: center;
     cursor: pointer;
 }
 

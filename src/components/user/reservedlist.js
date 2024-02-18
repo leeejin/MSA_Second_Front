@@ -26,7 +26,12 @@ const TicketTable = styled.table`
     tr:nth-child(1) {
         border-bottom: 1px solid var(--grey-color);
     }
-`;
+`; 
+
+ //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
+const itemCountPerPage = 2;//한페이지당 보여줄 아이템 갯수
+const pageCountPerPage = 5;//보여줄 페이지 갯수
+
 /** 결제한 목록을 보여주는 함수 */
 export default function ReservedList() {
     const navigate = useNavigate();
@@ -40,9 +45,8 @@ export default function ReservedList() {
     const [payError, setPayError] = useState({ name: false, email: false, phone: false }); //결제 정보 에러 메시지
     const [payInfo, setPayInfo] = useState({ name: '', email: '', phone: '' }); //결제 정보
     const [payModalVisible, setPayModalVisible] = useState(false); //결제 정보 모달창
-    //페이지네이션
-    const itemCountPerPage = 2;//한페이지당 보여줄 아이템 갯수
-    const pageCountPerPage = 5;//보여줄 페이지 갯수
+
+   //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
    

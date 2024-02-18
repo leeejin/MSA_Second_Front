@@ -7,17 +7,22 @@ import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
+const Tr = styled.tr`
+    text-align:center;
+`;
+
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
     padding:0px 10px 0px 10px;
+    font-size:1.0rem;
 `;
 const ReverseIcon = styled.img`
     width:30px;
 `;
 
 const LocationLabel = styled.label`
-    font-size:1.6rem;
+    font-size:1.8rem;
 `;
 const Label = styled.label`
     padding-left:30px;
@@ -43,7 +48,6 @@ export default function Main() {
     })
 
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
-    const [contents, setContents] = useState([]); //백에서 받은 출발지,도착지,출발날짜를 포함한 다른 데이터를 가진 객체 배열을 여기다가 저장
     const [errorMessage, setErrorMessage] = useState({ locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
 
     /** 셀렉트 전용 */
@@ -99,14 +103,16 @@ export default function Main() {
         }
         if (!errors.locationError && !errors.dateError) { //둘다 에러 아닐시
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
-            const response = await callPostAirInfoAPI();
-            setContents(response);
-            navigate(`/Reserve`, {
-                state: {
-                    contents: response, // 업데이트된 response를 직접 전달
-                    seatLevel: airport.level
-                }
-            });
+            callPostAirInfoAPI().then((response) => {
+
+                navigate(`/Reserve`, {
+                    state: {
+                        contents: response,
+                        seatLevel: airport.level
+                    }
+                });
+            })
+
 
         } else {
             if (errors.locationError) {
@@ -121,15 +127,19 @@ export default function Main() {
     }
     /** main.js 조회 데이터 API요청 */
     async function callPostAirInfoAPI() {
+        const year = depTime.getFullYear();
+        const month = String(depTime.getMonth() + 1).padStart(2, "0");
+        const day = String(depTime.getDate()).padStart(2, "0");
+
+        const formattedDate = year + month + day;
 
         /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
         const formData = {
             depAirport: getSelectedAirport(airports.dep), //출발지
             arrAirport: getSelectedAirport(airports.arr), //도착지
             seatLevel: airports.level, //좌석등급
-            depTime: depTime, //날짜
+            depTime: formattedDate, //날짜
         };
-        console.log(formData);
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
             return response;
@@ -153,13 +163,13 @@ export default function Main() {
 
                     <table className='parent-container'>
                         <thead>
-                            <tr>
+                            <Tr>
                                 <td><MarkTd>출발지</MarkTd></td>
                                 <td />
                                 <td><MarkTd>도착지</MarkTd></td>
                                 <td><MarkTd>가는날</MarkTd></td>
                                 <td><MarkTd>좌석등급</MarkTd></td>
-                            </tr>
+                            </Tr>
                         </thead>
                         <tbody>
                             <tr>
@@ -210,10 +220,19 @@ export default function Main() {
                     </div>
                 </div>
             </div>
-            <div>
-
+            <div className="middlebackground">
+                    <h1>여기엔 뭘 넣지 ???</h1>
             </div>
-            <div>
+            <div className="footerbackground">
+                <div className="footerpanel">
+                    <div>
+                        <h1>이번 겨울</h1>
+                        <h1>감성 여행을 감행하다</h1>
+                        <h3>사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'</h3>
+
+                    </div>
+
+                </div>
 
             </div>
         </div>
@@ -226,13 +245,14 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
     return (
         <div
             ref={el => selectBoxRef.current[number] = el}
-            className={`${isShowOptions ? 'select-box select-location active' : 'select-box'} ${number === 3 && 'select-level'}`}
+            className={`${isShowOptions ? 'select-box select-location active' : 'select-box'} ${number === 3 && 'select-box2 select-level'}`}
             onClick={setShowOptions}>
             {
-                number === 3 && <TbArmchair2 />
+                number === 3 ? <>
+                    <TbArmchair2 />
+                    <Label>{airportsName}</Label>
+                </> : <LocationLabel>{airportsName}</LocationLabel>
             }
-
-            <LocationLabel>{airportsName}</LocationLabel>
             <SelectOptions
                 className="select-option"
                 show={isShowOptions}>

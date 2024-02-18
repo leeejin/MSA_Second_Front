@@ -15,7 +15,7 @@ const SelectOptions = styled.ul`
 `;
 
 export default function Signup() {
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
 
     const [open, setOpen] = useState(false);
@@ -30,16 +30,12 @@ export default function Signup() {
     });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
 
-    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, }); //에러 메시지
-    const [DuplicateCheck, setDuplicateCheck] = useState(false);
+    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, duplicateCheck: false }); //에러 메시지
 
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
     const selectBoxRef = useRef(null);
 
-    const handleOnChangeSelectValue = (e) => {
-        setSelect(e.target.getAttribute("value"));
-    };
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
@@ -52,7 +48,9 @@ export default function Signup() {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
-
+    const handleOnChangeSelectValue = (e) => {
+        setSelect(e.target.getAttribute("value"));
+    };
     /** Info 변화 */
     const handleChangeInfo = (infoType, e) => {
         setInfo((prev) => ({
@@ -73,6 +71,7 @@ export default function Signup() {
 
         if (!errors.emailError && !errors.nameError && !errors.nicknameError && !errors.passwordError && !errors.confirmPasswordError) {
             setOpen(!open); //모두 알맞는 형식을 지켰으면 회원가입 모달창 켜기
+            setSubOpen(false);
 
         } else {
             //안되면 에러뜨게 함
@@ -99,7 +98,7 @@ export default function Signup() {
     }
 
     // 회원가입가기전에 체크 
-    const handleSignup=()=>{
+    const handleSignup = () => {
         callAddUserAPI().then((response) => { //백엔드로부터 무사히 response를 받았다면
             console.log('addUser', response);
             setSubOpen(!subOpen) //회원가입성공하면 로그인페이지로 가게함 modal.js에 
@@ -107,11 +106,11 @@ export default function Signup() {
 
         }).catch((error) => {
             console.log(error)
-            setDuplicateCheck(true);
+            setErrorMessage({ duplicateCheck: true });
             setOpen(false);
 
             setTimeout(() => {
-                setDuplicateCheck(false);
+                setErrorMessage({ duplicateCheck: false });
             }, 1000);
         })
     }
@@ -119,7 +118,7 @@ export default function Signup() {
     async function callAddUserAPI() {
         //회원가입할때 보낼 데이터
         const formData = {
-            username: info.email + '@' + select,
+            username: `${info.email}@${select}`,
             name: info.name,
             nickname: info.nickname,
             password: info.password
@@ -130,10 +129,11 @@ export default function Signup() {
             return response.data;
         } catch (error) {
             console.error('오류 발생:', error);
-            setDuplicateCheck(true);
+            setErrorMessage({ duplicateCheck: true });
             setOpen(false);
+
             setTimeout(() => {
-                setDuplicateCheck(false);
+                setErrorMessage({ duplicateCheck: false });
             }, 1000);
         }
     }
@@ -158,7 +158,7 @@ export default function Signup() {
                 errorMessage.confirmPassword && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
             }
             {
-                DuplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
+                errorMessage.duplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
             }
             <div className='background' />
             <div className='backBox'>
