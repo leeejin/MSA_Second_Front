@@ -335,9 +335,9 @@ function FooterSlider({ footerData, handleReserve }) {
         setCurrentIndex(index);
     }
     const renderSlides = footerData.map((footer) => (
-        <Footer className="footerbackground" imageUrl={footer.imageUrl}>
+        <Footer className="footerbackground" imageUrl={footer.imageUrl} key={footer.key}>
             <div className="footerpanel">
-                <div key={footer.key}>
+                <div>
                     <h1>{footer.title}</h1>
                     <h1>{footer.subTitle}</h1>
                     <h3>{footer.content}</h3>
