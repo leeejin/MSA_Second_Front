@@ -1,9 +1,9 @@
 .select{
     position: relative;
     align-items: center;
-    align-items: center;
     margin:auto;
     cursor: pointer;
+    width:160px;
 }
 .select-location {
     top: -1px;
@@ -28,7 +28,7 @@
     }
 }
 .select-level {
-    top: -1px;
+    top: -1.5px;
     padding: 5px;
     border-bottom: 2px solid var(--black-color);
     text-align: left;
@@ -40,7 +40,7 @@
     list-style: none;
     top: 30px;
     left: 0;
-    width:100%;
+    z-index: 10;
     overflow: hidden;
     padding: 0px;
     border-radius: 20px;
@@ -56,10 +56,11 @@
 }
 .option {
     padding: 5px;
+   
     margin-left: auto;
     margin-right: auto;
     transition: background-color 0.2s ease-in;
-
+    
     &:hover {
         cursor: pointer;
         background-color: var(--hovering-color);

@@ -10,26 +10,12 @@ import AirPort from '../../util/json/airport-list';
 import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 
-const Tr = styled.tr`
-    text-align:center;
-
-    td:nth-child(3){
-        border-right:1px solid var(--grey-color);
-    }
-    td:nth-child(4),td:nth-child(5){
-      width:25%;
-    }
-   
-`;
 
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
     padding:0px 10px 0px 10px;
     font-size:1.0rem;
-`;
-const ReverseIcon = styled.img`
-    width:30px;
 `;
 
 const LocationLabel = styled.label`
@@ -54,7 +40,7 @@ export default function Main() {
     const [airports, setAirPorts] = useState({
         dep: '출발',
         arr: '도착',
-        level: '좌석을 선택하세요'
+        level: '좌석'
     })
 
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
@@ -65,15 +51,20 @@ export default function Main() {
     const selectBoxRef = useRef([null, null, null]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            const isOutsideClick = selectBoxRef.current.every((ref, index) => {
-                return !ref?.contains(event.target);
+            selectBoxRef.current.forEach((ref, index) => {
+                let newShowOptions = { dep: false, arr: false, level: false };
+                if (ref?.contains(event.target)) {
+                    // 클릭한 요소에 해당하는 상태만 열린 상태로 설정
+                    if (index === 0) newShowOptions.dep = true;
+                    else if (index === 1) newShowOptions.arr = true;
+                    else if (index === 2) newShowOptions.level = true;
+                }
+                setShowOptions(newShowOptions);
             });
-            if (isOutsideClick) {
-                setShowOptions({ dep: false, arr: false, level: false });
-            }
         };
+    
         document.addEventListener('mousedown', handleOutsideClick);
-
+    
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
@@ -121,9 +112,9 @@ export default function Main() {
         let errors = {
             depError: airports.dep === '출발',
             arrError: airports.arr === '도착',
-            levelError: airports.level === '좌석을 선택하세요',
+            levelError: airports.level === '좌석',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime === null || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError: depTime === '날짜' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
@@ -203,70 +194,83 @@ export default function Main() {
             {
                 serverErrorMessage.searchError && <h3 className="white-wrap message">먼 이유로 검색이 불가능합니다</h3>
             }
-            <div className="mainbackground" >
+            <div className="container container-top" >
                 <div className="mainpanel">
+                    <div className='parent-container'>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td><MarkTd>출발지</MarkTd></td>
+                                    <td />
+                                    <td><MarkTd>도착지</MarkTd></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <SelectComponent
+                                            selectBoxRef={selectBoxRef}
+                                            number={1}
+                                            isShowOptions={isShowOptions.dep}
+                                            setShowOptions={() => setShowOptions((prev) => ({ ...prev, dep: !prev.dep }))}
+                                            airportsName={airports.dep}
+                                            airport={airport}
+                                            handleLocationChange={(e) => handleLocationChange("dep", e)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <button className="doButton" onClick={handleAirPortReverse}><img src={reverse} /></button>
+                                    </td>
+                                    <td>
+                                        <SelectComponent
+                                            selectBoxRef={selectBoxRef}
+                                            number={2}
+                                            isShowOptions={isShowOptions.arr}
+                                            setShowOptions={() => setShowOptions((prev) => ({ ...prev, arr: !prev.arr }))}
+                                            airportsName={airports.arr}
+                                            airport={airport}
+                                            handleLocationChange={(e) => handleLocationChange("arr", e)}
+                                        />
+                                    </td>
 
-                    <table className='parent-container'>
-                        <thead>
-                            <Tr>
-                                <td><MarkTd>출발지</MarkTd></td>
-                                <td />
-                                <td><MarkTd>도착지</MarkTd></td>
-                                <td><MarkTd>가는날</MarkTd></td>
-                                <td><MarkTd>좌석등급</MarkTd></td>
-                            </Tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <SelectComponent
-                                        selectBoxRef={selectBoxRef}
-                                        number={1}
-                                        isShowOptions={isShowOptions.dep}
-                                        setShowOptions={() => setShowOptions((prev) => ({ ...prev, dep: !prev.dep }))}
-                                        airportsName={airports.dep}
-                                        airport={airport}
-                                        handleLocationChange={(e) => handleLocationChange("dep", e)}
-                                    />
-                                </td>
-                                <td style={{ textAlign: 'center' }}>
-                                    <button className="doButton" onClick={handleAirPortReverse}><ReverseIcon src={reverse} /></button>
-                                </td>
-                                <td style={{ borderRight: '1px solid var(--grey-color)' }}>
-                                    <SelectComponent
-                                        selectBoxRef={selectBoxRef}
-                                        number={2}
-                                        isShowOptions={isShowOptions.arr}
-                                        setShowOptions={() => setShowOptions((prev) => ({ ...prev, arr: !prev.arr }))}
-                                        airportsName={airports.arr}
-                                        airport={airport}
-                                        handleLocationChange={(e) => handleLocationChange("arr", e)}
-                                    />
-                                </td>
-                                <td>
-                                    <SelectComponent
-                                        selectBoxRef={selectBoxRef}
-                                        number={3}
-                                        isShowOptions={isShowOptions.level}
-                                        setShowOptions={() => setShowOptions((prev) => ({ ...prev, level: !prev.level }))}
-                                        airportsName={airports.level}
-                                        level={level}
-                                        handleLocationChange={(e) => handleLocationChange("level", e)}
-                                    />
-                                </td>
-                                <td>
-                                    <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td><MarkTd>가는날</MarkTd></td>
+                                    <td />
+                                    <td><MarkTd>좌석등급</MarkTd></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <SelectComponent
+                                            selectBoxRef={selectBoxRef}
+                                            number={3}
+                                            isShowOptions={isShowOptions.level}
+                                            setShowOptions={() => setShowOptions((prev) => ({ ...prev, level: !prev.level }))}
+                                            airportsName={airports.level}
+                                            level={level}
+                                            handleLocationChange={(e) => handleLocationChange("level", e)}
+                                        />
+                                    </td>
+                                    <td />
+                                    <td>
+                                        <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style={{clear:'both'}}>
                         <button className="button-search" onClick={handleSearch} >검색하기</button>
                     </div>
                 </div>
             </div>
-            <div className="middlebackground">
+            <div className="container container-middle">
                 <h1>여기엔 뭘 넣지 ???</h1>
             </div>
 
@@ -287,7 +291,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
             onClick={setShowOptions}>
             {
                 number === 3 ? <>
-                    <TbArmchair2 />
+                    <TbArmchair2 style={{fontSize:"1.6rem",margin:-5}}/>
                     <Label>{airportsName}</Label>
                 </> : <LocationLabel>{airportsName}</LocationLabel>
             }
@@ -333,7 +337,7 @@ function FooterSlider({ footerData, handleReserve }) {
         setCurrentIndex(index);
     }
     const renderSlides = footerData.map((footer) => (
-        <div className="footerbackground"  style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
+        <div className="container-bottom" style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
             <div className="footerpanel">
                 <div>
                     <h1>{footer.title}</h1>

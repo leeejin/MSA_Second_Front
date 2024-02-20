@@ -27,8 +27,9 @@ body {
     display: flex;
     align-items: center;
     box-sizing: border-box;
-    text-align: center;
     border-bottom: 2px solid var(--black-color);
+    background-color: none;
+    width:160px;
 
     &:hover {
         cursor: pointer;

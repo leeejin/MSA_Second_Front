@@ -30,8 +30,8 @@ export default function Datepicker({ depTime, handleDateChange }) {
             <DatePicker
                 className="datepicker" //input style class
                 showIcon
-                placeholderText='날짜를 선택하세요'
-                icon={<LuCalendar />}
+                placeholderText='날짜'
+                icon={<LuCalendar style={{fontSize:"1.6rem",padding:0}}/>}
                 shouldCloseOnSelect //시간선택하면 닫아짐
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
