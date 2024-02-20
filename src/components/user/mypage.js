@@ -10,18 +10,14 @@ export default function MyPage() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
     const [nickname, setNickname] = useState(store.getState().nickname); //리덕스에 있는 nickname를 가져옴
-    const [open, setOpen] = useState({
-        payCancel: false,
-        accomodationCancle: false
-    })
-    const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: true, payList: false });
+    const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
 
 
     const handleLocation = (selectedMenu) => {
-        if (selectedMenu === 'accommodationList') {
-            setSubBoxVisible({ accomodationList: true, payList: false });
-        } else if (selectedMenu === 'payList') {
-            setSubBoxVisible({accomodationList: false, payList: true });
+        if (selectedMenu === 'payList') {
+            setSubBoxVisible({ accommodationList: false, payList: true });
+        } else if (selectedMenu === 'accommodationList') {
+            setSubBoxVisible({ accommodationList: true, payList: false });
         }
     }
 
@@ -35,7 +31,7 @@ export default function MyPage() {
                 <h3 className="componentTitle">마이페이지</h3>
                 <div>
                     {
-                        subBoxVisible.payList === true ? <AccommodationList /> : <PayList />
+                        subBoxVisible.payList === true ? <PayList /> : <AccommodationList />
                     }
                 </div>
             </div>

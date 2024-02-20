@@ -8,6 +8,24 @@ import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
 import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
+/** 티켓테이블 디자인 */
+const TicketTable = styled.table`
+    border-radius: 15px;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color:var(--white-color);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    td{
+        padding:5px;
+    }
+    tr:nth-child(1) td:nth-child(2) {
+        border-left: 1px solid var(--grey-color);
+    }
+    
+    tr:nth-child(1) {
+        border-bottom: 1px solid var(--grey-color);
+    }
+`; 
 const SubThead = styled.span`
     color:grey;
 `;
@@ -148,7 +166,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
         return formattedTime;
     }
     return (
-        <table >
+        <TicketTable>
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>
@@ -188,7 +206,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                 </tr>
             </tbody>
 
-        </table>
+        </TicketTable>
 
     )
 }

@@ -48,11 +48,6 @@ export default function ModalBookCheck() {
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         const { IMP } = window;
-        let errors = {
-            emailError: payInfo.email === '' || !payInfo.email.match(/^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/),
-            nameError: payInfo.name.length < 2 || payInfo.name.length > 5,
-            phoneError: !payInfo.phone.match(/^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4}$)/),
-        }
 
         //백엔드에 보낼 예약정보
         const formData = {
@@ -66,8 +61,8 @@ export default function ModalBookCheck() {
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
             userId: userId, //예약하는 userId
-            passenger: nickname, //예약하는 nickname
         };
+        
         // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
         const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
         console.log(reservationResponse.status);
@@ -122,16 +117,7 @@ export default function ModalBookCheck() {
             });
         } else {
             //안되면 에러뜨게 함
-            if (errors.nameError) {
-                setPayError({ name: errors.nameError });
-            } else if (errors.emailError) {
-                setPayError({ email: errors.emailError });
-            } else if (errors.phoneError) {
-                setPayError({ phone: errors.phoneError });
-            }
-            setTimeout(() => {
-                setPayError({ email: false, name: false, phone: false });
-            }, 1500);
+            
         }
     };
 
@@ -187,11 +173,9 @@ export default function ModalBookCheck() {
             {
                 success.pay && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다.</h3>
             }
+          
             {
-                payModalVisible && <InfoModalComponent handleChangeInfo={handleChangeInfo} handleSubmit={handleSubmit} handleInfoModal={handleInfoModal} autoHyphen2={autoHyphen2} />
-            }
-            {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약 및 결제하시겠습니까?"} />
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"카카오페이로 결제하시겠습니까?"} />
             }
             <div style={{ marginTop: '50%' }}>
                 {
@@ -226,49 +210,5 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                 <button onClick={() => handleOpenClose(info)}>선택</button>
             </div>
         </div>
-    )
-}
-
-/** 결제 확인 모달창 */
-const InfoModalComponent = ({ handleChangeInfo, handleSubmit, handleInfoModal, autoHyphen2 }) => {
-    useEffect(() => {
-        document.body.style = `overflow: hidden`;
-        return () => document.body.style = `overflow: auto`
-    }, []);
-
-
-    return (
-        <>
-            <div className="black-wrap" />
-            <div className="white-wrap">
-                <h3>카카오페이 결제정보</h3>
-                <p>이름</p>
-                <input
-                    placeholder="이름"
-                    onChange={(e) => handleChangeInfo("name", e)}
-                    autoFocus
-                />
-                <p>이메일</p>
-                <input
-                    type="email"
-                    placeholder="이메일"
-                    onChange={(e) => handleChangeInfo("email", e)}
-                />
-                <p>전화번호</p>
-                <input
-                    placeholder="010-0000-0000"
-                    onChange={(e) => handleChangeInfo("phone", e)}
-                    onBlur={(e) => autoHyphen2(e.target)}
-                />
-                <div>
-                    <button onClick={handleSubmit}>확인</button>
-                    <button onClick={handleInfoModal}>취소</button>
-                </div>
-
-            </div>
-        </>
-
-
-
     )
 }
