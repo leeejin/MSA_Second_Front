@@ -9,9 +9,7 @@ import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
-const Footer = styled.div`
-background-image: url(${props => props.imageUrl});
-`;
+
 const Tr = styled.tr`
     text-align:center;
 
@@ -335,7 +333,7 @@ function FooterSlider({ footerData, handleReserve }) {
         setCurrentIndex(index);
     }
     const renderSlides = footerData.map((footer) => (
-        <Footer className="footerbackground" imageUrl={footer.imageUrl} key={footer.key}>
+        <div className="footerbackground"  style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
             <div className="footerpanel">
                 <div>
                     <h1>{footer.title}</h1>
@@ -346,7 +344,7 @@ function FooterSlider({ footerData, handleReserve }) {
                     </button>
                 </div>
             </div>
-        </Footer>
+        </div>
     ))
     return (
         <Carousel
