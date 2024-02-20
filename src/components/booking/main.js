@@ -51,26 +51,21 @@ export default function Main() {
     const selectBoxRef = useRef([null, null, null]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            selectBoxRef.current.forEach((ref, index) => {
-                let newShowOptions = { dep: false, arr: false, level: false };
-                if (ref?.contains(event.target)) {
-                    // 클릭한 요소에 해당하는 상태만 열린 상태로 설정
-                    if (index === 0) newShowOptions.dep = true;
-                    else if (index === 1) newShowOptions.arr = true;
-                    else if (index === 2) newShowOptions.level = true;
-                }
-                setShowOptions(newShowOptions);
-            });
+        const isOutsideClick = selectBoxRef.current.every((ref, index) => {
+        return !ref?.contains(event.target);
+        });
+        if (isOutsideClick) {
+        setShowOptions({ dep: false, arr: false, level: false });
+        }
         };
-    
         document.addEventListener('mousedown', handleOutsideClick);
-    
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, []);
-
+        
+            return () => {
+                document.removeEventListener('mousedown', handleOutsideClick);
+            };
+        }, []);
     const handleLocationChange = (locationType, e) => {
+      
         setAirPorts((prev) => ({
             ...prev,
             [locationType]: e.target.getAttribute("value")
