@@ -41,11 +41,11 @@ export default function Login() {
         if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
-                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), nickname: response.data.nickname } }); //리덕스에 로그인 정보 업데이트
+                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId) } }); //리덕스에 로그인 정보 업데이트
                 const token = response.headers['authorization'];
                 window.localStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
-                window.location.href='/';
+                window.location.href = '/';
             }).catch(() => {
                 setLoginError(true);// 로그인 실패 시 loginError 상태를 true로 설정
                 setTimeout(() => {

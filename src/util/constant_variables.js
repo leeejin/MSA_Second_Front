@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Jeju from '../styles/image/main_pic.jpg'; //감귤 이미지
+import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
 import Busan from '../styles/image/busan.jpg'; //부산 이미지
-import Daejeon from '../styles/image/busan.jpg'; //부산 이미지
-import Gwangju from '../styles/image/busan.jpg'; //부산 이미지
+import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
+import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
