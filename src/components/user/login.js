@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
@@ -16,15 +16,35 @@ const SubButton = styled.span`
         cursor: pointer;
     }
 `;
+/** 에러메시지 (이메일,비밀번호, 로그인성공여부) */
+const ERROR_STATE = {
+    emailError: false,
+    passwordError: false,
+    successError: false
+}
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'emailError':
+            return { ...state, emailError: true }
+        case 'passwordError':
+            return { ...state, passwordError: true }
+        case 'successError':
+            return { ...state, successError: true }
+        default:
+            return ERROR_STATE
+
+    }
+}
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+   
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [info, setInfo] = useState({ //회원가입 정보 저장
         email: '',
         password: '',
     });
-    const [errorMessage, setErrorMessage] = useState({ email: false, password: false });
-    const [loginError, setLoginError] = useState(false); // 로그인 실패 여부 추가
+
     /** Info 변화 */
     const handleChangeInfo = (infoType, e) => {
         setInfo((prev) => ({
@@ -47,20 +67,20 @@ export default function Login() {
                 axios.defaults.headers.common['Authorization'] = token;
                 window.location.href = '/';
             }).catch(() => {
-                setLoginError(true);// 로그인 실패 시 loginError 상태를 true로 설정
+                errorDispatch({ type: 'successError', successError: errors.successError }); // 로그인 실패 시 loginError 상태를 true로 설정
                 setTimeout(() => {
-                    setLoginError(false);// 로그인 실패 시 loginError 상태를 true로 설정
-                    setErrorMessage({ email: false, password: false });
+                    // 로그인 실패 시 loginError 상태를 true로 설정
+                    errorDispatch({ type: 'error' });
                 }, 1000);
             });
         } else {
             if (errors.emailError) {
-                setErrorMessage({ email: errors.emailError });
+                errorDispatch({ type: 'emailError', emailError: errors.emailError });
             } else if (errors.passwordError) {
-                setErrorMessage({ password: errors.passwordError });
+                errorDispatch({ type: 'passwordError', passwordError: errors.passwordError });
             }
             setTimeout(() => {
-                setErrorMessage({ email: false, password: false });
+                errorDispatch({ type: 'error' });
             }, 1000);
         }
     }
@@ -75,6 +95,15 @@ export default function Login() {
     }
     return (
         <>
+            {
+                errorMessage.emailError && <h3 className="white-wrap message">아이디를 입력해주세요.</h3>
+            }
+            {
+                errorMessage.passwordError && <h3 className="white-wrap message">비밀번호를 입력해주세요.</h3>
+            }
+            {
+                errorMessage.successError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
+            }
             <div className="background" />
             <div className='backBox'>
                 <div className='innerBox'>
@@ -86,20 +115,13 @@ export default function Login() {
                             onChange={(e) => handleChangeInfo('email', e)}
                             autoFocus
                         />
-                        {
-                            errorMessage.email && <h3 className="white-wrap message">아이디를 입력해주세요.</h3>
-                        }
+
                         <p>비밀번호</p>
                         <input
                             type="password"
                             onChange={(e) => handleChangeInfo('password', e)}
                         />
-                        {
-                            errorMessage.password && <h3 className="white-wrap message">비밀번호를 입력해주세요.</h3>
-                        }
-                        {
-                            loginError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
-                        }
+
                         <SubButton onClick={() => { navigate('/Signup') }}>
                             회원가입 하기
                         </SubButton>

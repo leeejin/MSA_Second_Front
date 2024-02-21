@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, forwardRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, forwardRef, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from '../../axiosInstance';
@@ -9,7 +9,6 @@ import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
-
 
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
@@ -33,6 +32,34 @@ const SelectOptions = styled.ul`
 const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
 const footer = Constant.getSliderMenus(); //푸터 이미지 내용
+/** 에러메시지 (출발지-도착지, 날짜) */
+const ERROR_STATE = {
+    depError: false,
+    arrError: false,
+    locationError: false,
+    levelError: false,
+    dateError: false,
+    searchError: false,
+}
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'depError':
+            return { ...state, depError: true }
+        case 'arrError':
+            return { ...state, arrError: true }
+        case 'locationError':
+            return { ...state, locationError: true }
+        case 'levelError':
+            return { ...state, levelError: true }
+        case 'dateError':
+            return { ...state, dateError: true }
+        case 'searchError':
+            return { ...state, searchError: true }
+        default:
+            return ERROR_STATE
+
+    }
+}
 /** 메인페이지 - 여기서 예약조회 하기 위한 검색 */
 export default function Main() {
     const navigate = useNavigate();
@@ -40,32 +67,29 @@ export default function Main() {
     const [airports, setAirPorts] = useState({
         dep: '출발',
         arr: '도착',
-        level: '좌석'
+        level: '좌석',
     })
-
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
-    const [errorMessage, setErrorMessage] = useState({ depError: false, arrError: false, locationError: false, dateError: false }); //에러메시지 (출발지-도착지, 날짜)
-    const [serverErrorMessage, setServerErrorMessage] = useState({ searchError: false })
+    const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
-        const isOutsideClick = selectBoxRef.current.every((ref, index) => {
-        return !ref?.contains(event.target);
-        });
-        if (isOutsideClick) {
-        setShowOptions({ dep: false, arr: false, level: false });
-        }
+            const isOutsideClick = selectBoxRef.current.every((ref, index) => {
+                return !ref?.contains(event.target);
+            });
+            if (isOutsideClick) {
+                setShowOptions({ dep: false, arr: false, level: false });
+            }
         };
         document.addEventListener('mousedown', handleOutsideClick);
-        
-            return () => {
-                document.removeEventListener('mousedown', handleOutsideClick);
-            };
-        }, []);
-    const handleLocationChange = (locationType, e) => {
-      
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+        };
+    }, []);
+    const handleChange = (locationType, e) => {
         setAirPorts((prev) => ({
             ...prev,
             [locationType]: e.target.getAttribute("value")
@@ -109,10 +133,10 @@ export default function Main() {
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime === '날짜' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError: depTime === '' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
-            setErrorMessage({ locationError: false, dateError: false }); //에러 모두 false로 바꿈
+            dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
                 navigate(`/Reserve`, {
                     state: {
@@ -122,27 +146,27 @@ export default function Main() {
                 });
 
             }).catch((error) => {
-                setServerErrorMessage({ searchError: true });
+                dispatch({ type: 'searchError', searchError: true });
                 setTimeout(() => {
-                    setServerErrorMessage({ searchError: false }); //에러 모두 false로 바꿈
+                    dispatch({ type: 'error' }); //에러 모두 false로 바꿈
                 }, 1000);
             })
 
 
         } else {
             if (errors.depError) {
-                setErrorMessage({ depError: errors.depError });
+                dispatch({ type: 'depError', depError: errors.depError });
             } else if (errors.arrError) {
-                setErrorMessage({ arrError: errors.arrError });
-            } else if (errors.levelError) {
-                setErrorMessage({ levelError: errors.levelError });
-            } else if (errors.dateError) {
-                setErrorMessage({ dateError: errors.dateError });
+                dispatch({ type: 'arrError', arrError: errors.arrError });
             } else if (errors.locationError) {
-                setErrorMessage({ locationError: errors.locationError });
+                dispatch({ type: 'locationError', locationError: errors.locationError });
+            } else if (errors.levelError) {
+                dispatch({ type: 'levelError', levelError: errors.levelError });
+            } else if (errors.dateError) {
+                dispatch({ type: 'dateError', dateError: errors.dateError });
             }
             setTimeout(() => {
-                setErrorMessage({ locationError: false, dateError: false, levelError: false, depError: false, arrError: false }); //에러 모두 false로 바꿈
+                dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             }, 1000);
         }
     }
@@ -187,7 +211,7 @@ export default function Main() {
                 errorMessage.dateError && <h3 className="white-wrap message">날짜를 선택해주세요</h3>
             }
             {
-                serverErrorMessage.searchError && <h3 className="white-wrap message">먼 이유로 검색이 불가능합니다</h3>
+                errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
             }
             <div className="container container-top" >
                 <div className="mainpanel">
@@ -203,28 +227,28 @@ export default function Main() {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <SelectComponent
+                                        <LocationSelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={1}
                                             isShowOptions={isShowOptions.dep}
                                             setShowOptions={() => setShowOptions((prev) => ({ ...prev, dep: !prev.dep }))}
                                             airportsName={airports.dep}
                                             airport={airport}
-                                            handleLocationChange={(e) => handleLocationChange("dep", e)}
+                                            handleLocationChange={(e) => handleChange("dep", e)}
                                         />
                                     </td>
                                     <td>
                                         <button className="doButton" onClick={handleAirPortReverse}><img src={reverse} /></button>
                                     </td>
                                     <td>
-                                        <SelectComponent
+                                        <LocationSelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={2}
                                             isShowOptions={isShowOptions.arr}
                                             setShowOptions={() => setShowOptions((prev) => ({ ...prev, arr: !prev.arr }))}
                                             airportsName={airports.arr}
                                             airport={airport}
-                                            handleLocationChange={(e) => handleLocationChange("arr", e)}
+                                            handleLocationChange={(e) => handleChange("arr", e)}
                                         />
                                     </td>
 
@@ -242,14 +266,14 @@ export default function Main() {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <SelectComponent
+                                        <LevelSelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={3}
                                             isShowOptions={isShowOptions.level}
                                             setShowOptions={() => setShowOptions((prev) => ({ ...prev, level: !prev.level }))}
                                             airportsName={airports.level}
                                             level={level}
-                                            handleLocationChange={(e) => handleLocationChange("level", e)}
+                                            handleChange={(e) => handleChange("level", e)}
                                         />
                                     </td>
                                     <td />
@@ -260,7 +284,7 @@ export default function Main() {
                             </tbody>
                         </table>
                     </div>
-                    <div style={{clear:'both'}}>
+                    <div style={{ clear: 'both' }}>
                         <button className="button-search" onClick={handleSearch} >검색하기</button>
                     </div>
                 </div>
@@ -278,49 +302,56 @@ export default function Main() {
 }
 
 /** 출발지,도착지 컴포넌트 */
-const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, airport, level, handleLocationChange }) => {
+const LocationSelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, airport, handleChange }) => {
     return (
         <div
             ref={el => selectBoxRef.current[number] = el}
-            className={`${isShowOptions ? 'select select-location active' : 'select select-location'} ${number === 3 && 'select select-level'}`}
+            className={`${isShowOptions ? 'select select-location active' : 'select select-location'}`}
             onClick={setShowOptions}>
-            {
-                number === 3 ? <>
-                    <TbArmchair2 style={{fontSize:"1.6rem",margin:-5}}/>
-                    <Label>{airportsName}</Label>
-                </> : <LocationLabel>{airportsName}</LocationLabel>
-            }
+            <LocationLabel>{airportsName}</LocationLabel>
             <SelectOptions
-                className={`${number === 3 ? "select-option select-option-level" : "select-option select-option-location"}`}
+                className="select-option select-option-location"
                 show={isShowOptions}>
                 {
-                    number === 3 ? <>
-                        <OptionLabel>좌석 등급 선택</OptionLabel>
-                        {
-                            level.map((level) => (
-                                <li
-                                    className="option level-style"
-                                    onClick={handleLocationChange}
-                                    key={level.key}
-                                    value={level.value}>
-                                    {level.name}
-                                </li>
-                            ))
-                        }
-                    </> : <>
-                        {
-                            airport.map((ap) => (
-                                <li
-                                    className="option"
-                                    onClick={handleLocationChange}
-                                    key={ap.airportId}
-                                    value={ap.airportNm}>
-                                    {ap.airportNm}
-                                </li>
-                            ))
-                        }</>
+                    airport.map((ap) => (
+                        <li
+                            className="option"
+                            onClick={handleChange}
+                            key={ap.airportId}
+                            value={ap.airportNm}>
+                            {ap.airportNm}
+                        </li>
+                    ))
                 }
+            </SelectOptions>
+        </div>
+    )
+}
 
+/** 레벨 선택 컴포넌트 */
+const LevelSelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, level, handleChange }) => {
+    return (
+        <div
+            ref={el => selectBoxRef.current[number] = el}
+            className={`${isShowOptions ? 'select select-level active' : 'select select-level'}`}
+            onClick={setShowOptions}>
+            <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
+            <Label>{airportsName}</Label>
+            <SelectOptions
+                className="select-option select-option-level"
+                show={isShowOptions}>
+                <OptionLabel>좌석 등급 선택</OptionLabel>
+                {
+                    level.map((level) => (
+                        <li
+                            className="option level-style"
+                            onClick={handleChange}
+                            key={level.key}
+                            value={level.value}>
+                            {level.name}
+                        </li>
+                    ))
+                }
             </SelectOptions>
         </div>
     )

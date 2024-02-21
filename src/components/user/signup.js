@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useReducer } from 'react';
 import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
@@ -13,7 +13,34 @@ const Flex = styled.div`
 const SelectOptions = styled.ul`
   max-height: ${(props) => (props.show ? "none" : "0")};
 `;
+/** 에러메시지 (출발지-도착지, 날짜) */
+const ERROR_STATE = {
+    emailError: false,
+    nameError: false,
+    nicknameError: false,
+    passwordError: false,
+    confirmPasswordError: false,
+    duplicateError: false
+}
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'emailError':
+            return { ...state, emailError: true }
+        case 'nameError':
+            return { ...state, nameError: true }
+        case 'nicknameError':
+            return { ...state, nicknameError: true }
+        case 'passwordError':
+            return { ...state, passwordError: true }
+        case 'confirmPasswordError':
+            return { ...state, confirmPasswordError: true }
+        case 'duplicateError':
+            return { ...state, duplicateError: true }
+        default:
+            return ERROR_STATE
 
+    }
+}
 export default function Signup() {
     const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
@@ -29,9 +56,7 @@ export default function Signup() {
         confirmPassword: '',
     });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
-
-    const [errorMessage, setErrorMessage] = useState({ email: false, name: false, nickname: false, password: false, confirmPassword: false, duplicateCheck: false }); //에러 메시지
-
+    const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
     const selectBoxRef = useRef(null);
@@ -48,6 +73,7 @@ export default function Signup() {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
+    
     const handleOnChangeSelectValue = (e) => {
         setSelect(e.target.getAttribute("value"));
     };
@@ -76,18 +102,18 @@ export default function Signup() {
         } else {
             //안되면 에러뜨게 함
             if (errors.nameError) {
-                setErrorMessage({ name: errors.nameError });
+                dispatch({ type: 'nameError', nameError: errors.nameError });
             } else if (errors.nicknameError) {
-                setErrorMessage({ nickname: errors.nicknameError });
+                dispatch({ type: 'nicknameError', nicknameError: errors.nicknameError });
             } else if (errors.emailError) {
-                setErrorMessage({ email: errors.emailError });
+                dispatch({ type: 'emailError', emailError: errors.emailError });
             } else if (errors.passwordError) {
-                setErrorMessage({ password: errors.passwordError });
+                dispatch({ type: 'passwordError', passwordError: errors.passwordError });
             } else if (errors.confirmPasswordError) {
-                setErrorMessage({ confirmPassword: errors.confirmPasswordError });
+                dispatch({ type: 'confirmError', confirmError: errors.confirmError });
             }
             setTimeout(() => {
-                setErrorMessage({ email: false, name: false, nickname: false, password: false, confirmPassword: false, });
+                dispatch({ type: 'error' });
             }, 1500);
         }
 
@@ -106,11 +132,11 @@ export default function Signup() {
 
         }).catch((error) => {
             console.log(error)
-            setErrorMessage({ duplicateCheck: true });
+            dispatch({ type: 'duplicateError', duplicateError: true });
             setOpen(false);
 
             setTimeout(() => {
-                setErrorMessage({ duplicateCheck: false });
+                dispatch({ type: 'duplicateError', duplicateError: false });
             }, 1000);
         })
     }
@@ -129,11 +155,11 @@ export default function Signup() {
             return response.data;
         } catch (error) {
             console.error('오류 발생:', error);
-            setErrorMessage({ duplicateCheck: true });
+            dispatch({ type: 'duplicateError', duplicateError: true });
             setOpen(false);
 
             setTimeout(() => {
-                setErrorMessage({ duplicateCheck: false });
+                dispatch({ type: 'duplicateError', duplicateError: false });
             }, 1000);
         }
     }
@@ -143,22 +169,22 @@ export default function Signup() {
                 open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
             {
-                errorMessage.name && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
+                errorMessage.nameError && <h3 className="white-wrap message">이름은 2~5자 이내여야합니다. </h3>
             }
             {
-                errorMessage.nickname && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
+                errorMessage.nicknameError && <h3 className="white-wrap message">닉네임은 2~5자 이내여야합니다. </h3>
             }
             {
-                errorMessage.email && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
+                errorMessage.emailError && <h3 className="white-wrap message">이메일은 영대소문자, 숫자 포함해야합니다.</h3>
             }
             {
-                errorMessage.password && <h3 className="white-wrap message">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
+                errorMessage.passwordError && <h3 className="white-wrap message">비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.</h3>
             }
             {
-                errorMessage.confirmPassword && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
+                errorMessage.confirmPasswordError && <h3 className="white-wrap message">비밀번호가 다릅니다.</h3>
             }
             {
-                errorMessage.duplicateCheck === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
+                errorMessage.duplicateError === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
             }
             <div className='background' />
             <div className='backBox'>
