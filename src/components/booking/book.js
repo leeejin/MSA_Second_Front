@@ -63,9 +63,11 @@ export default function ModalBookCheck() {
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         const { IMP } = window;
-
+        const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
+        const amount = selectedData.charge;
         //백엔드에 보낼 예약정보
         const formData = {
+            merchant_uid : merchant_uid,
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
             depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
@@ -77,8 +79,7 @@ export default function ModalBookCheck() {
             userId: userId, //예약하는 userId
             name:name
         };
-        const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
-        const amount = selectedData.charge;
+       
         console.log("예약번호 : " + merchant_uid);
         console.log("선택한 컴포넌트 객체 : " + selectedData);
         console.log("폼데이터 : " ,formData);
@@ -88,7 +89,6 @@ export default function ModalBookCheck() {
 
         // 예약 요청이 성공적으로 이루어졌을 때
         if (reservationResponse.status === 201) {
-
 
             // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
             try {

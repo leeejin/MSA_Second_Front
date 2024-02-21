@@ -4,6 +4,7 @@
     margin:auto;
     cursor: pointer;
     width:160px;
+    height:25px;
 }
 .select-location {
     top: -1px;
@@ -28,8 +29,9 @@
     }
 }
 .select-level {
-    top: -1.5px;
-    padding: 5px;
+    top: 1.5px;
+    padding-left: 3px;
+    padding-right:0px;
     border-bottom: 2px solid var(--black-color);
     text-align: left;
 }

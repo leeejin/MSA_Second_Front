@@ -67,7 +67,7 @@ export default function Main() {
     const [airports, setAirPorts] = useState({
         dep: '출발',
         arr: '도착',
-        level: '좌석',
+        level: '좌석을 선택해주세요',
     })
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
@@ -107,7 +107,14 @@ export default function Main() {
     }
     /**출발지와 도착지 리버스 핸들러 */
     const handleAirPortReverse = () => {
-        setAirPorts(prev => ({ ...prev, dep: prev.arr, arr: prev.dep }));
+        setAirPorts(prev => {
+            if (prev.dep === '출발' || prev.arr === '도착') {
+                // dep가 '출발'이고 arr가 '도착'일 때는 상태를 업데이트하지 않는다.
+                return prev;
+            }
+            // 그 외의 경우에는 dep와 arr를 서로 바꾼다.
+            return { ...prev, dep: prev.arr, arr: prev.dep }
+        });
     }
 
     /** 출발 날짜 핸들러 */
@@ -131,7 +138,7 @@ export default function Main() {
         let errors = {
             depError: airports.dep === '출발',
             arrError: airports.arr === '도착',
-            levelError: airports.level === '좌석',
+            levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
             dateError: depTime === '' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
@@ -315,7 +322,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
                 className={`${isShowOptions ? 'select select-level active' : 'select select-level'}`}
                 onClick={setShowOptions}>
                 <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
-                <Label>{airportsName}</Label>
+                <Label style={{paddingLeft:'5px',paddingBottom:'5px',color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)'}}>{airportsName}</Label>
                 <SelectOptions
                     className="select-option select-option-level"
                     show={isShowOptions}>
@@ -340,7 +347,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, 
                 ref={el => selectBoxRef.current[number] = el}
                 className={`${isShowOptions ? 'select select-location active' : 'select select-location'}`}
                 onClick={setShowOptions}>
-                <LocationLabel>{airportsName}</LocationLabel>
+                <LocationLabel style={{color: (airportsName === '출발' || airportsName === '도착') ? 'grey' : 'var(--black-color)'}}>{airportsName}</LocationLabel>
                 <SelectOptions
                     className="select-option select-option-location"
                     show={isShowOptions}>

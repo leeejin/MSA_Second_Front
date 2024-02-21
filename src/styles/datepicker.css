@@ -24,13 +24,12 @@ body {
 }
 
 .datepicker {
-    display: flex;
     align-items: center;
     box-sizing: border-box;
     border-bottom: 2px solid var(--black-color);
     background-color: none;
     width:160px;
-
+    position:relative;
     &:hover {
         cursor: pointer;
     }
