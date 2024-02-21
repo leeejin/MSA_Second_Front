@@ -170,20 +170,25 @@ export default function Main() {
             }, 1000);
         }
     }
-    /** main.js 조회 데이터 API요청 */
-    async function callPostAirInfoAPI() {
+    /**date 형식 바꾸는 함수 */
+    const handleDateFormatChange = (date) => {
         const year = depTime.getFullYear();
         const month = String(depTime.getMonth() + 1).padStart(2, "0");
         const day = String(depTime.getDate()).padStart(2, "0");
 
         const formattedDate = year + month + day;
 
+        return formattedDate;
+    }
+    /** main.js 조회 데이터 API요청 */
+    async function callPostAirInfoAPI() {
+
         /** 백엔드로 보낼 데이터 : 출발지, 도착지, 날짜 */
         const formData = {
             depAirport: getSelectedAirport(airports.dep), //출발지
             arrAirport: getSelectedAirport(airports.arr), //도착지
             seatLevel: airports.level, //좌석등급
-            depTime: formattedDate, //날짜
+            depTime: handleDateFormatChange(depTime), //날짜
         };
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
@@ -227,28 +232,28 @@ export default function Main() {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <LocationSelectComponent
+                                        <SelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={1}
                                             isShowOptions={isShowOptions.dep}
                                             setShowOptions={() => setShowOptions((prev) => ({ ...prev, dep: !prev.dep }))}
                                             airportsName={airports.dep}
                                             airport={airport}
-                                            handleLocationChange={(e) => handleChange("dep", e)}
+                                            handleChange={(e) => handleChange("dep", e)}
                                         />
                                     </td>
                                     <td>
                                         <button className="doButton" onClick={handleAirPortReverse}><img src={reverse} /></button>
                                     </td>
                                     <td>
-                                        <LocationSelectComponent
+                                        <SelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={2}
                                             isShowOptions={isShowOptions.arr}
                                             setShowOptions={() => setShowOptions((prev) => ({ ...prev, arr: !prev.arr }))}
                                             airportsName={airports.arr}
                                             airport={airport}
-                                            handleLocationChange={(e) => handleChange("arr", e)}
+                                            handleChange={(e) => handleChange("arr", e)}
                                         />
                                     </td>
 
@@ -266,7 +271,7 @@ export default function Main() {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <LevelSelectComponent
+                                        <SelectComponent
                                             selectBoxRef={selectBoxRef}
                                             number={3}
                                             isShowOptions={isShowOptions.level}
@@ -301,65 +306,66 @@ export default function Main() {
     );
 }
 
-/** 출발지,도착지 컴포넌트 */
-const LocationSelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, airport, handleChange }) => {
-    return (
-        <div
-            ref={el => selectBoxRef.current[number] = el}
-            className={`${isShowOptions ? 'select select-location active' : 'select select-location'}`}
-            onClick={setShowOptions}>
-            <LocationLabel>{airportsName}</LocationLabel>
-            <SelectOptions
-                className="select-option select-option-location"
-                show={isShowOptions}>
-                {
-                    airport.map((ap) => (
-                        <li
-                            className="option"
-                            onClick={handleChange}
-                            key={ap.airportId}
-                            value={ap.airportNm}>
-                            {ap.airportNm}
-                        </li>
-                    ))
-                }
-            </SelectOptions>
-        </div>
-    )
+/** 출발지,도착지,좌석 컴포넌트 */
+const SelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, airport, level, handleChange }) => {
+    if (number === 3) {
+        return (
+            <div
+                ref={el => selectBoxRef.current[number] = el}
+                className={`${isShowOptions ? 'select select-level active' : 'select select-level'}`}
+                onClick={setShowOptions}>
+                <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
+                <Label>{airportsName}</Label>
+                <SelectOptions
+                    className="select-option select-option-level"
+                    show={isShowOptions}>
+                    <OptionLabel>좌석 등급 선택</OptionLabel>
+                    {
+                        level.map((level) => (
+                            <li
+                                className="option level-style"
+                                onClick={handleChange}
+                                key={level.key}
+                                value={level.value}>
+                                {level.name}
+                            </li>
+                        ))
+                    }
+                </SelectOptions>
+            </div>
+        )
+    } else {
+        return (
+            <div
+                ref={el => selectBoxRef.current[number] = el}
+                className={`${isShowOptions ? 'select select-location active' : 'select select-location'}`}
+                onClick={setShowOptions}>
+                <LocationLabel>{airportsName}</LocationLabel>
+                <SelectOptions
+                    className="select-option select-option-location"
+                    show={isShowOptions}>
+                    {
+                        airport.map((ap) => (
+                            <li
+                                className="option"
+                                onClick={handleChange}
+                                key={ap.airportId}
+                                value={ap.airportNm}>
+                                {ap.airportNm}
+                            </li>
+                        ))
+                    }
+                </SelectOptions>
+            </div>
+        )
+    }
+
 }
 
-/** 레벨 선택 컴포넌트 */
-const LevelSelectComponent = ({ selectBoxRef, number, isShowOptions, setShowOptions, airportsName, level, handleChange }) => {
-    return (
-        <div
-            ref={el => selectBoxRef.current[number] = el}
-            className={`${isShowOptions ? 'select select-level active' : 'select select-level'}`}
-            onClick={setShowOptions}>
-            <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
-            <Label>{airportsName}</Label>
-            <SelectOptions
-                className="select-option select-option-level"
-                show={isShowOptions}>
-                <OptionLabel>좌석 등급 선택</OptionLabel>
-                {
-                    level.map((level) => (
-                        <li
-                            className="option level-style"
-                            onClick={handleChange}
-                            key={level.key}
-                            value={level.value}>
-                            {level.name}
-                        </li>
-                    ))
-                }
-            </SelectOptions>
-        </div>
-    )
-}
 /** footer 슬라이더 */
-function FooterSlider({ footerData, handleReserve }) {
+const FooterSlider = ({ footerData, handleReserve }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    function handleChange(index) {
+    const handleChange = (index) => {
         setCurrentIndex(index);
     }
     const renderSlides = footerData.map((footer) => (

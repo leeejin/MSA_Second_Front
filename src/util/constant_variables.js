@@ -32,5 +32,6 @@ export default class Constant {
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
         ];
     }
+    
 
 }

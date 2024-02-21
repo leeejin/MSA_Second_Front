@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import store from '../../util/redux_storage';
@@ -25,24 +25,39 @@ const TicketTable = styled.table`
     tr:nth-child(1) {
         border-bottom: 1px solid var(--grey-color);
     }
-`; 
+`;
 const SubThead = styled.span`
     color:grey;
 `;
-  //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
-  const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
-  const pageCountPerPage = 5; //보여줄 페이지 갯수
+//페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
+const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
+const pageCountPerPage = 5; //보여줄 페이지 갯수
+
+/** 에러메시지 (출발지-도착지, 날짜) */
+const ERROR_STATE = {
+    cancelError: false,
+    listError: false,
+
+}
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'cancelError':
+            return { ...state, cancelError: true }
+        case 'listError':
+            return { ...state, listError: true }
+        default:
+            return ERROR_STATE
+    }
+}
+
 /** 결제한 목록을 보여주는 함수 */
 export default function PaidList() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
-    const [nickname, setNickname] = useState(store.getState().nickname); //리덕스에 있는 nickname를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
-    const [success, setSuccess] = useState({ cancel: false }); // 예약,결제 성공 메시지
-    
-    
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
@@ -68,16 +83,17 @@ export default function PaidList() {
     };
     /** 결제취소 함수 */
     const handleSubmit = async (id) => {
+        const merchant_uid = id + "_" + new Date().getTime();
         try {
-            await callDeletePayListAPI(id);
+            await cancelPayment(merchant_uid);
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             const updatedContents = await callGetPaidListAPI();
             setContents(updatedContents);
             setOpen(!open);
 
-            setSuccess(prev => ({ ...prev, cancel: !prev.cancel }));
+            errorDispatch({ type: 'cancelError', cancelError: true });
             setTimeout(() => {
-                setSuccess(prev => ({ ...prev, cancel: !prev.cancel }));
+                errorDispatch({ type: 'error' });
             }, [1000])
         } catch (error) {
             console.log("예약 취소 중 오류 발생:", error);
@@ -105,21 +121,25 @@ export default function PaidList() {
         }
 
     }
-    /** 결제 취소하는 API */
-    async function callDeletePayListAPI(id) {
+    /**결제 취소 요청 함수  */
+    async function cancelPayment(merchant_uid) {
         try {
-            const response = axios.delete(Constant.serviceURL + `결제URL/${id}`, { withCredentials: true })
-            return response;
+            await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 요청
+                merchant_uid
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
         } catch (error) {
-            console.error(error);
+            console.error('Failed to notify payment cancellation', error);
         }
-
-    }
+    };
 
     return (
         <div>
             {
-                success.cancel && <h3 className="white-wrap message">결제취소가 완료되었습니다!</h3>
+                errorMessage.cancelError && <h3 className="white-wrap message">결제취소가 완료되었습니다!</h3>
             }
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
@@ -152,10 +172,10 @@ export default function PaidList() {
 }
 
 /** 결제 목록 리스트 아이템 */
-/** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
 
-    const handleChangeDate = (date) => {
+    /**date 형식 바꾸는 함수 */
+    const handleDateFormatChange = (date) => {
         const arrAirportTime = date.toString();
         const year = arrAirportTime.substr(0, 4);
         const month = arrAirportTime.substr(4, 2);
@@ -184,7 +204,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                        <p >{handleChangeDate(paidlist.depPlandTime)}</p>
+                        <p >{handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
                     <td>
@@ -192,7 +212,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.arrAirportNm}</h1>
-                        <p>{handleChangeDate(paidlist.arrPlandTime)}</p>
+                        <p>{handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>
                 <tr>

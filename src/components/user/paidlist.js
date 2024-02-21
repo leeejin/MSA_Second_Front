@@ -123,16 +123,14 @@ export default function PaidList() {
     }
     /**결제 취소 요청 함수  */
     async function cancelPayment(merchant_uid) {
-        console.log(merchant_uid);
         try {
-            await axios.post(Constant.serviceURL + `/payments/fail`, { // 결제 취소 요청
+            await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 요청
                 merchant_uid
             }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log('Payment cancellation notified successfully');
         } catch (error) {
             console.error('Failed to notify payment cancellation', error);
         }
@@ -174,10 +172,10 @@ export default function PaidList() {
 }
 
 /** 결제 목록 리스트 아이템 */
-/** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
 
-    const handleChangeDate = (date) => {
+    /**date 형식 바꾸는 함수 */
+    const handleDateFormatChange = (date) => {
         const arrAirportTime = date.toString();
         const year = arrAirportTime.substr(0, 4);
         const month = arrAirportTime.substr(4, 2);
@@ -206,7 +204,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                        <p >{handleChangeDate(paidlist.depPlandTime)}</p>
+                        <p >{handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
                     <td>
@@ -214,7 +212,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.arrAirportNm}</h1>
-                        <p>{handleChangeDate(paidlist.arrPlandTime)}</p>
+                        <p>{handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>
                 <tr>
