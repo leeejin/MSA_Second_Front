@@ -61,7 +61,7 @@ export default function Login() {
         if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
-                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId) } }); //리덕스에 로그인 정보 업데이트
+                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId) ,name:response.data.name} }); //리덕스에 로그인 정보 업데이트
                 const token = response.headers['authorization'];
                 window.localStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
