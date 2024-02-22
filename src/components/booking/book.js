@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import React, { useState, useEffect, useCallback, useReducer,useMemo } from 'react';
 import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
@@ -239,16 +239,18 @@ export default function ModalBookCheck() {
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
     /**date 형식 바꾸는 함수 */
-    const handleDateFormatChange = (date) => {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-        return formattedTime;
-    }
+    const handleDateFormatChange = useMemo(() => {
+        return (date) => {
+          const arrAirportTime = date.toString();
+          const year = arrAirportTime.substr(0, 4);
+          const month = arrAirportTime.substr(4, 2);
+          const day = arrAirportTime.substr(6, 2);
+          const hour = arrAirportTime.substr(8, 2);
+          const minute = arrAirportTime.substr(10, 2);
+          const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
+          return formattedTime;
+        };
+      }, []);
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "이코노미" && info.economyCharge === 0) || (seatLevel !== "이코노미" && info.prestigeCharge === 0)) {
         return null;

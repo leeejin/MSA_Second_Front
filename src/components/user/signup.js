@@ -10,9 +10,9 @@ const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
-const SelectOptions = styled.ul`
-  max-height: ${(props) => (props.show ? "none" : "0")};
-`;
+// const SelectOptions = styled.ul`
+//   max-height: ${(props) => (props.show ? "none" : "0")};
+// `;
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     emailError: false,
@@ -67,13 +67,14 @@ export default function Signup() {
                 setShowOptions(false);
             }
         };
+
         document.addEventListener('mousedown', handleOutsideClick);
 
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
-    
+
     const handleOnChangeSelectValue = (e) => {
         setSelect(e.target.getAttribute("value"));
     };
@@ -122,7 +123,9 @@ export default function Signup() {
     const handleSubmit = () => {
         setSubOpen(true);
     }
-
+    const show = () => {
+        setShowOptions((prev) => !prev);
+    };
     // 회원가입가기전에 체크 
     const handleSignup = () => {
         callAddUserAPI().then((response) => { //백엔드로부터 무사히 response를 받았다면
@@ -212,22 +215,24 @@ export default function Signup() {
                             <p>@</p>
                             <div
                                 ref={selectBoxRef}
-                                className={`${isShowOptions ? 'select select-email active' : 'select select-email'}`}
-                                onClick={() => setShowOptions((prev) => !prev)}>
+                                className={`select select-email ${isShowOptions && 'active'}`}
+                                onClick={show}
+                            >
                                 <label>{select}</label>
-                                <SelectOptions
-                                    className="select-option"
-                                    show={isShowOptions}>
-                                    {emailMenus.map((email, i) => (
-                                        <li
-                                            className="option"
-                                            onClick={(e) => handleOnChangeSelectValue(e)}
-                                            key={email.key}
-                                            value={email.value}>
-                                            {email.value}
-                                        </li>
-                                    ))}
-                                </SelectOptions>
+                                {isShowOptions && (
+                                    <ul className="select-option">
+                                        {emailMenus.map((email, i) => (
+                                            <li
+                                                className="option"
+                                                onClick={(e) => handleOnChangeSelectValue(e)}
+                                                key={email.key}
+                                                value={email.value}
+                                            >
+                                                {email.value}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                         </Flex>
 
