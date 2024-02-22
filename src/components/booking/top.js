@@ -79,6 +79,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
+  
     const handleChange = (locationType, e) => {
         setAirPorts((prev) => ({
             ...prev,
