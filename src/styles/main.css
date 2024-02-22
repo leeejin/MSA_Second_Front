@@ -404,9 +404,30 @@
 
 .container-middle {
     height: 700px;
-    display: flex;
+   
 }
-
+.middlepanel {
+    margin-top: auto;
+    margin-bottom: auto;
+    height:100%;
+}
+.swiper{
+    height:400px;
+}
+.swiper-slide{
+    border-radius: 15px;
+    position:relative;
+    align-items: center;
+}
+.swiper-slide-sub{
+    width:100%;
+    position:absolute;
+    bottom:0;
+    text-align: center;
+    color:var(--white-color);
+  
+    
+}
 .container-bottom {
     background-repeat: no-repeat;
     background-size: cover;
@@ -416,7 +437,7 @@
 }
 
 .footerpanel {
-    width: 70%;
+    width: 80%;
     height: 50%;
     position: absolute;
     top: 50%;
