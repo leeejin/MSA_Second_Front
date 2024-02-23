@@ -220,7 +220,7 @@ export default function Signup() {
                             >
                                 <label>{select}</label>
                                 {isShowOptions && (
-                                    <ul className="select-option">
+                                    <ul className="select-option select-option-email">
                                         {emailMenus.map((email, i) => (
                                             <li
                                                 className="option"

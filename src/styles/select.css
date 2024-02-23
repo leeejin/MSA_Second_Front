@@ -50,12 +50,16 @@
     color: var(--black-color);
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
-.select-option-location {
+.select-option-location{
     width: 100px;
 }
-.select-option-level {
-    width: 150px;
+.select-option-email{
+    width:100%
 }
+.select-option-level {
+    width: 100%;
+}
+
 .option {
     padding: 5px;
    

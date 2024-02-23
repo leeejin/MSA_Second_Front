@@ -38,12 +38,12 @@ export default function FooterSlider ({ setAirPorts }) {
     return (
         <Carousel
             showStatus={false}
-            showArrows={false}
+            showArrows={true}
             autoPlay={true}
             infiniteLoop={true}
             showThumbs={false}
             onChange={handleChange}
-            className="w-[400px] lg:hidden">
+            >
             {renderSlides}
         </Carousel>
     );
