@@ -35,6 +35,7 @@ const ERROR_STATE = {
     levelError: false,
     dateError: false,
     searchError: false,
+    seatError: false,
 }
 const reducer = (state, action) => {
     switch (action.type) {
@@ -50,6 +51,8 @@ const reducer = (state, action) => {
             return { ...state, dateError: true }
         case 'searchError':
             return { ...state, searchError: true }
+        case 'seatError':
+            return { ...state, seatError: true }
         default:
             return ERROR_STATE
 
@@ -79,7 +82,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
-  
+
     const handleChange = (locationType, e) => {
         setAirPorts((prev) => ({
             ...prev,
@@ -126,12 +129,20 @@ export default function TopComponent({ airports, setAirPorts }) {
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
-                navigate(`/Reserve`, {
-                    state: {
-                        contents: response.data,
-                        seatLevel: airport.level
-                    }
-                });
+                if(response.data.length===0){
+                    dispatch({type:'seatError',seatError:true});
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
+                }else{
+                    navigate(`/Reserve`, {
+                        state: {
+                            contents: response.data,
+                            seatLevel: airport.level
+                        }
+                    });
+                }
+                
 
             }).catch((error) => {
                 dispatch({ type: 'searchError', searchError: true });
@@ -182,7 +193,10 @@ export default function TopComponent({ airports, setAirPorts }) {
         };
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            
+            console.log(response);
             return response;
+            
         }
         catch (error) {
             console.error(error);
@@ -207,6 +221,9 @@ export default function TopComponent({ airports, setAirPorts }) {
             }
             {
                 errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
+            }
+             {
+                errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
             }
             <div className="container container-top" >
                 <div className="mainpanel">

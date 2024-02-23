@@ -21,11 +21,12 @@ export default function Menubar() {
     const handleSubmit = () => {
         callLogoutAPI().then((response) => {
             if (response) {
+                
                 dispatch({ type: "Logout" });
 
                 localStorage.removeItem('authToken');
-
                 window.location.href = '/';
+              
             }
         })
     };
