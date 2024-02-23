@@ -56,9 +56,10 @@ export default function ModalBookCheck() {
             charge: seatLevel === "이코노미" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
-    const handleOpenCloseReserve=useCallback(()=>{
+    const handleOpenCloseReserve=()=>{
         setPayOpen(!payopen);
-    },[])
+        setOpen(false);
+    };
     /**날짜타입 변경 */
     /**date 형식 바꾸는 함수 */
     const getDateTypeChange = useMemo(() => {
