@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer,useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
@@ -37,7 +37,7 @@ export default function ModalBookCheck() {
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
-    const [name,setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
+    const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 모달창
 
     const [selectedData, setSelectedData] = useState({}) //선택한 컴포넌트 객체
@@ -60,6 +60,22 @@ export default function ModalBookCheck() {
         }));
 
     }, []);
+    /**날짜타입 변경 */
+    const getDateTypeChange = (date) => {
+        dateStr = dateStr.replace(" KST", "");
+        let dateObj = new Date(Date.parse(dateStr));
+
+        // Date 객체를 원하는 형태의 문자열로 변환
+        let year = dateObj.getFullYear();
+        let month = String(dateObj.getMonth() + 1).padStart(2, '0'); // month는 0부터 시작하므로 1을 더함
+        let day = String(dateObj.getDate()).padStart(2, '0');
+        let hour = String(dateObj.getHours()).padStart(2, '0');
+        let minute = String(dateObj.getMinutes()).padStart(2, '0');
+
+        let dateStrFormatted = `${year}${month}${day}${hour}${minute}`;
+        // 문자열을 숫자로 변환
+        return parseInt(dateStrFormatted);
+    }
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         const { IMP } = window;
@@ -67,22 +83,22 @@ export default function ModalBookCheck() {
         const amount = selectedData.charge;
         //백엔드에 보낼 예약정보
         const formData = {
-            merchant_uid : merchant_uid,
+            id: selectedData.id,
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
             depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: selectedData.arrPlandTime, //도착시간
-            depTime: selectedData.depPlandTime, //출발시간
+            arrTime: getDateTypeChange(selectedData.arrPlandTime), //도착시간
+            depTime: getDateTypeChange(selectedData.depPlandTime), //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
             userId: userId, //예약하는 userId
-            name:name
+            name: name
         };
-       
+
         console.log("예약번호 : " + merchant_uid);
         console.log("선택한 컴포넌트 객체 : " + selectedData);
-        console.log("폼데이터 : " ,formData);
+        console.log("폼데이터 : ", formData);
         // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
         const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
         console.log(reservationResponse.status);
@@ -241,16 +257,16 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
     /**date 형식 바꾸는 함수 */
     const handleDateFormatChange = useMemo(() => {
         return (date) => {
-          const arrAirportTime = date.toString();
-          const year = arrAirportTime.substr(0, 4);
-          const month = arrAirportTime.substr(4, 2);
-          const day = arrAirportTime.substr(6, 2);
-          const hour = arrAirportTime.substr(8, 2);
-          const minute = arrAirportTime.substr(10, 2);
-          const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-          return formattedTime;
+            const arrAirportTime = date.toString();
+            const year = arrAirportTime.substr(0, 4);
+            const month = arrAirportTime.substr(4, 2);
+            const day = arrAirportTime.substr(6, 2);
+            const hour = arrAirportTime.substr(8, 2);
+            const minute = arrAirportTime.substr(10, 2);
+            const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
+            return formattedTime;
         };
-      }, []);
+    }, []);
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "이코노미" && info.economyCharge === 0) || (seatLevel !== "이코노미" && info.prestigeCharge === 0)) {
         return null;
