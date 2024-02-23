@@ -62,8 +62,8 @@ export default function ModalBookCheck() {
     }, []);
     /**날짜타입 변경 */
     const getDateTypeChange = (date) => {
-        dateStr = dateStr.replace(" KST", "");
-        let dateObj = new Date(Date.parse(dateStr));
+        date = date.replace(" KST", "");
+        let dateObj = new Date(Date.parse(date));
 
         // Date 객체를 원하는 형태의 문자열로 변환
         let year = dateObj.getFullYear();
