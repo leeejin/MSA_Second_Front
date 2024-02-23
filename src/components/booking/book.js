@@ -56,6 +56,9 @@ export default function ModalBookCheck() {
             charge: seatLevel === "이코노미" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
+    const handleOpenCloseReserve=useCallback(()=>{
+        setPayOpen(!payopen);
+    },[])
     /**날짜타입 변경 */
     /**date 형식 바꾸는 함수 */
     const getDateTypeChange = useMemo(() => {
@@ -99,13 +102,7 @@ export default function ModalBookCheck() {
             if (response === 201) {
                 setPayOpen(!payopen);
             }
-        }).catch((error) => {
-            //안되면 에러뜨게 함
-            errorDispatch({ type: 'reserveError', reserveError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000])
-        })
+        });
 
 
     };
@@ -256,7 +253,7 @@ export default function ModalBookCheck() {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
             }
             {
-                payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenClose} message={"예약이 완료되었습니다. 카카오페이로 하시겠습니까?"} />
+                payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 하시겠습니까?"} />
             }
             <div>
                 {
