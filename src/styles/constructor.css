@@ -9,6 +9,7 @@ body {
     margin: 0;
     font-family: 'Pretendard';
     font-size: 14px;
+    overflow-x: hidden;
 }
 
 div {
@@ -22,13 +23,9 @@ p {
 button {}
 
 table {
-    text-align: center;
     border-collapse: collapse;
 }
 
-thead{
-    background:var(--background-color);
-}
 input {
     border-bottom: 1px solid var(--black-color);
     border-top: none;

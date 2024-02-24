@@ -26,16 +26,13 @@ export default function Datepicker({ depTime, handleDateChange }) {
     ];
 
     return (
-        <div style={{ display: 'flex' }}>
+      
             <DatePicker
                 className="datepicker" //input style class
                 showIcon
-                placeholderText='날짜를 선택하세요'
-                icon={<LuCalendar />}
+                placeholderText='날짜를 선택해주세요'
+                icon={<LuCalendar style={{fontSize:"1.6rem",position:'absolute',top:-12.5,left:-8.5,zIndex:5,}}/>}
                 shouldCloseOnSelect //시간선택하면 닫아짐
-                // showTimeSelect //시간도 선택할 수 있게 함
-                // timeCaption="시간" //시간 Caption
-                
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
                 selected={depTime} //선택하는 날짜
@@ -43,7 +40,6 @@ export default function Datepicker({ depTime, handleDateChange }) {
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
                 onChange={(date) => handleDateChange(date)} //선택하는 날짜가 바뀌면
-                timeIntervals={60 * 4} //나타나는 시간 여기서는 4시간마다 하나씩 나타남
                 //dayClassName={(d) => (d.getDate() === startDate.getDate() ? 'selectedDay' : 'unselectedDay')} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함
                 renderCustomHeader={({ //헤더 스타일 바꿈
                     date,
@@ -77,7 +73,7 @@ export default function Datepicker({ depTime, handleDateChange }) {
                     </div>
                 )}
             />
-        </div>
+      
 
     );
 }

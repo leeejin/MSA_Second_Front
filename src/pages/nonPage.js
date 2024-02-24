@@ -14,12 +14,12 @@ const Box = styled.div`
     transform: translate(-50%, -50%);
 `;
 const Text = styled.p`
-    margin: 0.3;
+    margin: 0;
     line-height: 1.5;
     font-family: Pretendard-Bold;
 `;
 const Button = styled.button`
-    margin:25px;
+    margin:15px;
 `;
 export default function NonPage() {
     const navigate = useNavigate();

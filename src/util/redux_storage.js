@@ -23,7 +23,7 @@ const saveState = (state) => {
 
 const loginState = {
     userId: 0,
-    nickname:"",
+    name:"",
 };
 
 function reducer(state = loginState, action) {
@@ -32,12 +32,12 @@ function reducer(state = loginState, action) {
             return saveState({
                 ...state,
                 userId: action.data.userId,
-                nickname:action.data.nickname
+                name:action.data.nickname
             });;
         case "Logout":
             return  saveState({
                 userId: 0,
-                nickname:"",
+                name:"",
             });;
         default:
             return state;
