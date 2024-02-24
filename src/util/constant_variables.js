@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
 import Busan from '../styles/image/busan.jpg'; //부산 이미지
 import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
@@ -32,6 +32,50 @@ export default class Constant {
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
         ];
     }
-    
 
+    static handleDateFormatChange(date) {
+        const arrAirportTime = date.toString();
+        const year = arrAirportTime.substr(0, 4);
+        const month = arrAirportTime.substr(4, 2);
+        const day = arrAirportTime.substr(6, 2);
+        const hour = arrAirportTime.substr(8, 2);
+        const minute = arrAirportTime.substr(10, 2);
+        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
+        return formattedTime;
+    }
+    static getDateTypeChange = (date) => {
+
+        const arrAirportTime = date.toString();
+        const year = arrAirportTime.substr(0, 4);
+        const month = arrAirportTime.substr(4, 2);
+        const day = arrAirportTime.substr(6, 2);
+        const hour = arrAirportTime.substr(8, 2);
+        const minute = arrAirportTime.substr(10, 2);
+        const formattedTime = `${year}${month}${day}${hour}${minute}`;
+        return Number(formattedTime);
+
+    };
+    static handleDateCalculate (arrPlandTime, depPlandTime) {
+        // 숫자를 문자열로 변환하고 연, 월, 일, 시, 분을 추출
+        const depStr = String(depPlandTime);
+        const arrStr = String(arrPlandTime);
+
+        const depDate = new Date(depStr.slice(0, 4), depStr.slice(4, 6) - 1, depStr.slice(6, 8), depStr.slice(8, 10), depStr.slice(10, 12));
+        const arrDate = new Date(arrStr.slice(0, 4), arrStr.slice(4, 6) - 1, arrStr.slice(6, 8), arrStr.slice(8, 10), arrStr.slice(10, 12));
+
+        // 두 시간의 차이를 분으로 계산
+        const diffMinutes = (arrDate - depDate) / 60000;
+        // 분을 일, 시, 분으로 변환
+        const days = Math.floor(diffMinutes / (60 * 24)); //일
+        const hours = Math.floor((diffMinutes % (60 * 24)) / 60); //시간
+        const minutes = Math.floor(diffMinutes % 60); //분
+
+        let result = "";
+        if (days > 0) result += days + "일 ";
+        if (hours > 0) result += hours + "시간 ";
+        if (minutes > 0) result += minutes + "분";
+
+        return result.trim();
+
+    };
 }

@@ -7,6 +7,7 @@ import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
+import store from '../../util/redux_storage';
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
@@ -35,6 +36,7 @@ const ERROR_STATE = {
     levelError: false,
     dateError: false,
     searchError: false,
+    loginError: false,
     seatError: false,
 }
 const reducer = (state, action) => {
@@ -51,6 +53,8 @@ const reducer = (state, action) => {
             return { ...state, dateError: true }
         case 'searchError':
             return { ...state, searchError: true }
+        case 'loginError':
+            return { ...state, loginError: true }
         case 'seatError':
             return { ...state, seatError: true }
         default:
@@ -61,7 +65,7 @@ const reducer = (state, action) => {
 /** top component */
 export default function TopComponent({ airports, setAirPorts }) {
     const navigate = useNavigate();
-
+    const [userId, setUserId] = useState(store.getState().userId);
     const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 셀렉트 전용 */
@@ -129,26 +133,31 @@ export default function TopComponent({ airports, setAirPorts }) {
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
-                if(response.data.length===0){
-                    dispatch({type:'seatError',seatError:true});
-                    setTimeout(() => {
-                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
-                    }, 1000);
-                }else{
-                    navigate(`/Reserve`, {
+                if (response.data.length === 0) {
+                    dispatch({ type: 'seatError', seatError: true });
+                } else {
+                    navigate(`/Reserve/${userId}`, {
                         state: {
                             contents: response.data,
                             seatLevel: airport.level
                         }
                     });
                 }
-                
+
 
             }).catch((error) => {
-                dispatch({ type: 'searchError', searchError: true });
-                setTimeout(() => {
-                    dispatch({ type: 'error' }); //에러 모두 false로 바꿈
-                }, 1000);
+                if (error.response.status === 401) {
+                    dispatch({ type: 'loginError', loginError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
+                } else {
+                    dispatch({ type: 'searchError', searchError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
+                }
+
             })
 
 
@@ -193,10 +202,10 @@ export default function TopComponent({ airports, setAirPorts }) {
         };
         try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
-            
+
             console.log(response);
             return response;
-            
+
         }
         catch (error) {
             console.error(error);
@@ -222,7 +231,10 @@ export default function TopComponent({ airports, setAirPorts }) {
             {
                 errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
             }
-             {
+            {
+                errorMessage.loginError && <h3 className="white-wrap message">로그인이 필요한 서비스입니다</h3>
+            }
+            {
                 errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
             }
             <div className="container container-top" >

@@ -21,19 +21,18 @@ export default function Menubar() {
     const handleSubmit = () => {
         callLogoutAPI().then((response) => {
             if (response) {
-                
                 dispatch({ type: "Logout" });
 
                 localStorage.removeItem('authToken');
+
                 window.location.href = '/';
-              
             }
         })
     };
     /** 메뉴선택하면 스타일 변함 */
     const activeStyle = {
-        color: 'white',
-        backgroundColor: '#98C08A'
+        color: 'var(--white-color)',
+        backgroundColor: 'var(--hovering-color)'
     }
     //로그아웃하는 API
     async function callLogoutAPI() {
@@ -65,7 +64,6 @@ export default function Menubar() {
                             >내정보</NavLink>
                             <NavLink
                                 className="nav-item menu-item-style"
-                                style={({ isActive }) => (isActive ? activeStyle : {})}
                                 onClick={handleOpenClose}
                             >로그아웃</NavLink>
                         </>

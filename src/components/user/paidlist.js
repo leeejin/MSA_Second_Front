@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import store from '../../util/redux_storage';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
@@ -95,6 +95,7 @@ export default function PaidList() {
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000])
+            window.location.reload(); //취소되면 페이지 리로드
         } catch (error) {
             console.log("예약 취소 중 오류 발생:", error);
             setOpen(!open);
@@ -104,7 +105,7 @@ export default function PaidList() {
     /** 결제 목록 불러오는 API */
     async function callGetPaidListAPI() {
         try {
-            //const response = axios.get(Constant.serviceURL+`/예약목록`,{ withCredentials: true })
+            //const response = axios.get(Constant.serviceURL+`/결과목록`,{ withCredentials: true })
             return [{
                 id: 1,
                 price: 5000,
@@ -173,18 +174,6 @@ export default function PaidList() {
 
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
-
-    /**date 형식 바꾸는 함수 */
-    const handleDateFormatChange = (date) => {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-        return formattedTime;
-    }
     return (
         <TicketTable>
             <thead>
@@ -204,7 +193,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                        <p >{handleDateFormatChange(paidlist.depPlandTime)}</p>
+                        <p >{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
                     <td>
@@ -212,7 +201,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.arrAirportNm}</h1>
-                        <p>{handleDateFormatChange(paidlist.arrPlandTime)}</p>
+                        <p>{Constant.handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>
                 <tr>

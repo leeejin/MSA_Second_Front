@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
+import { useDispatch } from 'react-redux';
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     paySuccess: false, //결제 성공
@@ -31,11 +32,13 @@ const reducer = (state, action) => {
 /** 예약확인 목록 페이지 */
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default function ModalBookCheck() {
-
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-    const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
+   // const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
+    const contents = location.state?.contents;
+    const seatLevel = location.state?.seatLevel;
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
@@ -56,24 +59,11 @@ export default function ModalBookCheck() {
             charge: seatLevel === "이코노미" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
-    const handleOpenCloseReserve=()=>{
+    const handleOpenCloseReserve = () => {
         setPayOpen(!payopen);
         setOpen(false);
     };
-    /**날짜타입 변경 */
-    /**date 형식 바꾸는 함수 */
-    const getDateTypeChange = useMemo(() => {
-        return (date) => {
-            const arrAirportTime = date.toString();
-            const year = arrAirportTime.substr(0, 4);
-            const month = arrAirportTime.substr(4, 2);
-            const day = arrAirportTime.substr(6, 2);
-            const hour = arrAirportTime.substr(8, 2);
-            const minute = arrAirportTime.substr(10, 2);
-            const formattedTime = `${year}${month}${day}${hour}${minute}`;
-            return Number(formattedTime);
-        };
-    }, []);
+
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
@@ -84,8 +74,8 @@ export default function ModalBookCheck() {
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
             depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: getDateTypeChange(selectedData.arrPlandTime), //도착시간
-            depTime: getDateTypeChange(selectedData.depPlandTime), //출발시간
+            arrTime: Constant.getDateTypeChange(selectedData.arrPlandTime), //도착시간
+            depTime: Constant.getDateTypeChange(selectedData.depPlandTime), //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
@@ -239,7 +229,10 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
-    return (
+    if(!location.state){
+        return (<Navigate to="/" />)
+    }else{
+ return (
         <div>
             {
                 errorMessage.reserveError && <h3 className="white-wrap message">이미 예약하였습니다</h3>
@@ -254,7 +247,7 @@ export default function ModalBookCheck() {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
             }
             {
-                payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 하시겠습니까?"} />
+                payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
             }
             <div>
                 {
@@ -264,22 +257,12 @@ export default function ModalBookCheck() {
         </div>
 
     )
+    }
+   
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
-    /**date 형식 바꾸는 함수 */
-    const handleDateFormatChange = useMemo(() => {
-        return (date) => {
-            const arrAirportTime = date.toString();
-            const year = arrAirportTime.substr(0, 4);
-            const month = arrAirportTime.substr(4, 2);
-            const day = arrAirportTime.substr(6, 2);
-            const hour = arrAirportTime.substr(8, 2);
-            const minute = arrAirportTime.substr(10, 2);
-            const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-            return formattedTime;
-        };
-    }, []);
+
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "이코노미" && info.economyCharge === 0) || (seatLevel !== "이코노미" && info.prestigeCharge === 0)) {
         return null;
@@ -290,16 +273,17 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                 <span>{info.airlineNm} ({info.vihicleId})</span>
             </div>
             <div>
-                <p>{handleDateFormatChange(info.arrPlandTime)}</p>
+                <p>{Constant.handleDateFormatChange(info.depPlandTime)}</p>
                 <p>{info.depAirportNm}</p>
             </div>
             <div>~</div>
+            <div>{Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}</div>
             <div>
-                <p>{handleDateFormatChange(info.depPlandTime)}</p>
+                <p>{Constant.handleDateFormatChange(info.arrPlandTime)}</p>
                 <p>{info.arrAirportNm}</p>
             </div>
             <div>{
-                seatLevel === "이코노미" ? <span>{info.economyCharge}</span> : <span>{info.prestigeCharge}</span>
+                seatLevel === "이코노미" ? <span>{info.economyCharge.toLocaleString()}원</span> : <span>{info.prestigeCharge.toLocaleString()}원</span>
             }</div>
             <div>
                 <span>잔여 {info.seatCapacity}석</span>
