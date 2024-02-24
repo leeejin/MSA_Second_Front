@@ -17,9 +17,12 @@ const MarkTd = styled.span`
 
 const LocationLabel = styled.label`
     font-size:1.8rem;
+    color: ${props => props.color};
 `;
 const Label = styled.label`
-    padding-left:30px;
+    padding-left:5px;
+    padding-bottom: 5px;
+    font-family: 'Pretendard-semibold';
 `;
 const OptionLabel = styled.h3`
     margin-left:10px
@@ -59,7 +62,6 @@ const reducer = (state, action) => {
             return { ...state, seatError: true }
         default:
             return ERROR_STATE
-
     }
 }
 /** top component */
@@ -129,27 +131,27 @@ export default function TopComponent({ airports, setAirPorts }) {
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError:depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError: depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
-                if (response.data.length>0) {
+                if (response.data.length > 0) {
                     navigate(`/Reserve`, {
                         state: {
-                            dep:airports.dep,
-                            arr:airports.arr,
+                            dep: airports.dep,
+                            arr: airports.arr,
                             depTime: handleDateFormatChange(depTime),
                             contents: response.data,
                             seatLevel: airports.level
                         }
                     });
-                  
+
                 } else {
                     dispatch({ type: 'seatError', seatError: true });
                     setTimeout(() => {
                         dispatch({ type: 'error' }); //에러 모두 false로 바꿈
-                    }, 1000); 
+                    }, 1000);
                 }
 
 
@@ -291,7 +293,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                             <thead>
                                 <tr>
                                     <td><MarkTd>가는날</MarkTd></td>
-                                  
+
                                     <td><MarkTd>좌석등급</MarkTd></td>
                                 </tr>
                             </thead>
@@ -308,7 +310,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                                             handleChange={(e) => handleChange("level", e)}
                                         />
                                     </td>
-                                   
+
                                     <td>
                                         <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                                     </td>
@@ -335,7 +337,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsNa
                 className={`select select-level ${isShowOptions && 'active'}`}
                 onClick={show}>
                 <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
-                <Label style={{ paddingLeft: '5px', paddingBottom: '5px', color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)' }}>{airportsName}</Label>
+                <Label style={{ color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)' }}>{airportsName}</Label>
                 {
                     isShowOptions && (
                         <ul
@@ -365,7 +367,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsNa
                 ref={el => selectBoxRef.current[number] = el}
                 className={`select select-location ${isShowOptions && 'active'}`}
                 onClick={show}>
-                <LocationLabel style={{ color: (airportsName === '출발' || airportsName === '도착') ? 'grey' : 'var(--black-color)' }}>{airportsName}</LocationLabel>
+                <LocationLabel color={airportsName === '출발' || airportsName === '도착' ? 'var(--darkgrey-color)' : 'var(--black-color)'}>{airportsName}</LocationLabel>
                 {
                     isShowOptions && (
                         <ul

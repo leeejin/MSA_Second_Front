@@ -59,23 +59,23 @@ export default function Menubar() {
                     {
                         userId !== 0 ? <>
                             <NavLink
-                                className="nav-item menu-item-style"
+                                className="nav-item menu-item-style font-semibold"
                                 style={({ isActive }) => (isActive ? activeStyle : {})}
                                 to={`/Mypage/${userId}`}
                             >내정보</NavLink>
                             <NavLink
-                                className="nav-item menu-item-style"
+                                className="nav-item menu-item-style font-semibold"
                                 onClick={(e)=>handleOpenClose(e)}
                             >로그아웃</NavLink>
                         </>
                             : <>
                                 <NavLink
-                                    className="nav-item menu-item-style"
+                                    className="nav-item menu-item-style font-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Signup"}
                                 >회원가입</NavLink>
                                 <NavLink
-                                    className="nav-item menu-item-style"
+                                    className="nav-item menu-item-style font-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Login"}
                                 >로그인</NavLink>

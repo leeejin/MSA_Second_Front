@@ -13,3 +13,58 @@
     --darkgrey-color:grey;
 }
 
+@font-face {
+    font-family: 'Pretendard-bold';
+    src: url('./fonts/Pretendard-Bold.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-light';
+    src: url('./fonts/Pretendard-Light.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-semibold';
+    src: url('./fonts/Pretendard-SemiBold.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-medium';
+    src: url('./fonts/Pretendard-Medium.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-thin';
+    src: url('./fonts/Pretendard-Thin.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-extrabold';
+    src: url('./fonts/Pretendard-ExtraBold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Pretendard-extralight';
+    src: url('./fonts/Pretendard-ExtraLight.woff2') format('woff2');
+}
+.font-bold{
+    font-family: 'Pretendard-bold';
+}
+
+.font-light{
+    font-family: 'Pretendard-light';
+}
+.font-semibold{
+    font-family: 'Pretendard-semiBold';
+}
+.font-medium{
+    font-family: 'Pretendard-medium';
+}
+.font-thin{
+    font-family: 'Pretendard-thin';
+}
+.font-extrabold{
+    font-family: 'Pretendard-extrabold';
+}
+.font-extralight{
+    font-family: 'Pretendard-extralight';
+}

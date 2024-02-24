@@ -193,7 +193,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td>
                         <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                        <p >{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
+                        <p>{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
                     <td>
@@ -206,7 +206,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                 </tr>
                 <tr>
                     <td colSpan={2}>
-                        <h2>₩ {paidlist.price.toLocaleString()}</h2>
+                        <h2 className="font-extrabold">₩ {paidlist.price.toLocaleString()}</h2>
                     </td>
                     <td colSpan={2}>
 

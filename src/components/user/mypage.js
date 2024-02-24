@@ -24,8 +24,8 @@ export default function MyPage() {
     return (
         <div>
             <div className="mypage-menubar">
-                <NavLink className={subBoxVisible.payList ? "p sub-menu-selected" : "p"} onClick={() => handleLocation('payList')}>결제목록</NavLink>
-                <NavLink className={subBoxVisible.accommodationList ? "p sub-menu-selected" : "p"} onClick={() => handleLocation('accommodationList')}>숙박목록</NavLink>
+                <NavLink className={subBoxVisible.payList ? "p font-semibold sub-menu-selected" : "p font-semibold"} onClick={() => handleLocation('payList')}>결제목록</NavLink>
+                <NavLink className={subBoxVisible.accommodationList ? "p font-semibold sub-menu-selected" : "p font-semibold"} onClick={() => handleLocation('accommodationList')}>숙박목록</NavLink>
             </div>
             <div className="backBox-100">
                 <h3 className="componentTitle">마이페이지</h3>

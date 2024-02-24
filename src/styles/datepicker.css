@@ -18,6 +18,7 @@ body {
 
                 .react-datepicker__day-name {
                     color: var(--darkgrey-color);
+                    font-weight: bold;
                 }
             }
 
@@ -48,6 +49,7 @@ body {
 .datepicker {
     align-items: center;
     box-sizing: border-box;
+    font-family: 'Pretendard-semibold';
     border-bottom: 2px solid var(--black-color);
     background-color: none;
     width: 160px;

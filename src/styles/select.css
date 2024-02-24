@@ -5,6 +5,7 @@
     cursor: pointer;
     width:160px;
     height:25px;
+    font-family: 'Pretendard-semibold';
 }
 .select-location {
     top: -1px;

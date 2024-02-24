@@ -24,7 +24,7 @@ export default function MiddleComponent() {
         <div className="container container-middle">
             <div>
                 <div className="middlepanel">
-                    <h1>실시간 인기 숙소</h1>
+                    <h1 className="font-bold">실시간 인기 숙소</h1>
                     <p>다른 여행자들에게 인기 있는 숙소지를 소개합니다. 항공권을 검색하고 지금 바로 떠나세요!</p>
                 </div>
                 <div>

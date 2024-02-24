@@ -27,7 +27,7 @@ export default function FooterSlider ({ setAirPorts }) {
                 <div>
                     <h1>{footer.title}</h1>
                     <h1>{footer.subTitle}</h1>
-                    <h3>{footer.content}</h3>
+                    <p>{footer.content}</p>
                     <button className="button-reserve" onClick={() => handleReserve(footer.value)}>
                         예약하기
                     </button>

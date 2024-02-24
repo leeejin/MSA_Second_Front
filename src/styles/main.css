@@ -22,6 +22,7 @@
 
 .white-wrap {
     text-align: center;
+    font-family: 'Pretendard-semibold';
     border-radius: 5px;
     position: fixed;
     padding: 30px;
@@ -293,6 +294,7 @@
 
 .message {
     top: -100%;
+  
     /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
     animation: slideDown 0.5s forwards;
     /* 애니메이션 적용 및 지속 시간 설정 */
