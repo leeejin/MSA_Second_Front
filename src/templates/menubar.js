@@ -23,11 +23,10 @@ export default function Menubar() {
         e.preventDefault();
         callLogoutAPI().then((response) => {
             if (response) {
+                window.location.href = '/';
                 dispatch({ type: "Logout" });
 
                 localStorage.removeItem('authToken');
-
-                window.location.href = '/';
             }
         })
     };

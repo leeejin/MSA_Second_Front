@@ -66,7 +66,7 @@ const reducer = (state, action) => {
 export default function TopComponent({ airports, setAirPorts }) {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId);
-    const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
+    const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
@@ -129,7 +129,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime === '' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError:depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈

@@ -4,8 +4,8 @@ import ko from 'date-fns/locale/ko';
 import dayjs from 'dayjs';
 import "react-datepicker/dist/react-datepicker.css";
 import { LuCalendar } from "react-icons/lu";
-import { IoArrowRedoSharp } from "react-icons/io5";
-import { IoArrowUndoSharp } from "react-icons/io5";
+import { MdNavigateNext } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
 export default function Datepicker({ depTime, handleDateChange }) {
     const minDate = new Date(dayjs().add(1, 'day'));
     const maxDate = new Date(dayjs().add(3, 'month'));
@@ -36,11 +36,12 @@ export default function Datepicker({ depTime, handleDateChange }) {
                 locale={ko} //한국어
                 selectsRange={false} //Date 범위 설정 (편도니까 false)
                 selected={depTime} //선택하는 날짜
+                disabledKeyboardNavigation
                 dateFormat="yyyy년MM월dd일" //데이터 타입 ex) 2024년02월09일
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
                 onChange={(date) => handleDateChange(date)} //선택하는 날짜가 바뀌면
-                //dayClassName={(d) => (d.getDate() === startDate.getDate() ? 'selectedDay' : 'unselectedDay')} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함
+                dayClassName={(d) => (d.getDate() === depTime ? 'selectedDay':'unselectedDay' )} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함
                 renderCustomHeader={({ //헤더 스타일 바꿈
                     date,
                     decreaseMonth,
@@ -51,11 +52,10 @@ export default function Datepicker({ depTime, handleDateChange }) {
                     <div className="customHeaderContainer">
                         <button
                           className="doButton"
-                           
                             onClick={decreaseMonth}
                             disabled={prevMonthButtonDisabled}>
-                            <IoArrowUndoSharp
-                                className="doButton"
+                            <GrFormPrevious
+                              
                             />
                         </button>
                         <div className="year-month">
@@ -65,8 +65,7 @@ export default function Datepicker({ depTime, handleDateChange }) {
                            className="doButton"
                             onClick={increaseMonth}
                             disabled={nextMonthButtonDisabled}>
-                            <IoArrowRedoSharp
-                             
+                            <MdNavigateNext
                             />
                         </button>
 

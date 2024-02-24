@@ -35,8 +35,8 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-     const {seatLevel,dep,arr,depTime } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
-    const contents = location.state?.contents;
+    const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
+    
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
@@ -46,8 +46,8 @@ export default function ModalBookCheck() {
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
-
-        IMP.init('imp01307537');
+        if(IMP) IMP.init('imp01307537');
+        else console.log("IMP 제대로 활성화안됨")
     }, []);
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
@@ -224,16 +224,16 @@ export default function ModalBookCheck() {
             return reservationResponse.status;
         } catch (error) {
             //안되면 에러뜨게 함
+            setOpen(!open);
             errorDispatch({ type: 'reserveError', reserveError: true });
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000])
         }
     }
-    
-    if (!location.state) {
-         return (<Navigate to="/" />)
-    } else {
+    if(!location.state){
+        return (<Navigate to="*" />)
+    }else{
         return (
             <div>
                 {
@@ -266,6 +266,7 @@ export default function ModalBookCheck() {
 
         )
     }
+       
 
 };
 

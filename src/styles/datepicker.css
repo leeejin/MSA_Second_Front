@@ -2,25 +2,47 @@ body {
     .react-datepicker {
         border: none;
         box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+
         .react-datepicker__header {
             background-color: var(--white-color);
             border-bottom: none;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
-            padding:0;
+            padding: 0;
+
             .react-datepicker__day-names {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                
+
 
                 .react-datepicker__day-name {
                     color: var(--darkgrey-color);
                 }
             }
-            
+
+        }
+        .react-datepicker__day {
+            &:hover{
+                background-color: var(--background-color);
+                border-radius: 25px;
+            }
+        }
+        .react-datepicker__day--outside-month {
+            cursor: default;
+            visibility: hidden;
+        }
+
+        .react-datepicker__day--selected {
+            border-radius: 25px;
+            background-color: var(--hovering-color);
+            color: var(--white-color);
         }
     }
+}
+
+.react-datepicker__triangle {
+    display: none;
 }
 
 .datepicker {
@@ -28,8 +50,9 @@ body {
     box-sizing: border-box;
     border-bottom: 2px solid var(--black-color);
     background-color: none;
-    width:160px;
-    position:relative;
+    width: 160px;
+    position: relative;
+
     &:hover {
         cursor: pointer;
     }
@@ -53,27 +76,23 @@ body {
 
 }
 
-.selectedDay,
-.unselectedDay {
-    color: var(--white-color);
-}
-
 .selectedDay {
     background-color: var(--background-color);
-    border-radius: 50%;
+    color: var(--white-color);
+    border-radius: 25px;
     font-weight: 700;
 
     &:hover {
-        border-radius: 50%;
-        background-color: var(--white-color);
+        background-color: var(--background-color);
+        color: var(--white-color);
     }
 }
 
 .unselectedDay {
-    &:hover {
-        border-radius: 50%;
-        background-color: rgba(var(--white-color), 0.08);
+    background-color: var(--white-color);
+    font-weight: 700;
+    border-radius: 25px;
+    &:hover{
 
-        background-color: rgba(white, 0.08);
     }
 }

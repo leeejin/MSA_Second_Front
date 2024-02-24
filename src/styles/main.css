@@ -21,7 +21,6 @@
 }
 
 .white-wrap {
-
     text-align: center;
     border-radius: 5px;
     position: fixed;
@@ -32,7 +31,7 @@
     transition: all 1s;
     background: white;
     z-index: 20;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 3px 6px rgba(0.16, 0.16, 0.16, 0.16);
 }
 
 
@@ -128,7 +127,7 @@
 
 .componentContent {
     background-color: var(--white-color);
-    height: 600px;
+    height: 550px;
 
     table {
         width: 70%;
@@ -206,19 +205,19 @@
 
 .button-search {
     position: absolute;
-    top: 110%;
-    left: 50%;
+    top: 105%;
+    left: 45%;
     padding: 10px;
     margin: 5px;
     border-radius: 25px;
     background: none;
     border: 2px solid var(--white-color);
     color: var(--white-color);
-    transform: translate(-50%, -50%);
 
     &:hover {
         cursor: pointer;
-        background-color: var(--hovering-color);
+        transform: scale(1.1);
+        transition:all 0.5s;
     }
 }
 
@@ -233,7 +232,8 @@
 
     &:hover {
         cursor: pointer;
-        background-color: var(--hovering-color);
+        transform: scale(1.1);
+        transition:all 0.5s;
     }
 }
 
@@ -250,7 +250,9 @@
     top: 73px;
     left: -100%;
     /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
-    background-color: var(--background-color);
+    background-image:url('../styles/image/main_pic.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
     animation: slideIn 0.5s forwards;
     /* 애니메이션 적용 및 지속 시간 설정 */
 }
@@ -273,8 +275,8 @@
     text-decoration: none;
     align-items: center;
     padding: 15px;
-    color: var(--black-color);
-
+    color: var(--white-color);
+    transition: background-color 0.5s, color 0.5s, transform 0.5s;
     &:hover {
         cursor: pointer;
         background-color: var(--white-color);
@@ -285,6 +287,8 @@
 .sub-menu-selected {
     background-color: var(--white-color);
     color: var(--hovering-color);
+    transform: translate(1.1);
+    transition:all 0.5s;
 }
 
 .message {
