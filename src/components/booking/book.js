@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
-import { useNavigate,Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
@@ -36,9 +36,8 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-   // const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
-    const contents = location.state?.contents;
-    const seatLevel = location.state?.seatLevel;
+     const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
+ 
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
@@ -56,7 +55,7 @@ export default function ModalBookCheck() {
         setOpen(prev => !prev);
         setSelectedData(prevData => ({
             ...prevData,
-            charge: seatLevel === "이코노미" ? data.economyCharge : data.prestigeCharge
+            charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
     const handleOpenCloseReserve = () => {
@@ -229,66 +228,68 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
-    if(!location.state){
-        return (<Navigate to="/" />)
-    }else{
- return (
-        <div>
-            {
-                errorMessage.reserveError && <h3 className="white-wrap message">이미 예약하였습니다</h3>
-            }
-            {
-                errorMessage.paySuccess && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다</h3>
-            }
-            {
-                errorMessage.payError && <h3 className="white-wrap message">결제실패하였습니다</h3>
-            }
-            {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
-            }
-            {
-                payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
-            }
+    if (!location.state) {
+        // return (<Navigate to="/" />)
+    } else {
+        return (
             <div>
                 {
-                    contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                    errorMessage.reserveError && <h3 className="white-wrap message">이미 예약하였습니다</h3>
                 }
+                {
+                    errorMessage.paySuccess && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다</h3>
+                }
+                {
+                    errorMessage.payError && <h3 className="white-wrap message">결제실패하였습니다</h3>
+                }
+                {
+                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
+                }
+                {
+                    payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
+                }
+                <div>
+                    {
+                        contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                    }
+                </div>
             </div>
-        </div>
 
-    )
+        )
     }
-   
+
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
-    if ((seatLevel === "이코노미" && info.economyCharge === 0) || (seatLevel !== "이코노미" && info.prestigeCharge === 0)) {
+    if ((seatLevel==="일반석" && info.economyCharge === 0)|| (seatLevel==="프리스티지석" && info.prestigeCharge === 0)) {
         return null;
+    }else{
+        return (
+            <div>
+                <div>
+                    <span>{info.airlineNm} ({info.vihicleId})</span>
+                </div>
+                <div>
+                    <p>{Constant.handleDateFormatChange(info.depPlandTime)}</p>
+                    <p>{info.depAirportNm}</p>
+                </div>
+                <div>~</div>
+                <div>{Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}</div>
+                <div>
+                    <p>{Constant.handleDateFormatChange(info.arrPlandTime)}</p>
+                    <p>{info.arrAirportNm}</p>
+                </div>
+                <div>{
+                    seatLevel === "일반석" ? <span>{info.economyCharge.toLocaleString()}원</span> : <span>{info.prestigeCharge.toLocaleString()}원</span>
+                }</div>
+                <div>
+                    <span>잔여 {info.seatCapacity}석</span>
+                    <button onClick={() => handleOpenClose(info)}>선택</button>
+                </div>
+            </div>
+        )
     }
-    return (
-        <div>
-            <div>
-                <span>{info.airlineNm} ({info.vihicleId})</span>
-            </div>
-            <div>
-                <p>{Constant.handleDateFormatChange(info.depPlandTime)}</p>
-                <p>{info.depAirportNm}</p>
-            </div>
-            <div>~</div>
-            <div>{Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}</div>
-            <div>
-                <p>{Constant.handleDateFormatChange(info.arrPlandTime)}</p>
-                <p>{info.arrAirportNm}</p>
-            </div>
-            <div>{
-                seatLevel === "이코노미" ? <span>{info.economyCharge.toLocaleString()}원</span> : <span>{info.prestigeCharge.toLocaleString()}원</span>
-            }</div>
-            <div>
-                <span>잔여 {info.seatCapacity}석</span>
-                <button onClick={() => handleOpenClose(info)}>선택</button>
-            </div>
-        </div>
-    )
+    
 }

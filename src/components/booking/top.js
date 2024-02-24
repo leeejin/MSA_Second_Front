@@ -71,6 +71,7 @@ export default function TopComponent({ airports, setAirPorts }) {
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
+
     useEffect(() => {
         const handleOutsideClick = (event) => {
             const isOutsideClick = selectBoxRef.current.every((ref, index) => {
@@ -133,15 +134,19 @@ export default function TopComponent({ airports, setAirPorts }) {
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
-                if (response.data.length === 0) {
-                    dispatch({ type: 'seatError', seatError: true });
-                } else {
-                    navigate(`/Reserve/${userId}`, {
+                if (response.data.length>0) {
+                    navigate(`/Reserve`, {
                         state: {
                             contents: response.data,
-                            seatLevel: airport.level
+                            seatLevel: airports.level
                         }
                     });
+                  
+                } else {
+                    dispatch({ type: 'seatError', seatError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000); 
                 }
 
 
@@ -283,7 +288,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                             <thead>
                                 <tr>
                                     <td><MarkTd>가는날</MarkTd></td>
-                                    <td />
+                                  
                                     <td><MarkTd>좌석등급</MarkTd></td>
                                 </tr>
                             </thead>
@@ -300,7 +305,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                                             handleChange={(e) => handleChange("level", e)}
                                         />
                                     </td>
-                                    <td />
+                                   
                                     <td>
                                         <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                                     </td>
