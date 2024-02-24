@@ -35,7 +35,7 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-     const {seatLevel,dep,arr } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
+     const {seatLevel,dep,arr,depTime } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
     const contents = location.state?.contents;
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
@@ -255,6 +255,7 @@ export default function ModalBookCheck() {
                     <h1>{dep}</h1>
                     <h1>~</h1>
                     <h1>{arr}</h1>
+                    <p>{Constant.handleDateFormatChange(depTime)}</p>
                 </div>
                 <div>
                     {

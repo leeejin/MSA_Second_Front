@@ -139,6 +139,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                         state: {
                             dep:airports.dep,
                             arr:airports.arr,
+                            depTime: handleDateFormatChange(depTime),
                             contents: response.data,
                             seatLevel: airports.level
                         }
