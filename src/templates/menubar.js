@@ -14,11 +14,13 @@ export default function Menubar() {
 
     const [open, setOpen] = useState(false);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
-    const handleOpenClose = () => {
+    const handleOpenClose = (e) => {
+        e.preventDefault();
         setOpen(!open);
     };
     //로그아웃 체크
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         callLogoutAPI().then((response) => {
             if (response) {
                 dispatch({ type: "Logout" });
@@ -64,7 +66,7 @@ export default function Menubar() {
                             >내정보</NavLink>
                             <NavLink
                                 className="nav-item menu-item-style"
-                                onClick={handleOpenClose}
+                                onClick={(e)=>handleOpenClose(e)}
                             >로그아웃</NavLink>
                         </>
                             : <>

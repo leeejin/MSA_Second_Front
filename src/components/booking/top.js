@@ -137,6 +137,8 @@ export default function TopComponent({ airports, setAirPorts }) {
                 if (response.data.length>0) {
                     navigate(`/Reserve`, {
                         state: {
+                            dep:airports.dep,
+                            arr:airports.arr,
                             contents: response.data,
                             seatLevel: airports.level
                         }

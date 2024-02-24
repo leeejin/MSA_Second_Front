@@ -32,17 +32,17 @@ const reducer = (state, action) => {
 /** 예약확인 목록 페이지 */
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default function ModalBookCheck() {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-     const { contents, seatLevel } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
- 
+     const {seatLevel,dep,arr } = location.state; // 다른 컴포넌트로부터 받아들인 데이터 정보
+    const contents = location.state?.contents;
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
     const [selectedData, setSelectedData] = useState({}) //선택한 컴포넌트 객체
+
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
@@ -58,7 +58,8 @@ export default function ModalBookCheck() {
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
-    const handleOpenCloseReserve = () => {
+    const handleOpenCloseReserve = (e) => {
+        e.preventDefault();
         setPayOpen(!payopen);
         setOpen(false);
     };
@@ -73,8 +74,8 @@ export default function ModalBookCheck() {
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
             depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: Constant.getDateTypeChange(selectedData.arrPlandTime), //도착시간
-            depTime: Constant.getDateTypeChange(selectedData.depPlandTime), //출발시간
+            arrTime:selectedData.arrPlandTime, //도착시간
+            depTime: selectedData.depPlandTime, //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
@@ -101,6 +102,7 @@ export default function ModalBookCheck() {
         const { IMP } = window;
         const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         const amount = selectedData.charge;
+
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
         try {
             await checkPaymentAPI(merchant_uid);
@@ -228,8 +230,9 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
+    
     if (!location.state) {
-        // return (<Navigate to="/" />)
+         return (<Navigate to="/" />)
     } else {
         return (
             <div>
@@ -248,6 +251,11 @@ export default function ModalBookCheck() {
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
+                <div>
+                    <h1>{dep}</h1>
+                    <h1>~</h1>
+                    <h1>{arr}</h1>
+                </div>
                 <div>
                     {
                         contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
