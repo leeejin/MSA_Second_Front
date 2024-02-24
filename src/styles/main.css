@@ -219,19 +219,9 @@
 .button-search {
     position: absolute;
     top: 105%;
-    left: 45%;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 25px;
-    background: none;
-    border: 2px solid var(--white-color);
-    color: var(--white-color);
-
-    &:hover {
-        cursor: pointer;
-        transform: scale(1.1);
-        transition:all 0.5s;
-    }
+    left:0;
+    text-align: center;
+    width:100%;
 }
 
 .button-reserve {

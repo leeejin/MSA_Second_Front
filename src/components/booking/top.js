@@ -317,10 +317,11 @@ export default function TopComponent({ airports, setAirPorts }) {
                                 </tr>
                             </tbody>
                         </table>
+                        <div className="button-search" style={{ clear: 'both'}}>
+                        <button className="button-reserve" onClick={handleSearch} >검색하기</button>
                     </div>
-                    <div style={{ clear: 'both' }}>
-                        <button className="button-search" onClick={handleSearch} >검색하기</button>
                     </div>
+                 
 
                 </div>
             </div>
