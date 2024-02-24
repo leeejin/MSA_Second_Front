@@ -125,16 +125,28 @@
     align-items: center;
     justify-content: center;
 }
-
 .componentContent {
+    width: 100%;
     background-color: var(--white-color);
     height: 550px;
-
+    align-items: center;
+  
     table {
         width: 70%;
-        align-items: center;
-        margin: auto;
-        margin-bottom: 15px;
+        height:100px;
+        text-align: center;
+        border-radius: 15px;
+        margin: 10px auto;
+        background-color: var(--white-color);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+        tr{
+            
+            td{
+                width:10%;
+               
+            }
+        }
+       
     }
 }
 
@@ -269,7 +281,23 @@
         /* 최종 위치 */
     }
 }
-
+.card-table{
+    border-radius: 15px;
+    padding: 5px;
+    margin: 5px;
+    background-color:var(--white-color);
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+    td{
+        padding:5px;
+    }
+    tr:nth-child(1) td:nth-child(2) {
+        border-left: 1px solid var(--grey-color);
+    }
+    
+    tr:nth-child(1) {
+        border-bottom: 1px solid var(--grey-color);
+    }
+}
 .p {
     display: flex;
     flex-direction: column;
@@ -408,7 +436,24 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
+.container-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bookpanel {
+    width: 80%;
+    height: 35%;
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.12);
+    border-radius: 30px;
+    color:var(--white-color);
+    position: absolute;
+    padding: 10px;
+    top: 40%;
+    left: 10%;
+    text-align: center;
+    padding:5px;
+}
 .container-middle {
     height:700px;
     padding-top:15px;
@@ -618,9 +663,7 @@
 
     .componentContent {
         height: 500px;
-
-        table {
-            width: 100%;
-        }
+        width:100%;
+        
     }
 }

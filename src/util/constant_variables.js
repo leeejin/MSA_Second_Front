@@ -43,6 +43,21 @@ export default class Constant {
         const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
         return formattedTime;
     }
+    static handleDayFormatChange(date) {
+        const arrAirportTime = date.toString();
+        const year = arrAirportTime.substr(0, 4);
+        const month = arrAirportTime.substr(4, 2);
+        const day = arrAirportTime.substr(6, 2);
+        const formattedTime = `${year}년 ${month}월 ${day}일`;
+        return formattedTime;
+    }
+    static handleTimeFormatChange(date) {
+        const arrAirportTime = date.toString();
+        const hour = arrAirportTime.substr(8, 2);
+        const minute = arrAirportTime.substr(10, 2);
+        const formattedTime = `${hour}:${minute}`;
+        return formattedTime;
+    }
     static getDateTypeChange = (date) => {
 
         const arrAirportTime = date.toString();

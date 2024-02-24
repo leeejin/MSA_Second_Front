@@ -175,7 +175,7 @@ export default function PaidList() {
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
     return (
-        <TicketTable>
+        <table className="card-table">
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>
@@ -215,7 +215,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                 </tr>
             </tbody>
 
-        </TicketTable>
+        </table>
 
     )
 }

@@ -6,6 +6,7 @@ import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
+import book_arrow from '../../styles/image/book_arrow.png';
 import { useDispatch } from 'react-redux';
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
@@ -36,7 +37,7 @@ export default function ModalBookCheck() {
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
-    
+
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
@@ -46,7 +47,7 @@ export default function ModalBookCheck() {
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
-        if(IMP) IMP.init('imp01307537');
+        if (IMP) IMP.init('imp01307537');
         else console.log("IMP 제대로 활성화안됨")
     }, []);
     /** 예약확인 함수 */
@@ -74,7 +75,7 @@ export default function ModalBookCheck() {
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
             depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime:selectedData.arrPlandTime, //도착시간
+            arrTime: selectedData.arrPlandTime, //도착시간
             depTime: selectedData.depPlandTime, //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
@@ -231,9 +232,9 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
-    if(!location.state){
+    if (!location.state) {
         return (<Navigate to="*" />)
-    }else{
+    } else {
         return (
             <div>
                 {
@@ -251,55 +252,71 @@ export default function ModalBookCheck() {
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
-                <div>
-                    <h1>{dep}</h1>
-                    <h1>~</h1>
-                    <h1>{arr}</h1>
-                    <p>{Constant.handleDateFormatChange(depTime)}</p>
+                <div className="container container-top" style={{ height: '300px' }}>
+                    <div className="bookpanel" >
+                        <div className="container-flex">
+
+                            <h1 className="font-bold">{dep} </h1>
+                            <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
+                            <h1 className="font-bold"> {arr}</h1>
+                        </div>
+                        <p>{Constant.handleDayFormatChange(depTime)}</p>
+                    </div>
+
                 </div>
-                <div>
+                <div className="componentContent">
+
                     {
                         contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
+
                 </div>
             </div>
 
         )
     }
-       
+
 
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
-    if ((seatLevel==="일반석" && info.economyCharge === 0)|| (seatLevel==="프리스티지석" && info.prestigeCharge === 0)) {
+    if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {
         return null;
-    }else{
+    } else {
         return (
-            <div>
-                <div>
-                    <span>{info.airlineNm} ({info.vihicleId})</span>
-                </div>
-                <div>
-                    <p>{Constant.handleDateFormatChange(info.depPlandTime)}</p>
-                    <p>{info.depAirportNm}</p>
-                </div>
-                <div>~</div>
-                <div>{Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}</div>
-                <div>
-                    <p>{Constant.handleDateFormatChange(info.arrPlandTime)}</p>
-                    <p>{info.arrAirportNm}</p>
-                </div>
-                <div>{
-                    seatLevel === "일반석" ? <span>{info.economyCharge.toLocaleString()}원</span> : <span>{info.prestigeCharge.toLocaleString()}원</span>
-                }</div>
-                <div>
-                    <span>잔여 {info.seatCapacity}석</span>
-                    <button onClick={() => handleOpenClose(info)}>선택</button>
-                </div>
-            </div>
+            <table>
+                <tr>
+                    <td>
+                        <span>{info.airlineNm} ({info.vihicleId})</span>
+                    </td>
+                    <td>
+                        <h2>{Constant.handleTimeFormatChange(info.depPlandTime)}</h2>
+                        <h4 className="font-light">{info.depAirportNm}</h4>
+                    </td>
+                    <td >
+                        {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
+                    </td>
+
+                    <td>
+                        <h2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</h2>
+                        <h4 className="font-light">{info.arrAirportNm}</h4>
+                    </td>
+                    <td>
+                        <span>잔여 {info.seatCapacity}석</span>
+                    </td>
+                    <td>{
+                        seatLevel === "일반석" ? <h2 className="font-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
+                    }</td>
+                    <td>
+                        <button className="handle-button-modal menu-item-style" onClick={() => handleOpenClose(info)}>선택</button>
+                    </td>
+                </tr>
+            </table>
+
+
         )
     }
-    
+
 }
