@@ -145,14 +145,16 @@ export default function PaidList() {
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
-                
+
 
             <div className="container-content">
-                {
-                    contents.slice(offset,offset+itemCountPerPage).map((paidlist, i) => (
+                {contents.length > 0 ? (
+                    contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
-                }
+                ) : (
+                    <p>빈칸입니다</p>
+                )}
 
             </div>
             <div className="background-color-white">
