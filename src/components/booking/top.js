@@ -248,7 +248,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                 errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
             }
             <div className="container container-top" >
-                <div className="mainpanel">
+                <div className="panel panel-top background-color-white">
                     <div className='parent-container'>
                         <table>
                             <thead>
@@ -272,7 +272,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                                         />
                                     </td>
                                     <td>
-                                        <button className="doButton" onClick={handleAirPortReverse}><img src={reverse} /></button>
+                                        <button className="btn btn-style-none" onClick={handleAirPortReverse}><img src={reverse} /></button>
                                     </td>
                                     <td>
                                         <SelectComponent
@@ -317,8 +317,8 @@ export default function TopComponent({ airports, setAirPorts }) {
                                 </tr>
                             </tbody>
                         </table>
-                        <div className="button-search" style={{ clear: 'both'}}>
-                        <button className="button-reserve" onClick={handleSearch} >검색하기</button>
+                        <div className="second-container" style={{ clear: 'both'}}>
+                        <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
                     </div>
                     </div>
                  

@@ -253,18 +253,18 @@ export default function ModalBookCheck() {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
                 <div className="container container-top" style={{ height: '300px' }}>
-                    <div className="bookpanel" >
+                    <div className="panel panel-top font-color-white" >
                         <div className="container-flex">
 
-                            <h1 className="font-bold">{dep} </h1>
+                            <h1 className="font-family-bold">{dep} </h1>
                             <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
-                            <h1 className="font-bold"> {arr}</h1>
+                            <h1 className="font-family-bold"> {arr}</h1>
                         </div>
                         <p>{Constant.handleDayFormatChange(depTime)}</p>
                     </div>
 
                 </div>
-                <div className="componentContent">
+                <div className="container container-content background-color-white">
 
                     {
                         contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
@@ -286,14 +286,14 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
         return null;
     } else {
         return (
-            <table>
+            <table className="table-list-card">
                 <tr>
                     <td>
                         <span>{info.airlineNm} ({info.vihicleId})</span>
                     </td>
                     <td>
                         <h2>{Constant.handleTimeFormatChange(info.depPlandTime)}</h2>
-                        <h4 className="font-light">{info.depAirportNm}</h4>
+                        <h4 className="font-family-light">{info.depAirportNm}</h4>
                     </td>
                     <td >
                         {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
@@ -301,16 +301,16 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
 
                     <td>
                         <h2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</h2>
-                        <h4 className="font-light">{info.arrAirportNm}</h4>
+                        <h4 className="font-family-light">{info.arrAirportNm}</h4>
                     </td>
                     <td>
                         <span>잔여 {info.seatCapacity}석</span>
                     </td>
                     <td>{
-                        seatLevel === "일반석" ? <h2 className="font-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
+                        seatLevel === "일반석" ? <h2 className="font-family-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
                     }</td>
                     <td>
-                        <button className="handle-button-modal menu-item-style" onClick={() => handleOpenClose(info)}>선택</button>
+                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</button>
                     </td>
                 </tr>
             </table>

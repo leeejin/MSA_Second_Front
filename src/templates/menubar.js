@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import ModalComponent from '../util/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
@@ -19,8 +18,7 @@ export default function Menubar() {
         setOpen(!open);
     };
     //로그아웃 체크
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = () => {
         callLogoutAPI().then((response) => {
             if (response) {
                 window.location.href = '/';
@@ -50,7 +48,7 @@ export default function Menubar() {
         {
             open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까 ?"} />
         }
-        <div className="menubar-container">
+        <div className="menubar">
 
 
             <div>
@@ -59,23 +57,23 @@ export default function Menubar() {
                     {
                         userId !== 0 ? <>
                             <NavLink
-                                className="nav-item menu-item-style font-semibold"
+                                className="btn-nav-item btn-style-item font-family-semibold"
                                 style={({ isActive }) => (isActive ? activeStyle : {})}
                                 to={`/Mypage/${userId}`}
                             >내정보</NavLink>
                             <NavLink
-                                className="nav-item menu-item-style font-semibold"
+                                className="btn-nav-item btn-style-item font-family-semibold"
                                 onClick={(e)=>handleOpenClose(e)}
                             >로그아웃</NavLink>
                         </>
                             : <>
                                 <NavLink
-                                    className="nav-item menu-item-style font-semibold"
+                                    className="btn-nav-item btn-style-item font-family-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Signup"}
                                 >회원가입</NavLink>
                                 <NavLink
-                                    className="nav-item menu-item-style font-semibold"
+                                    className="btn-nav-item btn-style-item font-family-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Login"}
                                 >로그인</NavLink>

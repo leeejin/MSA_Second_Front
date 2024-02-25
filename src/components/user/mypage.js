@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, NavLink } from "react-router-dom";
-import axios from 'axios';
-import styled from "styled-components";
 import store from '../../util/redux_storage';
 import PayList from './paidlist';
 import AccommodationList from './accommodationlist';
-import Constant from '../../util/constant_variables';
 export default function MyPage() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
@@ -23,12 +20,23 @@ export default function MyPage() {
 
     return (
         <div>
-            <div className="mypage-menubar">
-                <NavLink className={subBoxVisible.payList ? "p font-semibold sub-menu-selected" : "p font-semibold"} onClick={() => handleLocation('payList')}>결제목록</NavLink>
-                <NavLink className={subBoxVisible.accommodationList ? "p font-semibold sub-menu-selected" : "p font-semibold"} onClick={() => handleLocation('accommodationList')}>숙박목록</NavLink>
+            <div className="menubar-sub">
+                <NavLink
+                    className={`container-column menubar-sub-content font-family-semibold ${subBoxVisible.payList && "menubar-sub-selected" }`}
+                    onClick={() => handleLocation('payList')}
+                >
+                    결제목록
+                </NavLink>
+
+                <NavLink
+                    className={`container-column menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected" }`}
+                    onClick={() => handleLocation('accommodationList')}
+                >
+                    숙박목록
+                </NavLink>
             </div>
-            <div className="backBox-100">
-                <h3 className="componentTitle">마이페이지</h3>
+            <div className="container-backbox-100">
+                <h3 className="container-title">마이페이지</h3>
                 <div>
                     {
                         subBoxVisible.payList === true ? <PayList /> : <AccommodationList />

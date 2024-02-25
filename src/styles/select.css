@@ -30,7 +30,7 @@
     }
 }
 .select-level {
-    top: 1.5px;
+    top:2px;
     padding-left: 3px;
     padding-right:0px;
     border-bottom: 2px solid var(--black-color);

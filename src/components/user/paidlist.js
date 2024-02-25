@@ -138,15 +138,16 @@ export default function PaidList() {
     };
 
     return (
-        <div>
+        <div className="container">
             {
                 errorMessage.cancelError && <h3 className="white-wrap message">결제취소가 완료되었습니다!</h3>
             }
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
+                
 
-            <div className="componentContent">
+            <div className="container-middle">
                 {
                     contents.map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
@@ -154,7 +155,7 @@ export default function PaidList() {
                 }
 
             </div>
-            <div className="footer">
+            <div className="background-color-white">
                 {contents.length > 0 && (
                     <Pagination
                         itemCount={contents.length}
@@ -175,7 +176,7 @@ export default function PaidList() {
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
     return (
-        <table className="card-table">
+        <table className="table-list-card">
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>
@@ -192,7 +193,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <h3>{paidlist.airlineNm}</h3>
                     </td>
                     <td>
-                        <h1 className="special-color">{paidlist.depAirportNm}</h1>
+                        <h1 className="font-color-special">{paidlist.depAirportNm}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
@@ -200,17 +201,17 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <img src={Plane} width={'40px'} />
                     </td>
                     <td>
-                        <h1 className="special-color">{paidlist.arrAirportNm}</h1>
+                        <h1 className="font-color-special">{paidlist.arrAirportNm}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>
                 <tr>
                     <td colSpan={2}>
-                        <h2 className="font-extrabold">₩ {paidlist.price.toLocaleString()}</h2>
+                        <h2 className="font-family-extrabold">₩ {paidlist.price.toLocaleString()}</h2>
                     </td>
                     <td colSpan={2}>
 
-                        <button className="handle-button-modal handle-button-cancelstyle-modal" onClick={() => handleOpenClose(paidlist.id)}>취소</button>
+                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist.id)}>취소</button>
                     </td>
                 </tr>
             </tbody>

@@ -77,24 +77,3 @@ body {
 
 
 }
-
-.selectedDay {
-    background-color: var(--background-color);
-    color: var(--white-color);
-    border-radius: 25px;
-    font-weight: 700;
-
-    &:hover {
-        background-color: var(--background-color);
-        color: var(--white-color);
-    }
-}
-
-.unselectedDay {
-    background-color: var(--white-color);
-    font-weight: 700;
-    border-radius: 25px;
-    &:hover{
-
-    }
-}

@@ -11,8 +11,47 @@
     --hovering-color:#98C08A;
     --grey-color:#dddddd;
     --darkgrey-color:grey;
+    --lightgrey-color:#c4c4c4;
 }
 
+.font-color-grey {
+    color: var(--black-color);
+}
+
+.font-color-danger {
+    color: var(--danger-color);
+}
+.font-color-special {
+    color: var(--speical-color);
+}
+.font-color-warning {
+    color: var(--warning-color);
+}
+.font-color-white {
+    color: var(--white-color);
+}
+.background-color{
+    background-color: var(--background-color);
+}
+.background-color-white{
+     background-color: var(--white-color);
+}
+.background-color-hovering{
+    background-color: var(--background-hovering);
+}
+.selected {
+    background-color: var(--hovering-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    font-family: 'Pretendard-semibold';
+
+}
+.unselected {
+    background-color: var(--white-color);
+    font-family: 'Pretendard-semibold';
+    border-radius: 50%;
+
+}
 @font-face {
     font-family: 'Pretendard-bold';
     src: url('./fonts/Pretendard-Bold.woff2') format('woff2');
@@ -46,25 +85,27 @@
     font-family: 'Pretendard-extralight';
     src: url('./fonts/Pretendard-ExtraLight.woff2') format('woff2');
 }
-.font-bold{
+.font-family-bold{
     font-family: 'Pretendard-bold';
 }
 
-.font-light{
+.font-family-light{
     font-family: 'Pretendard-light';
 }
-.font-semibold{
+.font-family-semibold{
     font-family: 'Pretendard-semiBold';
 }
-.font-medium{
+.font-family-medium{
     font-family: 'Pretendard-medium';
 }
-.font-thin{
+.font-family-thin{
     font-family: 'Pretendard-thin';
 }
-.font-extrabold{
+.font-family-extrabold{
     font-family: 'Pretendard-extrabold';
 }
-.font-extralight{
+.font-family-extralight{
     font-family: 'Pretendard-extralight';
 }
+
+
