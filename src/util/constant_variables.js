@@ -32,7 +32,13 @@ export default class Constant {
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
         ];
     }
+    static getCostMenus() { //좌석등급
+        return [
+            { key: 0, value: 0, name: "높은순" },
+            { key: 1, value: 1, name: "낮은순" },
 
+        ];
+    }
     static handleDateFormatChange(date) {
         const arrAirportTime = date.toString();
         const year = arrAirportTime.substr(0, 4);
