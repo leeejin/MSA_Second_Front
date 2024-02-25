@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer,useRef } from 'react';
+import React, { useState, useEffect, useCallback, useReducer, useRef } from 'react';
 import axios from '../../axiosInstance';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
@@ -46,8 +46,8 @@ export default function ModalBookCheck() {
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
-    const [selectedData, setSelectedData] = useState({}) //선택한 컴포넌트 객체
-    const [serverData,setServerData] = useState([]); //서버에서 받은 데이터
+    const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
+    const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
@@ -55,10 +55,9 @@ export default function ModalBookCheck() {
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
-        if (IMP) IMP.init('imp01307537');
-        else console.log("IMP 제대로 활성화안됨")
+        IMP.init('imp01307537');
     }, []);
- 
+
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setSelectedData(data);
@@ -100,13 +99,7 @@ export default function ModalBookCheck() {
         console.log("폼데이터 : ", formData);
         // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
 
-        reserveInfoAPI(formData).then((response) => {
-            // 예약 요청이 성공적으로 이루어졌을 때
-                console.log("서버로부터 받은 데이터 : ",response.data);
-                setServerData(response.data);
-                setPayOpen(!payopen);
-        });
-
+        await reserveInfoAPI(formData);
 
     };
 
@@ -114,7 +107,7 @@ export default function ModalBookCheck() {
     const handlePay = async () => {
         const { IMP } = window;
         const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
-        const amount =  serverData.charge;
+        const amount = serverData.charge;
 
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
         try {
@@ -148,7 +141,7 @@ export default function ModalBookCheck() {
                     console.log('Payment information saved successfully' + response);
                     console.log(merchant_uid);
                     setOpen(false);
-                    navigate(`/CompleteReserve/${serverData.id}`, {   
+                    navigate(`/CompleteReserve/${serverData.id}`, {
                         state: {
                             contents: serverData,
                         }
@@ -234,7 +227,9 @@ export default function ModalBookCheck() {
     async function reserveInfoAPI(formData) {
         try {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
-            return reservationResponse;
+            console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
+            setServerData(reservationResponse.data);
+            setPayOpen(!payopen);
         } catch (error) {
             //안되면 에러뜨게 함
             setOpen(!open);
