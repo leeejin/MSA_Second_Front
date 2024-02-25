@@ -147,9 +147,9 @@ export default function PaidList() {
             }
                 
 
-            <div className="container-middle">
+            <div className="container-content">
                 {
-                    contents.map((paidlist, i) => (
+                    contents.slice(offset,offset+itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
                 }

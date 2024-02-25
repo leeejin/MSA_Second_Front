@@ -192,8 +192,8 @@ export default function Signup() {
             <div className="background background-color" />
             <div className="container container-backbox-450 background-color-white">
                 <div className="background-color-white">
-                    <h3 className="container-title">회원가입</h3>
                     <div className="container-innerBox">
+                    <h3 className="container-title">회원가입</h3>
                         <p>이름</p>
                         <input
                             placeholder="이름"

@@ -107,8 +107,8 @@ export default function Login() {
             <div className="background background-color" />
             <div className="container container-backbox-450 background-color-white">
                 <div className="background-color-white">
-                    <h3 className="container-title">로그인</h3>
                     <div className="container-innerBox">
+                    <h3 className="container-title">로그인</h3>
                         <p>아이디</p>
                         <input
                             type="email"

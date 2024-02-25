@@ -147,9 +147,9 @@ export default function PaidList() {
             }
                 
 
-            <div className="container-middle">
+            <div className="container-content">
                 {
-                    contents.map((paidlist, i) => (
+                    contents.slice(offset,offset+itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
                 }
@@ -193,7 +193,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <h3>{paidlist.airlineNm}</h3>
                     </td>
                     <td>
-                        <h1 className="font-color-speical">{paidlist.depAirportNm}</h1>
+                        <h1 className="font-color-special">{paidlist.depAirportNm}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
@@ -201,7 +201,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <img src={Plane} width={'40px'} />
                     </td>
                     <td>
-                        <h1 className="font-color-speical">{paidlist.arrAirportNm}</h1>
+                        <h1 className="font-color-special">{paidlist.arrAirportNm}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>

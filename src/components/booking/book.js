@@ -7,7 +7,7 @@ import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
-import { useDispatch } from 'react-redux';
+import Pagination from '../../util/pagenation';
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     paySuccess: false, //결제 성공
@@ -30,6 +30,9 @@ const reducer = (state, action) => {
 
     }
 }
+//페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
+const itemCountPerPage = 5; //한페이지당 보여줄 아이템 갯수
+const pageCountPerPage = 5; //보여줄 페이지 갯수
 /** 예약확인 목록 페이지 */
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default function ModalBookCheck() {
@@ -43,7 +46,9 @@ export default function ModalBookCheck() {
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
     const [selectedData, setSelectedData] = useState({}) //선택한 컴포넌트 객체
-
+ //페이지네이션
+ const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
+ const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
@@ -64,7 +69,12 @@ export default function ModalBookCheck() {
         setPayOpen(!payopen);
         setOpen(false);
     };
-
+ /** 페이지네이션 함수 */
+ const setCurrentPageFunc = (page) => {
+    let lastOffset = (page - 1) * itemCountPerPage;
+    setCurrentPage(page);
+    setOffset(lastOffset);
+};
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
@@ -252,10 +262,9 @@ export default function ModalBookCheck() {
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
-                <div className="container container-top" style={{ height: '300px' }}>
+                <div className="container container-top" style={{ height: '200px',marginTop:'60px' }}>
                     <div className="panel panel-top font-color-white" >
                         <div className="container-flex">
-
                             <h1 className="font-family-bold">{dep} </h1>
                             <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
                             <h1 className="font-family-bold"> {arr}</h1>
@@ -267,10 +276,19 @@ export default function ModalBookCheck() {
                 <div className="container container-content background-color-white">
 
                     {
-                        contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                        contents.slice(offset,offset+itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
 
                 </div>
+                {contents.length > 0 && (
+                    <Pagination
+                        itemCount={contents.length}
+                        pageCountPerPage={pageCountPerPage}
+                        itemCountPerPage={itemCountPerPage}
+                        currentPage={currentPage}
+                        clickListener={setCurrentPageFunc}
+                    />
+                )}
             </div>
 
         )
@@ -287,6 +305,7 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
     } else {
         return (
             <table className="table-list-card">
+                <tbody>
                 <tr>
                     <td>
                         <span>{info.airlineNm} ({info.vihicleId})</span>
@@ -313,6 +332,7 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                         <button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</button>
                     </td>
                 </tr>
+                </tbody>
             </table>
 
 
