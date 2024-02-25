@@ -121,6 +121,7 @@
 .btn-style-execute {
     margin-top: 10%;
     padding:15px;
+    width:100%;
     color: var(--button-color);
     background-color: var(--grey-color);
 
