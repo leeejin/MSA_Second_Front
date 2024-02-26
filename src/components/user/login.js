@@ -77,7 +77,7 @@ export default function Login() {
                 console.log("로그인 성공 Id=", response);
                 dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name, username: response.data.username, isRemember: isRemember } }); //리덕스에 로그인 정보 업데이트
                 const token = response.headers['authorization'];
-                window.localStorage.setItem('authToken', token);
+                window.sessionStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
                
                 navigate('/');

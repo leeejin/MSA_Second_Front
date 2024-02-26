@@ -22,7 +22,7 @@ export default function Menubar() {
         callLogoutAPI().then((response) => {
             if (response) {
                 dispatch({ type: "Logout" });
-                localStorage.removeItem('authToken');
+                sessionStorage.removeItem('authToken');
                 navigate("/");
                 setOpen(!open);
             }
