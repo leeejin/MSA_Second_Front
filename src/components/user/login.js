@@ -46,22 +46,22 @@ export default function Login() {
         email: '',
         password: '',
     });
-    /** 쿠키 관련 선언 */
-    const [cookies, setCookie, removeCookie] = useCookies(['remmemberUserId']);  //쿠키 이름
-    const [isRemember, setIsRemember] = useState(false);
-    useEffect(() => {
-        if (cookies.remmemberUserId !== undefined) {
-            setInfo((prev) => ({
-                ...prev,
-                email: cookies.remmemberUserId
-            }));
-            setIsRemember(true);
-        }
-    }, [])
-    const handleOnChange = (e) => {
-        setIsRemember(e.target.checked);
-        if (!e.target.checked) removeCookie("remmemberUserId");
-    }
+    // /** 쿠키 관련 선언 */
+    // const [cookies, setCookie, removeCookie] = useCookies(['remmemberUserId']);  //쿠키 이름
+    // const [isRemember, setIsRemember] = useState(false);
+    // useEffect(() => {
+    //     if (cookies.remmemberUserId !== undefined) {
+    //         setInfo((prev) => ({
+    //             ...prev,
+    //             email: cookies.remmemberUserId
+    //         }));
+    //         setIsRemember(true);
+    //     }
+    // }, [])
+    // const handleOnChange = (e) => {
+    //     setIsRemember(e.target.checked);
+    //     if (!e.target.checked) removeCookie("remmemberUserId");
+    // }
     /** Info 변화 */
     const handleChangeInfo = (infoType, e) => {
         setInfo((prev) => ({
@@ -83,9 +83,9 @@ export default function Login() {
                 window.localStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
                 // 아이디 저장이 체크되어 있으면 쿠키에 아이디 저장
-                if (isRemember) {
-                    setCookie('remmemberUserId', info.email);
-                }
+                // if (isRemember) {
+                //     setCookie('remmemberUserId', info.email);
+                // }
                 window.location.href = '/';
             }).catch(() => {
                 errorDispatch({ type: 'successError', successError: errors.successError }); // 로그인 실패 시 loginError 상태를 true로 설정
@@ -149,13 +149,13 @@ export default function Login() {
                             />
                         </div>
                         <div style={{ width: '70%', margin: 'auto' }}>
-                            <input
+                            {/* <input
                                 type="checkbox"
                                 id="saveId"
                                 name="saveId"
                                 onChange={(e) => { handleOnChange(e) }}
                                 checked={isRemember}
-                            /><label htmlFor="saveId">아이디 저장</label>
+                            /><label htmlFor="saveId">아이디 저장</label> */}
 
                             <SubButton onClick={() => { navigate('/Signup') }}>
                                 회원가입 하기

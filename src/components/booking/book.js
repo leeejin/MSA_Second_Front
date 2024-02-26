@@ -13,6 +13,7 @@ const ERROR_STATE = {
     paySuccess: false, //결제 성공
     payError: false, //결제 에러
     cancelSuccess: false, //취소 성공
+    cancelErorr: false, //취소 에러
     reserveError: false, // 예약 에러
 }
 const reducer = (state, action) => {
@@ -23,6 +24,8 @@ const reducer = (state, action) => {
             return { ...state, payError: true }
         case 'cancelError':
             return { ...state, cancelError: true }
+        case 'cancelSuccess':
+            return { ...state, cancelSuccess: true }
         case 'reserveError':
             return { ...state, reserveError: true }
         default:
@@ -67,10 +70,15 @@ export default function ModalBookCheck() {
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
-    const handleOpenCloseReserve = (e) => {
+    const handleOpenCloseReserve = async (e) => {
         e.preventDefault();
-        setPayOpen(!payopen);
         setOpen(false);
+        const newPayOpen = !payopen;
+        setPayOpen(newPayOpen);
+
+        if (!newPayOpen) {
+            await reserveCancelAPI(serverData.id);
+        }
     };
     /** 페이지네이션 함수 */
     const setCurrentPageFunc = (page) => {
@@ -174,6 +182,10 @@ export default function ModalBookCheck() {
             console.log('Payment Check successfully');
         } catch (error) {
             console.error('Failed to check payment', error);
+            errorDispatch({ type: 'payError', payError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
             throw new Error("결제되어야할 정보가 존재하지 않습니다");
         }
     };
@@ -188,6 +200,10 @@ export default function ModalBookCheck() {
             console.log('Payment Prepare successfully');
         } catch (error) {
             console.error('Failed to prepare payment', error);
+            errorDispatch({ type: 'payError', payError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
             throw new Error("결제되어야할 정보가 일치하지 않습니다");
         }
     }
@@ -219,7 +235,10 @@ export default function ModalBookCheck() {
                 }
             });
             console.log('Payment cancellation notified successfully');
+            setPayOpen(false);
+            setOpen(false);
         } catch (error) {
+            
             console.error('Failed to notify payment cancellation', error);
         }
     };
@@ -239,6 +258,29 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
+    /**예약 취소 함수 */
+    async function reserveCancelAPI(reservedId) {
+        try {
+            await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
+                reservedId
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("취소완료");
+            errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
+        } catch (error) {
+            console.error(error);
+            errorDispatch({ type: 'cancelError', cancelError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
+        }
+    }
     if (!location.state) {
         return (<Navigate to="*" />)
     } else {
@@ -252,6 +294,12 @@ export default function ModalBookCheck() {
                 }
                 {
                     errorMessage.payError && <h3 className="white-wrap message">결제실패하였습니다</h3>
+                }
+                {
+                    errorMessage.cancelErorr && <h3 className="white-wrap message">예약취소 실패하였습니다</h3>
+                }
+                {
+                    errorMessage.cancelSuccess && <h3 className="white-wrap message">예약취소 성공하였습니다</h3>
                 }
                 {
                     open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
@@ -270,27 +318,6 @@ export default function ModalBookCheck() {
                     </div>
                 </div>
                 <div className="container container-content background-color-white">
-                    {/* <div
-                        ref={selectBoxRef}
-                        className={`select select-email ${isShowOptions && 'active'}`}
-                        onClick={show}
-                    >
-                        <label>{select}</label>
-                        {isShowOptions && (
-                            <ul className="select-option select-option-email">
-                                {costMenus.map((cost, i) => (
-                                    <li
-                                        className="option"
-                                        onClick={(e) => handleOnChangeSelectValue(e)}
-                                        key={cost.key}
-                                        value={cost.value}
-                                    >
-                                        {cost.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div> */}
                     {
                         contents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }

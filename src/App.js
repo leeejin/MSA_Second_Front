@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import NonPage from './pages/nonPage';
 import Spinner from "../src/styles/image/loading.gif"
 const Home = React.lazy(() => import('./pages/main_page')); //로딩중이 끝나면 해당 경로로 날려버림
@@ -23,11 +22,9 @@ const ConditionRoute = ({ element }) => {
     return <Navigate to='/Login' />;
   }
 }
-// QueryClient 인스턴스 생성
-const queryClient = new QueryClient();
+
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Suspense fallback={
       <div className="loading">
@@ -47,6 +44,5 @@ export default function App() {
         </Routes>
       </Suspense>
     </BrowserRouter>
-    </QueryClientProvider>
   );
 }
