@@ -1,5 +1,4 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
@@ -78,7 +77,7 @@ export default function Login() {
         if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
-                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name } }); //리덕스에 로그인 정보 업데이트
+                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name, username: response.data.username } }); //리덕스에 로그인 정보 업데이트
                 const token = response.headers['authorization'];
                 window.localStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
@@ -86,14 +85,8 @@ export default function Login() {
                 // if (isRemember) {
                 //     setCookie('remmemberUserId', info.email);
                 // }
-                window.location.href = '/';
-            }).catch(() => {
-                errorDispatch({ type: 'successError', successError: errors.successError }); // 로그인 실패 시 loginError 상태를 true로 설정
-                setTimeout(() => {
-                    // 로그인 실패 시 loginError 상태를 true로 설정
-                    errorDispatch({ type: 'error' });
-                }, 1000);
-            });
+                navigate('/');
+            })
         } else {
             if (errors.emailError) {
                 errorDispatch({ type: 'emailError', emailError: errors.emailError });
@@ -110,9 +103,18 @@ export default function Login() {
         const formData = {
             username: info.email,
             password: info.password
+        };
+        try {
+            const response = await axios.post(Constant.serviceURL + `/users/login`, formData, { withCredentials: true });
+            return response;
+        } catch (error) {
+            errorDispatch({ type: 'successError', successError: true }); // 로그인 실패 시 loginError 상태를 true로 설정
+            setTimeout(() => {
+                // 로그인 실패 시 loginError 상태를 true로 설정
+                errorDispatch({ type: 'error' });
+            }, 1000);
         }
-        const response = await axios.post(Constant.serviceURL + `/users/login`, formData, { withCredentials: true });
-        return response;
+
     }
     return (
         <>

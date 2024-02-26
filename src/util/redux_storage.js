@@ -1,49 +1,30 @@
-import { createStore } from "redux";
-
-const loadState = () => {
-    try {
-        const serializedState = sessionStorage.getItem("reduxState");
-        if (serializedState === null) {
-            return undefined;
-        }
-        return JSON.parse(serializedState);
-    } catch (err) {
-        return undefined;
-    }
-};
-
-const saveState = (state) => {
-    try {
-        const serializedState = JSON.stringify(state);
-        sessionStorage.setItem("reduxState", serializedState);
-    } catch (err) {
-        // Handle errors here
-    }
-};
+import { legacy_createStore as createStore } from "redux";
 
 const loginState = {
-    userId: 0,
-    name:"",
+  userId: parseInt(localStorage.getItem("userId")) || 0,
+  name: localStorage.getItem("name") || "",
+  username:localStorage.getItem("username")|| "",
 };
 
 function reducer(state = loginState, action) {
-    switch (action.type) {
-        case "Login":
-            return saveState({
-                ...state,
-                userId: action.data.userId,
-                name:action.data.name,
-            });;
-        case "Logout":
-            return  saveState({
-                userId: 0,
-                name:"",
-            });;
-        default:
-            return state;
-    }
+  console.log("리덕스에서의 값들 = ", loginState);
+  switch (action.type) {
+    case "Login":
+      localStorage.setItem("userId", action.data.userId);
+      localStorage.setItem("name", action.data.name);
+      localStorage.setItem("username", action.data.username);
+      return { ...state, userId: action.data.userId, name: action.data.name,username:action.data.username };
+    case "Logout":
+      localStorage.setItem("userId", 0);
+      localStorage.setItem("name", "");
+      localStorage.setItem("username", "");
+      return { ...state, userId: 0, name: "",username:"" };
+    default:
+      return { ...state };
+  }
 }
 
-const persistedState = loadState();
+const persistedState = loginState;
+const store = createStore(reducer, persistedState);
 
-export default createStore(reducer, persistedState);
+export default store;
