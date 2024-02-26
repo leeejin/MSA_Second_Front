@@ -1,27 +1,33 @@
 import { legacy_createStore as createStore } from "redux";
 
 const loginState = {
-  userId: parseInt(localStorage.getItem("userId")) || 0,
-  name: localStorage.getItem("name") || "",
-  username:localStorage.getItem("username")|| "",
+    userId: parseInt(sessionStorage.getItem("userId")) || 0,
+    name: sessionStorage.getItem("name") || "",
+    username: localStorage.getItem("username") || "",
+    isRemember: localStorage.getItem("isRemember")||false,
 };
 
 function reducer(state = loginState, action) {
-  console.log("리덕스에서의 값들 = ", loginState);
-  switch (action.type) {
-    case "Login":
-      localStorage.setItem("userId", action.data.userId);
-      localStorage.setItem("name", action.data.name);
-      localStorage.setItem("username", action.data.username);
-      return { ...state, userId: action.data.userId, name: action.data.name,username:action.data.username };
-    case "Logout":
-      localStorage.setItem("userId", 0);
-      localStorage.setItem("name", "");
-      localStorage.setItem("username", "");
-      return { ...state, userId: 0, name: "",username:"" };
-    default:
-      return { ...state };
-  }
+    console.log("리덕스에서의 값들 = ", loginState);
+    switch (action.type) {
+        case "Login":
+            sessionStorage.setItem("userId", action.data.userId);
+            sessionStorage.setItem("name", action.data.name);
+            localStorage.setItem("username", action.data.username);
+            localStorage.setItem("isRemember", action.data.isRemember);
+            return { ...state, userId: action.data.userId, name: action.data.name, username: action.data.username, isRemember: action.data.isRemember };
+        case "Logout":
+            sessionStorage.setItem("userId", 0);
+            sessionStorage.setItem("name", "");
+            if (state.isRemember===false) {
+                localStorage.setItem("username", "");
+                return { ...state, userId: 0, name: "", username: "" };
+            } else {
+                return { ...state, userId: 0, name: "" };
+            }
+        default:
+            return { ...state };
+    }
 }
 
 const persistedState = loginState;

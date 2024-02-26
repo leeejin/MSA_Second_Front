@@ -281,6 +281,7 @@ export default function ModalBookCheck() {
             }, [1000]);
         }
     }
+   
     if (!location.state) {
         return (<Navigate to="*" />)
     } else {
