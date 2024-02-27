@@ -39,30 +39,29 @@ export default class Constant {
 
         ];
     }
+    static parseDate(date) {
+        const arrAirportTime = date.toString();
+        const year = arrAirportTime.substr(0, 4);
+        const month = arrAirportTime.substr(4, 2);
+        const day = arrAirportTime.substr(6, 2);
+        const hour = arrAirportTime.substr(8, 2);
+        const minute = arrAirportTime.substr(10, 2);
+        return { year, month, day, hour, minute };
+    }
+    
     static handleDateFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-        return formattedTime;
+        const { year, month, day, hour, minute } = this.parseDate(date);
+        return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
     }
+    
     static handleDayFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일`;
-        return formattedTime;
+        const { year, month, day } = this.parseDate(date);
+        return `${year}년 ${month}월 ${day}일`;
     }
+    
     static handleTimeFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${hour}:${minute}`;
-        return formattedTime;
+        const { hour, minute } = this.parseDate(date);
+        return `${hour}:${minute}`;
     }
     static getDateTypeChange = (date) => {
 

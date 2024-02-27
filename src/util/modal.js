@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handleSignup }) => {
     const navigate = useNavigate();
 
@@ -10,7 +9,7 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handl
     }, [])
 
     return (
-        <div>
+        <>
             <div className="black-wrap" onClick={handleOpenClose} />
             <div className="white-wrap">
 
@@ -28,7 +27,7 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handl
                 </>
                 }
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
@@ -8,6 +8,7 @@ import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
+import { BsExclamationCircle } from "react-icons/bs";
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     paySuccess: false, //결제 성공
@@ -43,6 +44,13 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const errorMapping = {
+        reserveError: '이미 예약하였습니다',
+        paySuccess: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
+        payError: '결제실패하였습니다',
+        cancelError: '예약취소 실패하였습니다',
+        cancelSuccess: '예약취소 성공하였습니다',
+    };
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
@@ -111,7 +119,18 @@ export default function ModalBookCheck() {
 
     };
 
-
+    const errorElements = useMemo(() => {
+        return Object.keys(errorMapping).map((key) => {
+            if (errorMessage[key]) {
+                return (
+                    <h3 className="white-wrap message" key={key}>
+                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
+                    </h3>
+                );
+            }
+            return null;
+        });
+    }, [errorMessage, errorMapping]);
     const handlePay = async () => {
         const { IMP } = window;
         const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
@@ -238,7 +257,7 @@ export default function ModalBookCheck() {
             setPayOpen(false);
             setOpen(false);
         } catch (error) {
-            
+
             console.error('Failed to notify payment cancellation', error);
         }
     };
@@ -281,27 +300,16 @@ export default function ModalBookCheck() {
             }, [1000]);
         }
     }
-   
+
     if (!location.state) {
         return (<Navigate to="*" />)
     } else {
         return (
             <div>
-                {
-                    errorMessage.reserveError && <h3 className="white-wrap message">이미 예약하였습니다</h3>
-                }
-                {
-                    errorMessage.paySuccess && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다</h3>
-                }
-                {
-                    errorMessage.payError && <h3 className="white-wrap message">결제실패하였습니다</h3>
-                }
-                {
-                    errorMessage.cancelErorr && <h3 className="white-wrap message">예약취소 실패하였습니다</h3>
-                }
-                {
-                    errorMessage.cancelSuccess && <h3 className="white-wrap message">예약취소 성공하였습니다</h3>
-                }
+
+                <div>
+                    {errorElements}
+                </div>
                 {
                     open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
                 }

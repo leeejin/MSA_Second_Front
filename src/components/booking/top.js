@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, { useState, useEffect, useRef, useReducer, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
+import { BsExclamationCircle } from "react-icons/bs";
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
@@ -42,6 +43,7 @@ const ERROR_STATE = {
     loginError: false,
     seatError: false,
 }
+
 const reducer = (state, action) => {
     switch (action.type) {
         case 'depError':
@@ -70,6 +72,16 @@ export default function TopComponent({ airports, setAirPorts }) {
     const [userId, setUserId] = useState(store.getState().userId);
     const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const errorMapping = {
+        depError: '출발지를 입력해주세요',
+        arrError: '도착지를 입력해주세요',
+        levelError: '좌석을 선택해주세요',
+        locationError: '출발지와 도착지가 같습니다',
+        dateError: '날짜를 선택해주세요',
+        searchError: '조회 실패하였습니다',
+        loginError: '로그인이 필요한 서비스입니다',
+        seatError: '해당 항공편이 존재하지 않습니다',
+    };
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -96,7 +108,18 @@ export default function TopComponent({ airports, setAirPorts }) {
             [locationType]: e.target.getAttribute("value")
         }));
     };
-
+    const errorElements = useMemo(() => {
+        return Object.keys(errorMapping).map((key) => {
+            if (errorMessage[key]) {
+                return (
+                    <h3 className="white-wrap message" key={key}>
+                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
+                    </h3>
+                );
+            }
+            return null;
+        });
+    }, [errorMessage, errorMapping]);
     /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
     const getSelectedAirport = (selectedAirportNm) => {
         const selectedAirport = airport.find(
@@ -223,30 +246,9 @@ export default function TopComponent({ airports, setAirPorts }) {
     }
     return (
         <>
-            {
-                errorMessage.depError && <h3 className="white-wrap message">출발지를 입력해주세요</h3>
-            }
-            {
-                errorMessage.arrError && <h3 className="white-wrap message">도착지를 입력해주세요</h3>
-            }
-            {
-                errorMessage.levelError && <h3 className="white-wrap message">좌석을 선택해주세요</h3>
-            }
-            {
-                errorMessage.locationError && <h3 className="white-wrap message">출발지와 도착지가 같습니다</h3>
-            }
-            {
-                errorMessage.dateError && <h3 className="white-wrap message">날짜를 선택해주세요</h3>
-            }
-            {
-                errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
-            }
-            {
-                errorMessage.loginError && <h3 className="white-wrap message">로그인이 필요한 서비스입니다</h3>
-            }
-            {
-                errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
-            }
+            <div>
+                {errorElements}
+            </div>
             <div className="container container-top" >
                 <div className="panel panel-top background-color-white">
                     <div className='parent-container'>
@@ -317,11 +319,11 @@ export default function TopComponent({ airports, setAirPorts }) {
                                 </tr>
                             </tbody>
                         </table>
-                        <div className="second-container" style={{ clear: 'both'}}>
-                        <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
+                        <div className="second-container" style={{ clear: 'both' }}>
+                            <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
+                        </div>
                     </div>
-                    </div>
-                 
+
 
                 </div>
             </div>
