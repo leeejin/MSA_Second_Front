@@ -32,7 +32,7 @@ function reducer(state = loginState, action) {
             return saveState({
                 ...state,
                 userId: action.data.userId,
-                name:action.data.nickname
+                name:action.data.name,
             });;
         case "Logout":
             return  saveState({

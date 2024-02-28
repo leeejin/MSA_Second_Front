@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import store from '../../util/redux_storage';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
@@ -95,6 +95,7 @@ export default function PaidList() {
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000])
+            window.location.reload(); //취소되면 페이지 리로드
         } catch (error) {
             console.log("예약 취소 중 오류 발생:", error);
             setOpen(!open);
@@ -104,16 +105,16 @@ export default function PaidList() {
     /** 결제 목록 불러오는 API */
     async function callGetPaidListAPI() {
         try {
-            //const response = axios.get(Constant.serviceURL+`/예약목록`,{ withCredentials: true })
+            //const response = axios.get(Constant.serviceURL+`/결과목록`,{ withCredentials: true })
             return [{
-                id: 1,
-                price: 5000,
-                vihicleId: "TW901",
+                id: 13,
                 airlineNm: "티웨이항공",
+                vihicleId: "TW902",
                 arrAirportNm: "제주",
+                arrPlandTime: 202402291210,
                 depAirportNm: "광주",
-                arrPlandTime: 202402151005,
-                depPlandTime: 202402150915,
+                depPlandTime: 202402291100,
+                cost: 93000,
                 status: '결제 후'
             }];
         } catch (error) {
@@ -137,15 +138,16 @@ export default function PaidList() {
     };
 
     return (
-        <div>
+        <div className="container">
             {
                 errorMessage.cancelError && <h3 className="white-wrap message">결제취소가 완료되었습니다!</h3>
             }
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
+                
 
-            <div className="componentContent">
+            <div className="container-middle">
                 {
                     contents.map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
@@ -153,7 +155,7 @@ export default function PaidList() {
                 }
 
             </div>
-            <div className="footer">
+            <div className="background-color-white">
                 {contents.length > 0 && (
                     <Pagination
                         itemCount={contents.length}
@@ -173,25 +175,13 @@ export default function PaidList() {
 
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
-
-    /**date 형식 바꾸는 함수 */
-    const handleDateFormatChange = (date) => {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-        return formattedTime;
-    }
     return (
-        <TicketTable>
+        <table className="table-list-card">
             <thead>
                 <tr>
                     <th>편명 <SubThead>Flight</SubThead></th>
-                    <th >출발 <SubThead>From</SubThead></th>
-                    <th />
+                    <th>출발 <SubThead>From</SubThead></th>
+                    <th/>
                     <th>도착 <SubThead>To</SubThead></th>
                 </tr>
             </thead>
@@ -203,30 +193,30 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <h3>{paidlist.airlineNm}</h3>
                     </td>
                     <td>
-                        <h1 className="special-color">{paidlist.depAirportNm}</h1>
-                        <p >{handleDateFormatChange(paidlist.depPlandTime)}</p>
+                        <h1 className="font-color-special">{paidlist.depAirportNm}</h1>
+                        <p>{Constant.handleDateFormatChange(paidlist.depPlandTime)}</p>
 
                     </td>
                     <td>
                         <img src={Plane} width={'40px'} />
                     </td>
                     <td>
-                        <h1 className="special-color">{paidlist.arrAirportNm}</h1>
-                        <p>{handleDateFormatChange(paidlist.arrPlandTime)}</p>
+                        <h1 className="font-color-special">{paidlist.arrAirportNm}</h1>
+                        <p>{Constant.handleDateFormatChange(paidlist.arrPlandTime)}</p>
                     </td>
                 </tr>
                 <tr>
                     <td colSpan={2}>
-                        <h2>₩ {paidlist.price.toLocaleString()}</h2>
+                        <h2 className="font-family-extrabold">₩ {paidlist.cost.toLocaleString()}</h2>
                     </td>
                     <td colSpan={2}>
 
-                        <button className="handle-button-modal handle-button-cancelstyle-modal" onClick={() => handleOpenClose(paidlist.id)}>취소</button>
+                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist.id)}>취소</button>
                     </td>
                 </tr>
             </tbody>
 
-        </TicketTable>
+        </table>
 
     )
 }

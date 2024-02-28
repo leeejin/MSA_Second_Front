@@ -189,11 +189,11 @@ export default function Signup() {
             {
                 errorMessage.duplicateError === true && <h3 className="white-wrap message">다른 사용자가 있습니다. 다른 이메일로 바꿔주세요</h3>
             }
-            <div className='background' />
-            <div className='backBox'>
-                <div className='innerBox'>
-                    <h3 className='componentTitle'>회원가입</h3>
-                    <div className="subBox">
+            <div className="background background-color" />
+            <div className="container container-backbox-450 background-color-white">
+                <div className="background-color-white">
+                    <h3 className="container-title">회원가입</h3>
+                    <div className="container-innerBox">
                         <p>이름</p>
                         <input
                             placeholder="이름"
@@ -220,7 +220,7 @@ export default function Signup() {
                             >
                                 <label>{select}</label>
                                 {isShowOptions && (
-                                    <ul className="select-option">
+                                    <ul className="select-option select-option-email">
                                         {emailMenus.map((email, i) => (
                                             <li
                                                 className="option"
@@ -250,7 +250,7 @@ export default function Signup() {
                             onChange={(e) => handleChangeInfo('confirmPassword', e)}
                         />
 
-                        <button className="handle-button button-style" onClick={handleOpenClose}>회원가입</button>
+                        <button className="btn btn-style-execute" onClick={handleOpenClose}>회원가입</button>
 
                     </div>
                 </div>

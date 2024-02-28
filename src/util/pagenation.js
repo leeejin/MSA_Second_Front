@@ -72,9 +72,9 @@ export default class Pagenation extends Component {
     render() {
         return (
             <PageContainer>
-                <button className="doButton" onClick={this.leftPageClicked} style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={this.state.startPage === 1}>&lt;</button>
+                <button className="btn" onClick={this.leftPageClicked} style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }} disabled={this.state.startPage === 1}>&lt;</button>
                 {this.pages.slice(this.state.startPage, this.state.endPage + 1).map((item, i) => <Numbering key={i} page={item} currentPage={this.state.currentPage} clickListener={(page) => this.pageNumberClicked(page)} />)}
-                <button className="doButton" onClick={this.rightPageClicked} style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }} disabled={this.state.endPage === this.maxPage}>&gt;</button>
+                <button className="btn" onClick={this.rightPageClicked} style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }} disabled={this.state.endPage === this.maxPage}>&gt;</button>
             </PageContainer>
         );
     }
@@ -87,7 +87,7 @@ class Numbering extends Component {
 
     render() {
         return (
-            <button onClick={() => this.props.clickListener(this.props.page)} className={this.props.page == this.props.currentPage ? 'pagination pagination-selected' : 'pagination pagination-unselected'}>
+            <button onClick={() => this.props.clickListener(this.props.page)} className={this.props.page == this.props.currentPage ? 'pagination selected' : 'pagination unselected'}>
                 <span style={{ fontSize: '18px' }}>{this.props.page}</span>
             </button>
         );

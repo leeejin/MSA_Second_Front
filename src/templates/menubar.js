@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Provider } from 'react-redux';
 import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import ModalComponent from '../util/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
@@ -14,25 +13,25 @@ export default function Menubar() {
 
     const [open, setOpen] = useState(false);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
-    const handleOpenClose = () => {
+    const handleOpenClose = (e) => {
+        e.preventDefault();
         setOpen(!open);
     };
     //로그아웃 체크
     const handleSubmit = () => {
         callLogoutAPI().then((response) => {
             if (response) {
+                window.location.href = '/';
                 dispatch({ type: "Logout" });
 
                 localStorage.removeItem('authToken');
-
-                window.location.href = '/';
             }
         })
     };
     /** 메뉴선택하면 스타일 변함 */
     const activeStyle = {
-        color: 'white',
-        backgroundColor: '#98C08A'
+        color: 'var(--white-color)',
+        backgroundColor: 'var(--hovering-color)'
     }
     //로그아웃하는 API
     async function callLogoutAPI() {
@@ -49,7 +48,7 @@ export default function Menubar() {
         {
             open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까 ?"} />
         }
-        <div className="menubar-container">
+        <div className="menubar">
 
 
             <div>
@@ -58,24 +57,23 @@ export default function Menubar() {
                     {
                         userId !== 0 ? <>
                             <NavLink
-                                className="nav-item menu-item-style"
+                                className="btn-nav-item btn-style-item font-family-semibold"
                                 style={({ isActive }) => (isActive ? activeStyle : {})}
                                 to={`/Mypage/${userId}`}
                             >내정보</NavLink>
                             <NavLink
-                                className="nav-item menu-item-style"
-                                style={({ isActive }) => (isActive ? activeStyle : {})}
-                                onClick={handleOpenClose}
+                                className="btn-nav-item btn-style-item font-family-semibold"
+                                onClick={(e)=>handleOpenClose(e)}
                             >로그아웃</NavLink>
                         </>
                             : <>
                                 <NavLink
-                                    className="nav-item menu-item-style"
+                                    className="btn-nav-item btn-style-item font-family-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Signup"}
                                 >회원가입</NavLink>
                                 <NavLink
-                                    className="nav-item menu-item-style"
+                                    className="btn-nav-item btn-style-item font-family-semibold"
                                     style={({ isActive }) => (isActive ? activeStyle : {})}
                                     to={"/Login"}
                                 >로그인</NavLink>

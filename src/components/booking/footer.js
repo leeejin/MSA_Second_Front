@@ -23,12 +23,12 @@ export default function FooterSlider ({ setAirPorts }) {
     };
     const renderSlides = footer.map((footer) => (
         <div className="container-bottom" style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
-            <div className="footerpanel">
+            <div className="panel panel-bottom">
                 <div>
                     <h1>{footer.title}</h1>
                     <h1>{footer.subTitle}</h1>
-                    <h3>{footer.content}</h3>
-                    <button className="button-reserve" onClick={() => handleReserve(footer.value)}>
+                    <p>{footer.content}</p>
+                    <button className="btn btn-style-border" onClick={() => handleReserve(footer.value)}>
                         예약하기
                     </button>
                 </div>
@@ -38,12 +38,12 @@ export default function FooterSlider ({ setAirPorts }) {
     return (
         <Carousel
             showStatus={false}
-            showArrows={false}
+            showArrows={true}
             autoPlay={true}
             infiniteLoop={true}
             showThumbs={false}
             onChange={handleChange}
-            className="w-[400px] lg:hidden">
+            >
             {renderSlides}
         </Carousel>
     );

@@ -104,11 +104,11 @@ export default function Login() {
             {
                 errorMessage.successError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
             }
-            <div className="background" />
-            <div className='backBox'>
-                <div className='innerBox'>
-                    <h3 className='componentTitle'>로그인</h3>
-                    <div className="subBox">
+            <div className="background background-color" />
+            <div className="container container-backbox-450 background-color-white">
+                <div className="background-color-white">
+                    <h3 className="container-title">로그인</h3>
+                    <div className="container-innerBox">
                         <p>아이디</p>
                         <input
                             type="email"
@@ -125,7 +125,7 @@ export default function Login() {
                         <SubButton onClick={() => { navigate('/Signup') }}>
                             회원가입 하기
                         </SubButton>
-                        <button className="handle-button button-style" onClick={(e) => submit(e)}>로그인</button>
+                        <button className="btn btn-style-execute " onClick={(e) => submit(e)}>로그인</button>
                         <Hr />
                     </div>
                 </div>

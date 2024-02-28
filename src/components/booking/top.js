@@ -7,7 +7,7 @@ import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
-
+import store from '../../util/redux_storage';
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
@@ -17,9 +17,12 @@ const MarkTd = styled.span`
 
 const LocationLabel = styled.label`
     font-size:1.8rem;
+    color: ${props => props.color};
 `;
 const Label = styled.label`
-    padding-left:30px;
+    padding-left:5px;
+    padding-bottom: 5px;
+    font-family: 'Pretendard-semibold';
 `;
 const OptionLabel = styled.h3`
     margin-left:10px
@@ -36,6 +39,8 @@ const ERROR_STATE = {
     levelError: false,
     dateError: false,
     searchError: false,
+    loginError: false,
+    seatError: false,
 }
 const reducer = (state, action) => {
     switch (action.type) {
@@ -51,6 +56,10 @@ const reducer = (state, action) => {
             return { ...state, dateError: true }
         case 'searchError':
             return { ...state, searchError: true }
+        case 'loginError':
+            return { ...state, loginError: true }
+        case 'seatError':
+            return { ...state, seatError: true }
         default:
             return ERROR_STATE
 
@@ -60,12 +69,13 @@ const reducer = (state, action) => {
 /** top component */
 export default function TopComponent({ airports, setAirPorts }) {
     const navigate = useNavigate();
-
-    const [depTime, setDepTime] = useState(null); // 출발날짜는 항상 오늘날짜의 다음날부터
+    const [userId, setUserId] = useState(store.getState().userId);
+    const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
+
     useEffect(() => {
         const handleOutsideClick = (event) => {
             const isOutsideClick = selectBoxRef.current.every((ref, index) => {
@@ -123,39 +133,57 @@ export default function TopComponent({ airports, setAirPorts }) {
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime === '' || depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError: depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
-            // callPostAirInfoAPI().then((response) => {
-            navigate(`/Reserve`, {
-                state: {
-                    contents:
-                        [
-                            {
-                                id: 13,
-                                economyCharge: 63900,
-                                prestigeCharge: 93900,
-                                vihicleId: "TW902",
-                                seatCapacity: 80,
-                                airlineNm: "티웨이항공",
-                                arrAirportNm: "제주",
-                                depAirportNm: "광주",
-                                arrPlandTime: 202402291210,
-                                depPlandTime: 202402291100,
-                            }
-                        ],
-                    seatLevel: airport.level
+            //callPostAirInfoAPI().then((response) => {
+                //if (response.data.length > 0) {
+                    navigate(`/Reserve`, {
+                        state: {
+                            dep: airports.dep,
+                            arr: airports.arr,
+                            depTime: handleDateFormatChange(depTime),
+                            contents: [
+                                {
+                                    id: 13,
+                                    economyCharge: 63900,
+                                    prestigeCharge: 93900,
+                                    vihicleId: "TW902",
+                                    seatCapacity: 80,
+                                    airlineNm: "에어로케이",
+                                    arrAirportNm: "제주",
+                                    depAirportNm: "광주",
+                                    arrPlandTime: 202403291210,
+                                    depPlandTime: 202403291100,
+                                }
+                            ],
+                            seatLevel: airports.level
+                        }
+                    });
+
+                /*} else {
+                    dispatch({ type: 'seatError', seatError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
+                }*/
+
+
+            /*}).catch((error) => {
+                if (error.response.status === 401) {
+                    dispatch({ type: 'loginError', loginError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
+                } else {
+                    dispatch({ type: 'searchError', searchError: true });
+                    setTimeout(() => {
+                        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
+                    }, 1000);
                 }
-            });
 
-            //}).catch((error) => {
-            //    dispatch({ type: 'searchError', searchError: true });
-            //    setTimeout(() => {
-            //        dispatch({ type: 'error' }); //에러 모두 false로 바꿈
-            //    }, 1000);
-            //})
-
+            })*/
 
         } else {
             if (errors.depError) {
@@ -174,6 +202,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             }, 1000);
         }
     }
+
     /**date 형식 바꾸는 함수 */
     const handleDateFormatChange = (date) => {
         const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
@@ -196,13 +225,16 @@ export default function TopComponent({ airports, setAirPorts }) {
             seatLevel: airports.level, //좌석등급
             depTime: handleDateFormatChange(depTime), //날짜
         };
-        try {
+        /*try {
             const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+
+            console.log(response);
             return response;
+
         }
         catch (error) {
             console.error(error);
-        }
+        }*/
     }
     return (
         <>
@@ -224,8 +256,14 @@ export default function TopComponent({ airports, setAirPorts }) {
             {
                 errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
             }
+            {
+                errorMessage.loginError && <h3 className="white-wrap message">로그인이 필요한 서비스입니다</h3>
+            }
+            {
+                errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
+            }
             <div className="container container-top" >
-                <div className="mainpanel">
+                <div className="panel panel-top background-color-white">
                     <div className='parent-container'>
                         <table>
                             <thead>
@@ -249,7 +287,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                                         />
                                     </td>
                                     <td>
-                                        <button className="doButton" onClick={handleAirPortReverse}><img src={reverse} /></button>
+                                        <button className="btn btn-style-none" onClick={handleAirPortReverse}><img src={reverse} /></button>
                                     </td>
                                     <td>
                                         <SelectComponent
@@ -270,7 +308,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                             <thead>
                                 <tr>
                                     <td><MarkTd>가는날</MarkTd></td>
-                                    <td />
+
                                     <td><MarkTd>좌석등급</MarkTd></td>
                                 </tr>
                             </thead>
@@ -287,17 +325,18 @@ export default function TopComponent({ airports, setAirPorts }) {
                                             handleChange={(e) => handleChange("level", e)}
                                         />
                                     </td>
-                                    <td />
+
                                     <td>
                                         <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <div className="second-container" style={{ clear: 'both' }}>
+                            <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
+                        </div>
                     </div>
-                    <div style={{ clear: 'both' }}>
-                        <button className="button-search" onClick={handleSearch} >검색하기</button>
-                    </div>
+
 
                 </div>
             </div>
@@ -315,7 +354,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsNa
                 className={`select select-level ${isShowOptions && 'active'}`}
                 onClick={show}>
                 <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
-                <Label style={{ paddingLeft: '10px', paddingBottom: '5px', color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)' }}>{airportsName}</Label>
+                <Label style={{ color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)' }}>{airportsName}</Label>
                 {
                     isShowOptions && (
                         <ul
@@ -345,7 +384,7 @@ const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsNa
                 ref={el => selectBoxRef.current[number] = el}
                 className={`select select-location ${isShowOptions && 'active'}`}
                 onClick={show}>
-                <LocationLabel style={{ color: (airportsName === '출발' || airportsName === '도착') ? 'grey' : 'var(--black-color)' }}>{airportsName}</LocationLabel>
+                <LocationLabel color={airportsName === '출발' || airportsName === '도착' ? 'var(--darkgrey-color)' : 'var(--black-color)'}>{airportsName}</LocationLabel>
                 {
                     isShowOptions && (
                         <ul
