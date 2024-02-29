@@ -58,6 +58,28 @@ export default class Constant {
             { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
+    static getRegionList(){
+       return[
+        { key: 0, value: '전체', name: '전체', code: 0 },
+        { key: 1, value: '서울', name: '서울', code: 1 },
+        { key: 2, value: '인천', name: '인천', code: 2 },
+        { key: 3, value: '대전', name: '대전', code: 3 },
+        { key: 4, value: '대구', name: '대구', code: 4 },
+        { key: 5, value: '광주', name: '광주', code: 5 },
+        { key: 6, value: '부산', name: '부산', code: 6 },
+        { key: 7, value: '울산', name: '울산', code: 7 },
+        { key: 8, value: '세종', name: '세종', code: 8 },
+        { key: 31, value: '경기도', name: '경기도', code: 31 },
+        { key: 32, value: '강원도', name: '강원도', code: 32 },
+        { key: 33, value: '충청북도', name: '충청북도', code: 33 },
+        { key: 34, value: '충청남도', name: '충청남도', code: 34 },
+        { key: 35, value: '경상북도', name: '경상북도', code: 35 },
+        { key: 36, value: '경상남도', name: '경상남도', code: 36 },
+        { key: 37, value: '전라북도', name: '전라북도', code: 37 },
+        { key: 38, value: '전라남도', name: '전라남도', code: 38 },
+        { key: 39, value: '제주도', name: '제주도', code: 39 },
+       ];
+    }
     static getCostMenus() { //좌석등급
         return [
             { key: 0, value: 0, name: "높은순" },

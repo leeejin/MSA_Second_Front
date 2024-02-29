@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
+import styled from "styled-components";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
@@ -9,6 +10,11 @@ import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
 import { BsExclamationCircle } from "react-icons/bs";
+const Hr = styled.hr`
+    margin-top:30px;
+    clear:both;
+    border:1px solid var(--grey-color);
+`;
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     paySuccess: false, //결제 성공
@@ -53,12 +59,14 @@ export default function ModalBookCheck() {
     };
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
+    const [listContents, setListContents] = useState(contents);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
+
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
@@ -120,6 +128,21 @@ export default function ModalBookCheck() {
 
     };
 
+    /** 데이터 필터링 */
+    const handleSort = (value) => {
+        let filteredContents = [...contents];
+
+        if (value === "price") {
+            if (seatLevel === "일반석") filteredContents = filteredContents.sort((a, b) => a.economyCharge - b.economyCharge);
+            else if (seatLevel === "프리스티지석") filteredContents = filteredContents.sort((a, b) => a.prestigeCharge - b.prestigeCharge);
+        } else if (value === "depTime") {
+            filteredContents = filteredContents.sort((a, b) => a.depTime - b.depTime);
+        }
+
+        setListContents(filteredContents);
+    };
+
+
     const errorElements = useMemo(() => {
         return Object.keys(errorMapping).map((key) => {
             if (errorMessage[key]) {
@@ -132,6 +155,7 @@ export default function ModalBookCheck() {
             return null;
         });
     }, [errorMessage, errorMapping]);
+
     const handlePay = async () => {
         const { IMP } = window;
         const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
@@ -306,7 +330,7 @@ export default function ModalBookCheck() {
         return (<Navigate to="*" />)
     } else {
         return (
-            <div>
+            <div className="container">
 
                 <div>
                     {errorElements}
@@ -317,7 +341,7 @@ export default function ModalBookCheck() {
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
-                <div className="container container-top" style={{ height: '200px', marginTop: '60px' }}>
+                <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
                         <div className="container-flex">
                             <h1 className="font-family-bold">{dep} </h1>
@@ -327,15 +351,15 @@ export default function ModalBookCheck() {
                         <p>{Constant.handleDayFormatChange(depTime)}</p>
                     </div>
                 </div>
-                <div className="container container-content background-color-white">
+                <div className="middlepanel">
+                    <SelectComponent onSort={handleSort} />
                     {
-                        contents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                        listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
-
                 </div>
-                {contents.length > 0 && (
+                {listContents.length > 0 && (
                     <Pagination
-                        itemCount={contents.length}
+                        itemCount={listContents.length}
                         pageCountPerPage={pageCountPerPage}
                         itemCountPerPage={itemCountPerPage}
                         currentPage={currentPage}
@@ -400,4 +424,16 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
         )
     }
 
+}
+/** 출발시간빠른순,가격순 선택 컴포넌트 */
+const SelectComponent = ({ onSort }) => {
+    return (
+        <>
+            <p className="btn-span-style-grey" onClick={() => onSort("depTime")}> 출발시간 빠른순 </p>
+            <p className="btn-span-style-grey" onClick={() => onSort("price")}> 낮은 가격순 </p>
+            <Hr />
+        </>
+
+
+    )
 }

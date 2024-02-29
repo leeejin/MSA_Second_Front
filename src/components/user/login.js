@@ -10,14 +10,6 @@ const Hr = styled.hr`
     border:1px solid var(--grey-color);
 `;
 
-/* 회색 버튼 스타일*/
-const SubButton = styled.span`
-    float:right;
-    color: darkgrey;
-    &:hover {
-        cursor: pointer;
-    }
-`;
 /** 에러메시지 (이메일,비밀번호, 로그인성공여부) */
 const ERROR_STATE = {
     emailError: false,
@@ -154,9 +146,9 @@ export default function Login() {
                                 checked={isRemember}
                             /><label htmlFor="saveId">아이디 저장</label>
 
-                            <SubButton onClick={() => { navigate('/Signup') }}>
+                            <span className="btn-span-style-grey" onClick={() => { navigate('/Signup') }}>
                                 회원가입 하기
-                            </SubButton>
+                            </span>
 
                             <button className="btn btn-style-execute" type="submit">로그인</button> {/* 버튼 타입을 submit으로 변경 */}
                             <Hr />
