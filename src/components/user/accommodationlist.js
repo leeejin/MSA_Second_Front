@@ -8,31 +8,15 @@ import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
 import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
-/** 티켓테이블 디자인 */
-const TicketTable = styled.table`
-    border-radius: 15px;
-    padding: 5px;
-    margin-bottom: 5px;
-    background-color:var(--white-color);
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-    td{
-        padding:5px;
-    }
-    tr:nth-child(1) td:nth-child(2) {
-        border-left: 1px solid var(--grey-color);
-    }
-    
-    tr:nth-child(1) {
-        border-bottom: 1px solid var(--grey-color);
-    }
-`;
+import NoData from '../../styles/image/noData.png';
+
 const SubThead = styled.span`
-    color:grey;
+    color:var(--darkgrey-color);
 `;
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 5; //보여줄 페이지 갯수
-
+const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     cancelError: false,
@@ -51,7 +35,7 @@ const reducer = (state, action) => {
 }
 
 /** 결제한 목록을 보여주는 함수 */
-export default function PaidList() {
+export default function AccommodationList() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
@@ -102,21 +86,11 @@ export default function PaidList() {
         }
     }
 
-    /** 결제 목록 불러오는 API */
+    /** 결제 목록 불러오는 API 이거 url 제대로 넣어야함*/
     async function callGetPaidListAPI() {
         try {
-            //const response = axios.get(Constant.serviceURL+`/결과목록`,{ withCredentials: true })
-            return [{
-                id: 1,
-                price: 5000,
-                vihicleId: "TW901",
-                airlineNm: "티웨이항공",
-                arrAirportNm: "제주",
-                depAirportNm: "광주",
-                arrPlandTime: 202402151005,
-                depPlandTime: 202402150915,
-                status: '결제 후'
-            }];
+            const response = axios.get(Constant.serviceURL+`/payments`,{ withCredentials: true })
+            return response;
         } catch (error) {
             console.error(error);
         }
@@ -152,8 +126,10 @@ export default function PaidList() {
                     contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
-                ) : (
-                    <p>빈칸입니다</p>
+                ) : (<div className="container-column" style={{ height: '100%' }}>
+                    <img src={NoData} />
+                    <h3>최근 결제된 내역이 없어요!</h3>
+                </div>
                 )}
 
             </div>
@@ -167,8 +143,6 @@ export default function PaidList() {
                         clickListener={setCurrentPageFunc}
                     />
                 )}
-                <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
-                <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
             </div>
 
         </div>
@@ -177,6 +151,10 @@ export default function PaidList() {
 
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
+    const getAirlineLogo = (airLine) => {
+        const matchingLogo = logos.find(logo => logo.value === airLine);
+        return matchingLogo ? matchingLogo.imageUrl : '';
+    };
     return (
         <table className="table-list-card">
             <thead>
@@ -190,9 +168,11 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
             <tbody>
                 <tr>
                     <td>
+                        <img src={getAirlineLogo(paidlist.airlineNm)} width={"130px"} alt={paidlist.airlineNm} />
+                        <h3>{paidlist.airlineNm}</h3>
                         <p>{paidlist.vihicleId}</p>
                         <p>Operated by {paidlist.vihicleId.substring(0, 2)}</p>
-                        <h3>{paidlist.airlineNm}</h3>
+
                     </td>
                     <td>
                         <h1 className="font-color-special">{paidlist.depAirportNm}</h1>

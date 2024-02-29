@@ -10,10 +10,28 @@ import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
 import { BsExclamationCircle } from "react-icons/bs";
+const SubButton = styled.p`
+    float:right;
+    color:var(--darkgrey-color);
+    &:nth-child(1),
+    &:nth-child(3){
+        cursor:pointer;
+    }
+`;
 const Hr = styled.hr`
     margin-top:30px;
     clear:both;
     border:1px solid var(--grey-color);
+`;
+const H2 = styled.h2`
+    @media (max-width: 980px) {
+        font-size: 1.0rem;
+    }
+`;
+const Button = styled.button`
+    @media (max-width: 980px) {
+        width:50px;
+    }
 `;
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
@@ -51,7 +69,7 @@ export default function ModalBookCheck() {
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const errorMapping = {
-        reserveError: '이미 예약하였습니다',
+        reserveError: '예약실패하였습니다',
         paySuccess: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
         payError: '결제실패하였습니다',
         cancelError: '예약취소 실패하였습니다',
@@ -193,7 +211,7 @@ export default function ModalBookCheck() {
                     console.log('Payment information saved successfully' + response);
                     console.log(merchant_uid);
                     setOpen(false);
-                    navigate(`/CompleteBook/${serverData.id}`, {
+                    navigate(`/CompleteBook/${serverData.id} `, {
                         state: {
                             contents: serverData,
                         }
@@ -206,7 +224,7 @@ export default function ModalBookCheck() {
                     await cancelPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 결제 취소 요청
                 }
             } else {
-                console.error(`Payment failed. Error: ${rsp.error_msg}`);
+                console.error(`Payment failed.Error: ${rsp.error_msg} `);
                 await cancelPaymentNotifyAPI(rsp.merchant_uid); // 결제 실패되었음을 알리는 요청
             }
         });
@@ -336,7 +354,7 @@ export default function ModalBookCheck() {
                     {errorElements}
                 </div>
                 {
-                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
+                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
                 }
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
@@ -352,7 +370,13 @@ export default function ModalBookCheck() {
                     </div>
                 </div>
                 <div className="middlepanel">
-                    <SelectComponent onSort={handleSort} />
+                    <div style={{paddingTop:'15px'}}>
+                        <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
+                        <SubButton>  | </SubButton>
+                        <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
+                        <Hr />
+                    </div>
+                
                     {
                         listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
@@ -388,33 +412,47 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
             <table className="table-list-card">
                 <tbody>
                     <tr>
-                        <td>
+                        <td className="td-vihicleId">
                             <img src={getAirlineLogo(info.airlineNm)} width={"100%"} alt={info.airlineNm} />
                             <p>{info.airlineNm}</p>
+                            <p>{info.vihicleId}</p>
                         </td>
-                        <td>
+                        <td className="td-vihicleId">
                             <p>{info.vihicleId}</p>
                         </td>
                         <td>
-                            <h2>{Constant.handleTimeFormatChange(info.depPlandTime)}</h2>
+                            <H2>{Constant.handleTimeFormatChange(info.depPlandTime)}</H2>
                             <h4 className="font-family-light">{info.depAirportNm}</h4>
                         </td>
-                        <td >
-                            {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
+                        <td className="td-vihicleId">
+                            <p>
+                                {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
+                            </p>
+
                         </td>
 
                         <td>
-                            <h2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</h2>
+                            <H2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</H2>
                             <h4 className="font-family-light">{info.arrAirportNm}</h4>
                         </td>
-                        <td>
-                            <span>잔여 {info.seatCapacity}석</span>
+                        <td className="td-vihicleId">
+                            <p>잔여 {info.seatCapacity}석</p>
                         </td>
-                        <td>{
-                            seatLevel === "일반석" ? <h2 className="font-family-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
-                        }</td>
+                        <td className="td-vihicleId">
+                            <p>잔여 {info.seatCapacity}석</p>
+                            <H2 className="font-family-bold">
+                                {
+                                    seatLevel === "일반석" ? <>
+                                        {info.economyCharge.toLocaleString()}
+                                    </>
+                                        : <>
+                                            {info.prestigeCharge.toLocaleString()}
+                                        </>
+
+                                }</H2>
+                        </td>
                         <td>
-                            <button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</button>
+                            <Button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</Button>
                         </td>
                     </tr>
                 </tbody>
@@ -424,16 +462,4 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
         )
     }
 
-}
-/** 출발시간빠른순,가격순 선택 컴포넌트 */
-const SelectComponent = ({ onSort }) => {
-    return (
-        <>
-            <p className="btn-span-style-grey" onClick={() => onSort("depTime")}> 출발시간 빠른순 </p>
-            <p className="btn-span-style-grey" onClick={() => onSort("price")}> 낮은 가격순 </p>
-            <Hr />
-        </>
-
-
-    )
 }
