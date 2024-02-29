@@ -10,4 +10,102 @@
     --warning-color:yellow;
     --hovering-color:#98C08A;
     --grey-color:#dddddd;
+    --darkgrey-color:grey;
+    --lightgrey-color:#c4c4c4;
 }
+
+.font-color-grey {
+    color: var(--black-color);
+}
+
+.font-color-danger {
+    color: var(--danger-color);
+}
+.font-color-special {
+    color: var(--speical-color);
+}
+.font-color-warning {
+    color: var(--warning-color);
+}
+.font-color-white {
+    color: var(--white-color);
+}
+.background-color{
+    background-color: var(--background-color);
+}
+.background-color-white{
+     background-color: var(--white-color);
+}
+.background-color-hovering{
+    background-color: var(--background-hovering);
+}
+.selected {
+    background-color: var(--hovering-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    font-family: 'Pretendard-semibold';
+
+}
+.unselected {
+    background-color: var(--white-color);
+    font-family: 'Pretendard-semibold';
+    border-radius: 50%;
+
+}
+@font-face {
+    font-family: 'Pretendard-bold';
+    src: url('./fonts/Pretendard-Bold.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-light';
+    src: url('./fonts/Pretendard-Light.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-semibold';
+    src: url('./fonts/Pretendard-SemiBold.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-medium';
+    src: url('./fonts/Pretendard-Medium.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-thin';
+    src: url('./fonts/Pretendard-Thin.woff2') format('woff2');
+
+}
+@font-face {
+    font-family: 'Pretendard-extrabold';
+    src: url('./fonts/Pretendard-ExtraBold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Pretendard-extralight';
+    src: url('./fonts/Pretendard-ExtraLight.woff2') format('woff2');
+}
+.font-family-bold{
+    font-family: 'Pretendard-bold';
+}
+
+.font-family-light{
+    font-family: 'Pretendard-light';
+}
+.font-family-semibold{
+    font-family: 'Pretendard-semiBold';
+}
+.font-family-medium{
+    font-family: 'Pretendard-medium';
+}
+.font-family-thin{
+    font-family: 'Pretendard-thin';
+}
+.font-family-extrabold{
+    font-family: 'Pretendard-extrabold';
+}
+.font-family-extralight{
+    font-family: 'Pretendard-extralight';
+}
+
+

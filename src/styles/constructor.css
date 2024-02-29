@@ -1,34 +1,31 @@
 @font-face {
     font-family: 'Pretendard';
     src: url('./fonts/Pretendard-Regular.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
 }
 
 body {
     margin: 0;
     font-family: 'Pretendard';
     font-size: 14px;
+    overflow-x: hidden;
 }
 
 div {
     box-sizing: border-box;
 }
 
+button {
+    font-family: 'Pretendard-semibold';
+}
+
 p {
     margin: 2px;
 }
 
-button {}
-
 table {
-    text-align: center;
     border-collapse: collapse;
 }
 
-thead{
-    background:var(--background-color);
-}
 input {
     border-bottom: 1px solid var(--black-color);
     border-top: none;
@@ -39,6 +36,35 @@ input {
     &:focus {
         outline: none;
     }
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+input[type="checkbox"]+label {
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+    
+}
+
+input[type="checkbox"]+label:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px; 
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--black-color);
+    background: white;
+}
+
+input[type="checkbox"]:checked+label:after {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: -2px;
+    color: var(--hovering-color);
 }
 
 ul {

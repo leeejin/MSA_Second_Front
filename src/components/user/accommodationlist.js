@@ -8,7 +8,6 @@ import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
 import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
-import NoData from '../../styles/image/noData.png';
 /** 티켓테이블 디자인 */
 const TicketTable = styled.table`
     border-radius: 15px;
@@ -33,7 +32,7 @@ const SubThead = styled.span`
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 2; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 5; //보여줄 페이지 갯수
-const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
+
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     cancelError: false,
@@ -103,11 +102,21 @@ export default function PaidList() {
         }
     }
 
-    /** 결제 목록 불러오는 API 이거 url 제대로 넣어야함*/
+    /** 결제 목록 불러오는 API */
     async function callGetPaidListAPI() {
         try {
-            const response = axios.get(Constant.serviceURL+`/payments`,{ withCredentials: true })
-            return response;
+            //const response = axios.get(Constant.serviceURL+`/결과목록`,{ withCredentials: true })
+            return [{
+                id: 1,
+                price: 5000,
+                vihicleId: "TW901",
+                airlineNm: "티웨이항공",
+                arrAirportNm: "제주",
+                depAirportNm: "광주",
+                arrPlandTime: 202402151005,
+                depPlandTime: 202402150915,
+                status: '결제 후'
+            }];
         } catch (error) {
             console.error(error);
         }
@@ -143,10 +152,8 @@ export default function PaidList() {
                     contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
-                ) : (<div className="container-column" style={{ height: '100%' }}>
-                    <img src={NoData} />
-                    <h3>최근 결제된 내역이 없어요!</h3>
-                </div>
+                ) : (
+                    <p>빈칸입니다</p>
                 )}
 
             </div>
@@ -170,10 +177,6 @@ export default function PaidList() {
 
 /** 결제 목록 리스트 아이템 */
 const PaidListItem = ({ paidlist, handleOpenClose }) => {
-    const getAirlineLogo = (airLine) => {
-        const matchingLogo = logos.find(logo => logo.value === airLine);
-        return matchingLogo ? matchingLogo.imageUrl : '';
-    };
     return (
         <table className="table-list-card">
             <thead>
@@ -187,11 +190,9 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
             <tbody>
                 <tr>
                     <td>
-                        <img src={getAirlineLogo(paidlist.airlineNm)} width={"130px"} alt={paidlist.airlineNm} />
-                        <h3>{paidlist.airlineNm}</h3>
                         <p>{paidlist.vihicleId}</p>
                         <p>Operated by {paidlist.vihicleId.substring(0, 2)}</p>
-
+                        <h3>{paidlist.airlineNm}</h3>
                     </td>
                     <td>
                         <h1 className="font-color-special">{paidlist.depAirportNm}</h1>

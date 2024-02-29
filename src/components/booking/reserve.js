@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate,Link } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
-import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
 import { BsExclamationCircle } from "react-icons/bs";
 /** 에러메시지 (출발지-도착지, 날짜) */
@@ -34,13 +33,43 @@ const reducer = (state, action) => {
 
     }
 }
+const areas = [
+    { name: '전체', code: "" },
+    { name: '서울', code: 1 },
+    { name: '인천', code: 2 },
+    { name: '대전', code: 3 },
+    { name: '대구', code: 4 },
+    { name: '광주', code: 5 },
+    { name: '부산', code: 6 },
+    { name: '울산', code: 7 },
+    { name: '세종', code: 8 },
+    { name: '경기도', code: 31 },
+    { name: '강원도', code: 32 },
+    { name: '충청북도', code: 33 },
+    { name: '충청남도', code: 34 },
+    { name: '경상북도', code: 35 },
+    { name: '경상남도', code: 36 },
+    { name: '전라북도', code: 37 },
+    { name: '전라남도', code: 38 },
+    { name: '제주도', code: 39 },
+];
+// 테스트 데이터, 백엔드에서 보내줄 데이터는 아래의 contentid, title, addr1, tel, firstimage로 현재는 이렇게 있습니다.
+const testRooms = [
+    { contentid: 1, title: '방1', addr1: '서울시 강남구', tel: '02-1234-5678', firstimage: 'image1.jpg' },
+    { contentid: 2, title: '방2', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: 'image2.jpg' },
+    { contentid: 3, title: '방3', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: 'image3.jpg' },
+    { contentid: 4, title: '방4', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: 'image4.jpg' },
+    { contentid: 5, title: '방5', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: 'image5.jpg' },
+
+    // 필요한 만큼 방 정보를 직접 추가하세요.
+];
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 5; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 5; //보여줄 페이지 갯수
-const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
+const numOfRows = 5;
 /** 예약확인 목록 페이지 */
 const airport = AirPort.response.body.items.item; // 공항 목록
-export default function ModalBookCheck() {
+export default function ModalReserveCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
@@ -51,12 +80,16 @@ export default function ModalBookCheck() {
         cancelError: '예약취소 실패하였습니다',
         cancelSuccess: '예약취소 성공하였습니다',
     };
-    const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
+
+    const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
+    const [loading, setLoading] = useState(false); //백엔드로 요청할 시에는 true로 변경하기
+    const [areaCode, setAreaCode] = useState(areas[0].code); //기본 지역은 전체 검색
+
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
     //페이지네이션
@@ -68,14 +101,30 @@ export default function ModalBookCheck() {
         const { IMP } = window;
         IMP.init('imp01307537');
     }, []);
+    useEffect(() => {
+        // const fetchData = async () => {
+        //   setLoading(true);
+        //   try {
+        //     const result = await axios.get(
+        //       `http://localhost:8088/rooms/search`
+        //     );
+        //     setRooms(result.data);
+        //     setError(null);
+        //   } catch (error) {
+        //     setError(error);
+        //   }
+        //   setLoading(false);
+        // };
 
+        // fetchData();
+        setRooms(testRooms);
+    }, [areaCode]);
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setSelectedData(data);
         setOpen(prev => !prev);
         setSelectedData(prevData => ({
             ...prevData,
-            charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
 
@@ -99,13 +148,7 @@ export default function ModalBookCheck() {
     const handleSubmit = async () => {
         //백엔드에 보낼 예약정보
         const formData = {
-            flightId: selectedData.id,
-            airLine: selectedData.airlineNm, //항공사
-            arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
-            depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: selectedData.arrPlandTime, //도착시간
-            depTime: selectedData.depPlandTime, //출발시간
-            charge: selectedData.charge, //비용
+           
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
             userId: userId, //예약하는 userId
@@ -320,22 +363,29 @@ export default function ModalBookCheck() {
                 <div className="container container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
                         <div className="container-flex">
-                            <h1 className="font-family-bold">{dep} </h1>
-                            <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
-                            <h1 className="font-family-bold"> {arr}</h1>
+                            <h1 className="font-family-bold">숙소 검색</h1>
                         </div>
-                        <p>{Constant.handleDayFormatChange(depTime)}</p>
+                      
                     </div>
                 </div>
                 <div className="container container-content background-color-white">
-                    {
-                        contents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
-                    }
+                    <label htmlFor="area-select">지역:</label>
+
+                    <select onChange={e => setAreaCode(e.target.value)}>
+                        {areas.map(area => (
+                            <option key={area.code} value={area.code}>
+                                {area.name}
+                            </option>
+                        ))}
+                    </select>
+                    {testRooms.map(room => (//testRooms는 테스터용
+                      <InfoComponent room={room} loading={loading}/>
+                    ))}
 
                 </div>
-                {contents.length > 0 && (
+                {testRooms.length > 0 && (
                     <Pagination
-                        itemCount={contents.length}
+                        itemCount={testRooms.length}
                         pageCountPerPage={pageCountPerPage}
                         itemCountPerPage={itemCountPerPage}
                         currentPage={currentPage}
@@ -350,54 +400,33 @@ export default function ModalBookCheck() {
 
 };
 
-const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
-    const getAirlineLogo = (airLine) => {
-        const matchingLogo = logos.find(logo => logo.value === airLine);
-        return matchingLogo ? matchingLogo.imageUrl : '';
-    };
+const InfoComponent = ({ room, loading,handleOpenClose }) => {
 
-    // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
-    if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {
-        return null;
-    } else {
-        return (
-            <table className="table-list-card">
-                <tbody>
-                    <tr>
-                        <td>
-                            <img src={getAirlineLogo(info.airlineNm)} width={"100%"} alt={info.airlineNm} />
-                            <p>{info.airlineNm}</p>
-                        </td>
-                        <td>
-                            <p>{info.vihicleId}</p>
-                        </td>
-                        <td>
-                            <h2>{Constant.handleTimeFormatChange(info.depPlandTime)}</h2>
-                            <h4 className="font-family-light">{info.depAirportNm}</h4>
-                        </td>
-                        <td >
-                            {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
-                        </td>
-
-                        <td>
-                            <h2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</h2>
-                            <h4 className="font-family-light">{info.arrAirportNm}</h4>
-                        </td>
-                        <td>
-                            <span>잔여 {info.seatCapacity}석</span>
-                        </td>
-                        <td>{
-                            seatLevel === "일반석" ? <h2 className="font-family-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
-                        }</td>
-                        <td>
-                            <button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-        )
+    if (loading) {
+        return <div>숙소 정보를 불러오는 중 입니다. 잠시만 기다려주세요...</div>;
     }
+    return (
+        <table className="table-list-card">
+            <tbody>
+                <tr key={room.contentid}>
+                    <td>
+                        <Link to={`/rooms/searchDetail/${room.contentid}`}>
+                            <h3>{room.title}</h3>
+                        </Link>
+                    </td>
+                    <td>주소: {room.addr1}</td>
+                    <td>전화번호: {room.tel}</td>
+                    <td>
+                        <Link to={`/rooms/searchDetail/${room.contentid}`}>
+                            <img src={room.firstimage} alt={room.title} />
+                        </Link>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+
+    )
 
 }
