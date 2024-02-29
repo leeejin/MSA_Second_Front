@@ -1,8 +1,21 @@
 import React from "react";
+
+/*지역 이미지*/
 import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
 import Busan from '../styles/image/busan.jpg'; //부산 이미지
 import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
 import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
+
+/*항공사 로고 이미지*/
+import Jin from '../styles/image_logo/jinair.png'; // 진에어
+import Tway from '../styles/image_logo/tway.png'; // 대한항공
+import A_jeju from '../styles/image_logo/jejuair.png'; // 제주항공
+import Estar from '../styles/image_logo/estarjet.png'; // 이스타
+import Korean from '../styles/image_logo/koreanair.png'; // 대한항공
+import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
+import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
+import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
+import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -30,6 +43,19 @@ export default class Constant {
             { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
             { key: 2, value: "부산", title: "이번 겨울", subTitle: "부산 여행을 감행하다 ", content: "다시 태어나도 살고 싶은 그린 스마트 도시 '부산'", imageUrl: Busan },
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
+        ];
+    }
+    static getLogos() {
+        return [
+            { key: 0, value: "진에어", imageUrl: Jin },
+            { key: 1, value: "티웨이항공", imageUrl: Tway },
+            { key: 2, value: "에어로케이", imageUrl: Aerok },
+            { key: 3, value: "이스타항공", imageUrl: Estar },
+            { key: 4, value: "대한항공", imageUrl: Korean },
+            { key: 5, value: "제주항공", imageUrl: A_jeju },
+            { key: 6, value: "아시아나항공", imageUrl: Asiana },
+            { key: 7, value: "에어부산", imageUrl: A_busan },
+            { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
     static getCostMenus() { //좌석등급
@@ -64,13 +90,7 @@ export default class Constant {
         return `${hour}:${minute}`;
     }
     static getDateTypeChange = (date) => {
-
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
+        const { year, month, day, hour, minute } = this.parseDate(date);
         const formattedTime = `${year}${month}${day}${hour}${minute}`;
         return Number(formattedTime);
 

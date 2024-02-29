@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, useReducer, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosInstance';
+import axios from '../axiosInstance';
 import styled from "styled-components";
 import { TbArmchair2 } from "react-icons/tb";
-import Datepicker from '../../util/datepicker';
-import reverse from '../../styles/image/revert.png';
-import Constant from '../../util/constant_variables';
-import AirPort from '../../util/json/airport-list';
-import store from '../../util/redux_storage';
+import Datepicker from '../util/datepicker';
+import reverse from '../styles/image/revert.png';
+import Constant from '../util/constant_variables';
+import AirPort from '../util/json/airport-list';
+import store from '../util/redux_storage';
 import { BsExclamationCircle } from "react-icons/bs";
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
@@ -160,7 +160,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             callPostAirInfoAPI().then((response) => {
                 if (response.data.length > 0) {
-                    navigate(`/Reserve`, {
+                    navigate(`/Book`, {
                         state: {
                             dep: airports.dep,
                             arr: airports.arr,

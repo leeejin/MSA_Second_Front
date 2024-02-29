@@ -1,11 +1,14 @@
 import React from "react";
-import Template from "../templates/home";
-import MainComponents from "../components/main";
 
-export default function MainPage() {
+import Template from "../templates/home";
+import BookComponent from "../components/booking/book";
+
+export default function BookPage() {
     return (
         <Template>
-            <MainComponents />
+            <BookComponent />
         </Template>
+
+
     );
-};
+}

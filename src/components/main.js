@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosInstance';
+import axios from '../axiosInstance';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import FooterSlider from './footer';

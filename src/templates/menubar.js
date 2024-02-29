@@ -60,8 +60,14 @@ export default function Menubar() {
                             <NavLink
                                 className="btn-nav-item btn-style-item font-family-semibold"
                                 style={({ isActive }) => (isActive ? activeStyle : {})}
+                                to={`/Reserve`}
+                            >숙소예약</NavLink>
+                            <NavLink
+                                className="btn-nav-item btn-style-item font-family-semibold"
+                                style={({ isActive }) => (isActive ? activeStyle : {})}
                                 to={`/Mypage/${userId}`}
                             >내정보</NavLink>
+
                             <NavLink
                                 className="btn-nav-item btn-style-item font-family-semibold"
                                 onClick={(e) => handleOpenClose(e)}
