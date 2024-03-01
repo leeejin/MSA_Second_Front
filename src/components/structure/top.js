@@ -109,7 +109,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             }
             return null;
         });
-    }, [errorMessage, errorMapping]);
+    }, [errorMessage]);
     /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
     const getSelectedAirport = (selectedAirportNm) => {
         const selectedAirport = airport.find(

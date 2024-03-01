@@ -55,7 +55,7 @@ export default function ModalRoomsReserveCheck() {
             }
             return null;
         });
-    }, [errorMessage, errorMapping]);
+    }, [errorMessage]);
     /** 예약확인 함수 */
     const handleOpenClose = (() => {
         setOpen(prev => !prev);
