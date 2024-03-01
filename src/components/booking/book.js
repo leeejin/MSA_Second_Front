@@ -66,7 +66,7 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-   
+
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
     const [listContents, setListContents] = useState(contents);
@@ -86,7 +86,9 @@ export default function ModalBookCheck() {
         const { IMP } = window;
         IMP.init('imp01307537');
     }, []);
-
+    useEffect(()=>{
+        console.log(serverData)
+    },[serverData])
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setSelectedData(data);
@@ -95,18 +97,14 @@ export default function ModalBookCheck() {
             ...prevData,
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
+        
     }, []);
 
-    const handleOpenCloseReserve = async (e) => {
-        e.preventDefault();
-       
-        const newPayOpen = !payopen;
-        setPayOpen(newPayOpen);
+    const handleOpenCloseReserve = async () => {
+        await reserveCancelAPI(serverData);
+        setPayOpen(prev => !prev);
+        setOpen(prev => !prev);
 
-        if (!newPayOpen) {
-            await reserveCancelAPI(serverData.id);
-        }
-        setOpen(false);
     };
     /** 페이지네이션 함수 */
     const setCurrentPageFunc = (page) => {
@@ -303,7 +301,7 @@ export default function ModalBookCheck() {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
-            setPayOpen(!payopen);
+            setPayOpen({payopen :true});
         } catch (error) {
             //안되면 에러뜨게 함
             setOpen(!open);
@@ -314,10 +312,10 @@ export default function ModalBookCheck() {
         }
     }
     /**예약 취소 함수 */
-    async function reserveCancelAPI(merchant_uid) {
+    async function reserveCancelAPI(flightReservationDTO) {
         try {
-            await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
-                merchant_uid
+            const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
+                flightReservationDTO
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -328,6 +326,8 @@ export default function ModalBookCheck() {
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000]);
+            return response;
+
         } catch (error) {
             console.error(error);
             errorDispatch({ type: 'cancelError', cancelError: true });
@@ -350,7 +350,7 @@ export default function ModalBookCheck() {
                     open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
                 }
                 {
-                    payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
+                    payopen && <Modal handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
                 <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
@@ -363,13 +363,13 @@ export default function ModalBookCheck() {
                     </div>
                 </div>
                 <div className="middlepanel">
-                    <div style={{paddingTop:'15px'}}>
+                    <div style={{ paddingTop: '15px' }}>
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
                         <SubButton> | </SubButton>
                         <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
                         <Hr />
                     </div>
-                
+
                     {
                         listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
@@ -456,3 +456,22 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
     }
 
 }
+const Modal = ({  message, handleSubmit, handleOpenClose }) => {
+    useEffect(() => {
+        document.body.style = `overflow: hidden`;
+        return () => document.body.style = `overflow: auto`
+    }, [])
+
+    return (
+        <>
+            <div className="modal black-wrap" />
+            <div className="modal white-wrap">
+                    <h2>{message}</h2>
+                    <div>
+                        <button className="btn btn-style-confirm" onClick={handleSubmit} >예</button>
+                        <button className="btn btn-style-grey" onClick={handleOpenClose} >아니오</button>
+                    </div>
+            </div>
+        </>
+    );
+};
