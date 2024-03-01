@@ -99,13 +99,14 @@ export default function ModalBookCheck() {
 
     const handleOpenCloseReserve = async (e) => {
         e.preventDefault();
-        setOpen(false);
+       
         const newPayOpen = !payopen;
         setPayOpen(newPayOpen);
 
         if (!newPayOpen) {
             await reserveCancelAPI(serverData.id);
         }
+        setOpen(false);
     };
     /** 페이지네이션 함수 */
     const setCurrentPageFunc = (page) => {
@@ -313,10 +314,10 @@ export default function ModalBookCheck() {
         }
     }
     /**예약 취소 함수 */
-    async function reserveCancelAPI(reservedId) {
+    async function reserveCancelAPI(merchant_uid) {
         try {
             await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
-                reservedId
+                merchant_uid
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -364,7 +365,7 @@ export default function ModalBookCheck() {
                 <div className="middlepanel">
                     <div style={{paddingTop:'15px'}}>
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
-                        <SubButton>  | </SubButton>
+                        <SubButton> | </SubButton>
                         <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
                         <Hr />
                     </div>

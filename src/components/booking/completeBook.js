@@ -36,7 +36,7 @@ export default function PayCheck() {
                     </div>
                 </div>
             </div>
-            <div style={{ marginTop: '140px' }}>
+            <div className="w-50" style={{ marginTop: '140px' }}>
                 <table className="table-list-card" key={contents.id}>
                     <tbody>
                         <tr>

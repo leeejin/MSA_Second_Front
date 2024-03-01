@@ -26,7 +26,6 @@ export default function Datepicker({ depTime, handleDateChange }) {
     ];
 
     return (
-      
             <DatePicker
                 className="datepicker" //input style class
                 showIcon
@@ -41,7 +40,7 @@ export default function Datepicker({ depTime, handleDateChange }) {
                 minDate={minDate} //선택할 수 있는 최소 날짜
                 maxDate={maxDate} //선택할 수 있는 최대 날짜
                 onChange={(date) => handleDateChange(date)} //선택하는 날짜가 바뀌면
-                dayClassName={(d) => (d.getDate() === depTime ? 'selected':'unselected' )} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함
+                dayClassName={(d) => (d.getDate() === depTime ? 'selected':'unselected' )} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함 => 해결함
                 renderCustomHeader={({ //헤더 스타일 바꿈
                     date,
                     decreaseMonth,
@@ -55,7 +54,6 @@ export default function Datepicker({ depTime, handleDateChange }) {
                             onClick={decreaseMonth}
                             disabled={prevMonthButtonDisabled}>
                             <GrFormPrevious
-                              
                             />
                         </button>
                         <div className="year-month">

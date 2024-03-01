@@ -19,13 +19,16 @@ const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
 const airport = AirPort.response.body.items.item; // 공항 목록
 /** 에러메시지 (출발지-도착지, 날짜) */
 const CANCEL_ERROR = 'cancelError';
+const CANCEL_SUCCESS = 'cancelSuccess';
 const LIST_ERROR = 'listError';
 const ERROR_STATE = {
     [CANCEL_ERROR]: false,
+    [CANCEL_SUCCESS]: false,
     [LIST_ERROR]: false,
 }
 const errorMapping = {
     [CANCEL_ERROR]: '환불실패하였습니다',
+    [CANCEL_SUCCESS]: '환불완료되었습니다',
     [LIST_ERROR]: '목록을 불러오는데 실패하였습니다',
 };
 /** 결제한 목록을 보여주는 함수 */
@@ -43,9 +46,11 @@ export default function PaidList({ userId }) {
     useEffect(() => {
         callGetBookedListAPI().then((response) => {
             setContents(response);
-
         }).catch((error) => {
-            console.log("먼이유로 예약 목록 못받아옴");
+            errorDispatch({ type: 'listError', listError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000])
         })
     }, [])
     const errorElements = useMemo(() => {
@@ -72,21 +77,25 @@ export default function PaidList({ userId }) {
         setOffset(lastOffset);
     };
     /** 결제취소 함수 */
-    const handleSubmit = async (reservationId) => {
+    const handleSubmit = async () => {
+        console.log("선택한 데이터 : ",selectedData);
         try {
-            await cancelPayment(reservationId);
+            await cancelPayment(selectedData.reservationId);
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             setLoading(true);
             const updatedContents = await callGetBookedListAPI();
             setContents(updatedContents);
             setOpen(!open);
             setLoading(false);
-            errorDispatch({ type: 'cancelError', cancelError: true });
+            errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000])
         } catch (error) {
-            console.log("예약 취소 중 오류 발생:", error);
+            errorDispatch({ type: 'cancelError', cancelError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000])
             setOpen(!open);
         }
     }
@@ -102,10 +111,10 @@ export default function PaidList({ userId }) {
 
     }
     /**결제 취소 요청 함수  */
-    async function cancelPayment(reservationId) {
+    async function cancelPayment(merchant_uid) {
         try {
             await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 요청
-                reservationId
+               merchant_uid
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -128,7 +137,7 @@ export default function PaidList({ userId }) {
             }
 
 
-            <div className="container-content">
+            <div className="w-50 container-content">
                 {contents.length > 0 ? (
                     contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
@@ -205,7 +214,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td colSpan={2}>
 
-                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist.reservationId)}>취소</button>
+                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist)}>취소</button>
                     </td>
                 </tr>
             </tbody>
