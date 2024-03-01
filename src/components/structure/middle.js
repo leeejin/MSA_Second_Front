@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef, forwardRef, useReducer
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import 'swiper/css';
 import 'swiper/css/virtual';
-import Constant from '../util/constant_variables';
+import Constant from '../../util/constant_variables';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 const accommodation = Constant.getSliderMenus();

@@ -5,39 +5,39 @@ import Constant from '../../util/constant_variables';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BsExclamationCircle } from "react-icons/bs";
+import reducer from '../../util/reducers';
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
 /** 에러메시지 (출발지-도착지, 날짜) */
-const ERROR_STATE = {
-    emailError: false,
-    nameError: false,
-    nicknameError: false,
-    passwordError: false,
-    confirmPasswordError: false,
-    duplicateError: false
-}
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'emailError':
-            return { ...state, emailError: true }
-        case 'nameError':
-            return { ...state, nameError: true }
-        case 'nicknameError':
-            return { ...state, nicknameError: true }
-        case 'passwordError':
-            return { ...state, passwordError: true }
-        case 'confirmPasswordError':
-            return { ...state, confirmPasswordError: true }
-        case 'duplicateError':
-            return { ...state, duplicateError: true }
-        default:
-            return ERROR_STATE
+const EMAIL_ERROR = 'emailError';
+const NAME_ERROR = 'nameError';
+const NICKNAME_ERROR = 'nicknameError';
+const PASSWORD_ERROR = 'passwordError';
+const CONFIRMPASSWORD_ERROR = 'confirmPasswordError';
+const DUPLICATE_ERROR = 'duplicateError';
 
-    }
-}
+const ERROR_STATE = {
+    [EMAIL_ERROR]: false,
+    [NAME_ERROR]: false,
+    [NICKNAME_ERROR]: false,
+    [PASSWORD_ERROR]: false,
+    [CONFIRMPASSWORD_ERROR]: false,
+    [DUPLICATE_ERROR]: false
+};
+
+const errorMapping = {
+    [NAME_ERROR]: '이름은 2~5자 이내여야합니다.',
+    [NICKNAME_ERROR]: '닉네임은 2~5자 이내여야합니다.',
+    [EMAIL_ERROR]: '이메일은 영대소문자, 숫자 포함해야합니다.',
+    [PASSWORD_ERROR]: '비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.',
+    [CONFIRMPASSWORD_ERROR]: '비밀번호가 다릅니다.',
+    [DUPLICATE_ERROR]: '다른 사용자가 있습니다. 다른 이메일로 바꿔주세요',
+};
+
+
 export default function Signup() {
     const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
@@ -54,14 +54,7 @@ export default function Signup() {
     });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-    const errorMapping = {
-        nameError: '이름은 2~5자 이내여야합니다.',
-        nicknameError: '닉네임은 2~5자 이내여야합니다.',
-        emailError: '이메일은 영대소문자, 숫자 포함해야합니다.',
-        passwordError: '비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.',
-        confirmPasswordError: '비밀번호가 다릅니다.',
-        duplicateError: '다른 사용자가 있습니다. 다른 이메일로 바꿔주세요',
-    };
+
 
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
@@ -95,7 +88,7 @@ export default function Signup() {
         return Object.keys(errorMapping).map((key) => {
             if (errorMessage[key]) {
                 return (
-                    <h3 className="white-wrap message" key={key}>
+                    <h3 className="modal white-wrap message" key={key}>
                         <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
                     </h3>
                 );
@@ -185,15 +178,13 @@ export default function Signup() {
         }
     }
     return (
-        <div>
+        <div className="container">
             {
                 open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
-            <div>
-                {errorElements}
-            </div>
-            <div className="background background-color" />
-            <div className="container container-backbox-450 background-color-white">
+            <div>{errorElements}</div>
+            <div className="fixed container-fixed background-color" />
+            <div className="container-backbox-450 background-color-white">
                 <div className="background-color-white">
 
                     <div className="container-innerBox">

@@ -10,6 +10,7 @@ import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
 import { BsExclamationCircle } from "react-icons/bs";
+import reducer from '../../util/reducers';
 const SubButton = styled.p`
     float:right;
     color:var(--darkgrey-color);
@@ -34,30 +35,27 @@ const Button = styled.button`
     }
 `;
 /** 에러메시지 (출발지-도착지, 날짜) */
-const ERROR_STATE = {
-    paySuccess: false, //결제 성공
-    payError: false, //결제 에러
-    cancelSuccess: false, //취소 성공
-    cancelErorr: false, //취소 에러
-    reserveError: false, // 예약 에러
-}
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'paySuccess':
-            return { ...state, payError: true }
-        case 'payError':
-            return { ...state, payError: true }
-        case 'cancelError':
-            return { ...state, cancelError: true }
-        case 'cancelSuccess':
-            return { ...state, cancelSuccess: true }
-        case 'reserveError':
-            return { ...state, reserveError: true }
-        default:
-            return ERROR_STATE
+const PAY_SUCCESS = 'paySuccess';
+const PAY_ERROR = 'payError';
+const CANCEL_SUCCESS = 'cancelSuccess';
+const CANCEL_ERROR = 'cancelErorr';
+const RESERVE_ERROR = 'reserveError';
 
-    }
-}
+const ERROR_STATE = {
+    [PAY_SUCCESS]: false,
+    [PAY_ERROR]: false,
+    [CANCEL_SUCCESS]: false,
+    [CANCEL_ERROR]: false,
+    [RESERVE_ERROR]: false
+};
+
+const errorMapping = {
+    [RESERVE_ERROR]: '예약실패하였습니다',
+    [PAY_SUCCESS]: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
+    [PAY_ERROR]: '결제실패하였습니다',
+    [CANCEL_ERROR]: '예약취소 실패하였습니다',
+    [CANCEL_SUCCESS]: '예약취소 성공하였습니다',
+};
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 5; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 5; //보여줄 페이지 갯수
@@ -68,13 +66,7 @@ export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-    const errorMapping = {
-        reserveError: '예약실패하였습니다',
-        paySuccess: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
-        payError: '결제실패하였습니다',
-        cancelError: '예약취소 실패하였습니다',
-        cancelSuccess: '예약취소 성공하였습니다',
-    };
+   
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
     const [listContents, setListContents] = useState(contents);
@@ -122,7 +114,7 @@ export default function ModalBookCheck() {
         setOffset(lastOffset);
     };
     /** 예약 보내는 핸들러 함수 */
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         //백엔드에 보낼 예약정보
         const formData = {
             flightId: selectedData.id,
@@ -142,7 +134,7 @@ export default function ModalBookCheck() {
         console.log("폼데이터 : ", formData);
         // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
 
-        await reserveInfoAPI(formData);
+        reserveInfoAPI(formData);
 
     };
 
@@ -165,14 +157,14 @@ export default function ModalBookCheck() {
         return Object.keys(errorMapping).map((key) => {
             if (errorMessage[key]) {
                 return (
-                    <h3 className="white-wrap message" key={key}>
+                    <h3 className="modal white-wrap message" key={key}>
                         <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
                     </h3>
                 );
             }
             return null;
         });
-    }, [errorMessage, errorMapping]);
+    }, [errorMessage]);
 
     const handlePay = async () => {
         const { IMP } = window;
@@ -361,7 +353,7 @@ export default function ModalBookCheck() {
                 }
                 <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
-                        <div className="container-flex">
+                        <div className="d-flex d-row">
                             <h1 className="font-family-bold">{dep} </h1>
                             <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
                             <h1 className="font-family-bold"> {arr}</h1>

@@ -1,34 +1,33 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer, useEffect, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
 import styled from "styled-components";
 import axios from '../../axiosInstance';
-
+import reducer from '../../util/reducers';
+import { BsExclamationCircle } from "react-icons/bs";
 const Hr = styled.hr`
     margin-top:50px;
     border:1px solid var(--grey-color);
 `;
 
+/** 에러메시지 (출발지-도착지, 날짜) */
+const EMAIL_ERROR = 'emailError';
+const PASSWORD_ERROR = 'passwordError';
+const SUCCESS_ERROR = 'successError';
 /** 에러메시지 (이메일,비밀번호, 로그인성공여부) */
 const ERROR_STATE = {
-    emailError: false,
-    passwordError: false,
-    successError: false
+    [EMAIL_ERROR]: false,
+    [PASSWORD_ERROR]: false,
+    [SUCCESS_ERROR]: false,
 }
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'emailError':
-            return { ...state, emailError: true }
-        case 'passwordError':
-            return { ...state, passwordError: true }
-        case 'successError':
-            return { ...state, successError: true }
-        default:
-            return ERROR_STATE
 
-    }
-}
+const errorMapping = {
+    [EMAIL_ERROR]: '이메일을 입력해주세요',
+    [PASSWORD_ERROR]: '비밀번호를 입력해주세요',
+    [SUCCESS_ERROR]: '로그인 실패했습니다 다시한번 시도해주세요',
+};
+
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -58,6 +57,18 @@ export default function Login() {
             [infoType]: e.target.value
         }));
     }
+    const errorElements = useMemo(() => {
+        return Object.keys(errorMapping).map((key) => {
+            if (errorMessage[key]) {
+                return (
+                    <h3 className="modal white-wrap message" key={key}>
+                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
+                    </h3>
+                );
+            }
+            return null;
+        });
+    }, [errorMessage]);
     const submit = async (e) => {
         e.preventDefault();
         let errors = {
@@ -71,7 +82,7 @@ export default function Login() {
                 const token = response.headers['authorization'];
                 window.sessionStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
-               
+
                 navigate('/');
             }).catch(() => {
                 errorDispatch({ type: 'successError', successError: true }); // 로그인 실패 시 loginError 상태를 true로 설정
@@ -102,21 +113,11 @@ export default function Login() {
         return response;
 
     }
-   
+
     return (
         <>
-            {
-                errorMessage.emailError && <h3 className="white-wrap message">아이디를 입력해주세요.</h3>
-            }
-            {
-                errorMessage.passwordError && <h3 className="white-wrap message">비밀번호를 입력해주세요.</h3>
-            }
-            {
-                errorMessage.successError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
-            }
-            <div className="background background-color" />
-
-
+            <div>{errorElements}</div>
+            <div className="fixed container-fixed background-color" />
             <div className="container container-backbox-450 background-color-white">
                 <div className="background-color-white">
                     <form onSubmit={(e) => submit(e)}> {/* form 태그로 감싸주고, onSubmit 이벤트 핸들러에 submit 함수 연결 */}

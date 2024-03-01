@@ -1,6 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
 
 import NonPage from './pages/nonPage';
 import MyStorage from './util/redux_storage';
@@ -45,7 +44,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={
-        <div className="loading">
+        <div className="fixed d-flex container-fixed">
           <img src={Spinner} alt="로딩" width="100px" />
         </div>}>
         <Routes>

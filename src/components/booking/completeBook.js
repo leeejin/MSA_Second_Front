@@ -31,7 +31,7 @@ export default function PayCheck() {
         <div className="container">
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                 <div className="panel panel-top font-color-white" >
-                    <div className="container-flex">
+                    <div className="d-flex d-row">
                         <h1 className="font-family-semibold">예약완료되었습니다!</h1>
                     </div>
                 </div>
@@ -77,9 +77,9 @@ export default function PayCheck() {
                 </table>
 
             </div>
-            <div className="container-column">
+            <div className="d-flex d-column">
                 <h3>예약이 완료되었습니다 ! 예약목록으로 가시겠습니까 ?</h3>
-                <div className="container-flex" >
+                <div className="d-flex d-row" >
                     <button className="btn btn-style-confirm" onClick={handleReservedList}>예</button>
                     <button className="btn btn-style-grey" onClick={() => { navigate(-1) }}>아니오</button>
                 </div>

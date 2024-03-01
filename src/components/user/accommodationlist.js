@@ -126,7 +126,7 @@ export default function AccommodationList() {
                     contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
                         <PaidListItem key={paidlist.id} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
-                ) : (<div className="container-column" style={{ height: '100%' }}>
+                ) : (<div className="d-flex d-column" style={{ height: '100%' }}>
                     <img src={NoData} />
                     <h3>최근 결제된 내역이 없어요!</h3>
                 </div>

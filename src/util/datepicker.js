@@ -7,7 +7,7 @@ import { LuCalendar } from "react-icons/lu";
 import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 export default function Datepicker({ depTime, handleDateChange }) {
-    const minDate = new Date(dayjs().add(1, 'day'));
+    const minDate = new Date();
     const maxDate = new Date(dayjs().add(3, 'month'));
     const YEARS = new Date().getFullYear();
     const MONTHS = [

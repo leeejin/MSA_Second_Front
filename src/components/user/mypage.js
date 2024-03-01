@@ -20,16 +20,16 @@ export default function MyPage() {
 
     return (
         <div>
-            <div className="menubar-sub">
+            <div className="fixed menubar-sub">
                 <NavLink
-                    className={`container-column menubar-sub-content font-family-semibold ${subBoxVisible.payList && "menubar-sub-selected" }`}
+                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.payList && "menubar-sub-selected" }`}
                     onClick={() => handleLocation('payList')}
                 >
                     결제목록
                 </NavLink>
 
                 <NavLink
-                    className={`container-column menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected" }`}
+                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected" }`}
                     onClick={() => handleLocation('accommodationList')}
                 >
                     숙박목록

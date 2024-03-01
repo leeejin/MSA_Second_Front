@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-import Constant from '../util/constant_variables';
+import Constant from '../../util/constant_variables';
 const footer = Constant.getSliderMenus(); //푸터 이미지 내용
 /** footer slider */
 export default function FooterSlider ({ setAirPorts }) {

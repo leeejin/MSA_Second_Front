@@ -1,35 +1,25 @@
-.loading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    align-items: center;
-    justify-content: center;
-}
-
-.black-wrap {
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
+.modal {
     position: fixed;
     top: 0;
     left: 0;
     padding: 30px;
-    z-index: 15;
+    text-align: center;
     transition: all 1s;
+}
 
+.black-wrap {
+    background: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    z-index: 15;
 }
 
 .white-wrap {
-    text-align: center;
-    font-family: 'Pretendard-semibold';
     border-radius: 5px;
-    position: fixed;
-    padding: 30px;
+    width: 300px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: all 1s;
     background: white;
     z-index: 20;
     box-shadow: 0px 3px 6px rgba(0.16, 0.16, 0.16, 0.16);
@@ -37,14 +27,13 @@
 
 
 /** 배경색 */
-.background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+.container-fixed {
     height: 100%;
     z-index: -1;
 
+    img {
+        margin: auto;
+    }
 }
 
 /** 배경안에 컨테이너*/
@@ -91,36 +80,29 @@
 }
 
 /** 버튼 */
+/** 공통 버튼 스타일 */
 .btn {
     font-size: 1.0rem;
     border-radius: 25px;
     border: none;
-    padding: 10px;
-
+    background: none;
+    padding: 5px;
     align-items: center;
     justify-content: center;
     font-family: Pretendard-semibold;
+    transition: all 0.5s;
+    cursor: pointer;
+   
 
-    &:hover {
-        cursor: pointer;
-    }
 }
 
-.btn-style-none {
-    border: none;
-    background: none;
-}
-
+/** 특화된 버튼 스타일 */
 .btn-style-border {
-    border-radius: 25px;
-    background: none;
     border: 2px solid var(--white-color);
     color: var(--white-color);
-
+    margin: 5px;
     &:hover {
-        cursor: pointer;
         transform: scale(1.1);
-        transition: all 0.5s;
     }
 }
 
@@ -136,53 +118,58 @@
     }
 }
 
-.btn-style-confirm {
+.btn-style-confirm,
+.btn-style-grey {
     width: 70px;
-    margin: 5px;
+    height: 40px;
+}
+
+.btn-style-confirm,
+.btn-style-reserve {
     color: var(--button-color);
     background-color: var(--background-color);
-
+    margin: 5px;
     &:hover {
-        cursor: pointer;
         background-color: var(--hovering-color);
     }
 }
 
 .btn-style-grey {
-    width: 70px;
-    margin: 5px;
     color: var(--button-color);
     background-color: var(--grey-color);
-
+    margin: 5px;
     &:hover {
         background-color: var(--lightgrey-color);
     }
 }
 
+.btn-style-kakao {
+    background-color: #F7E600;
+    color: #3A1D1D;
+    margin: 5px;
+    &:hover {
+        background-color: #e4d500;
+    }
+}
 
 /* 메뉴바 각 아이템 스타일 */
 .btn-nav-item {
-    border-radius: 15px;
-    padding: 5px;
     margin: 5px;
     margin-top: 20px;
     text-decoration: none;
 }
 
 .btn-style-item {
-    border: none;
     background-color: var(--grey-color);
     color: var(--white-color);
 
     &:hover {
-        cursor: pointer;
         background-color: var(--hovering-color);
         color: var(--button-color);
     }
 }
 
 .btn-span-style-grey {
-
     float: right;
     color: var(--darkgrey-color);
 
@@ -216,15 +203,39 @@
 }
 
 .list-room {
-    width: 25%;
+    width: 33.3%;
     float: left;
 
-    &:hover {
-        cursor: pointer;
+    img {
+        height: 180px;
     }
 }
 
+.w-50 {
+    width: 50%;
+    margin: auto;
+}
+
 /** 테이블 */
+.table-list {
+    border-top: 2px solid var(--grey-color);
+    border-bottom: 2px solid var(--grey-color);
+
+    tr {
+
+        border-bottom: 2px solid var(--grey-color);
+
+        td {
+            padding: 10px;
+        }
+
+        td:nth-child(2) {
+            width: 80%;
+            border-left: 2px solid var(--grey-color);
+        }
+    }
+}
+
 .table-list-card {
     width: 100%;
     height: 100px;
@@ -242,25 +253,30 @@
     }
 }
 
+.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
 /* 메뉴바 컨테이너 */
 .menubar {
-    position: fixed;
     width: 100%;
     padding: 10px;
     background: var(--white-color);
-    top: 0;
     z-index: 10;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+
+    div {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
-/* 메뉴바 각 아이템 위치 배정 */
-.menubar div {
-    display: flex;
-    justify-content: space-between;
-}
+
 
 .menubar-sub {
-    position: fixed;
     width: 15%;
     height: 100vh;
     top: 73px;
@@ -305,6 +321,7 @@
 
 /**메시지 */
 .message {
+    width: 200px;
     top: -100%;
     /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
     animation: slideDown 0.5s forwards;
@@ -327,13 +344,18 @@
 /** 페이지네이션 */
 .pagination {
     border: none;
-    font-size: 1.3rem;
-    border-radius: 20px;
-    width: 25px;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    margin: 3px;
 
     &:hover {
         cursor: pointer;
     }
+}
+
+.image-reserve {
+    width: 520px;
+    height: 351px;
 }
 
 /** 컨테이너 */
@@ -343,18 +365,18 @@
     align-items: center;
 }
 
-.container-flex {
+.d-flex {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.container-column {
-    display: flex;
+.d-row {
+    flex-direction: row;
+}
+
+.d-column {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 .container-top {
@@ -363,6 +385,7 @@
     background-size: cover;
     height: 600px;
     position: relative;
+
 }
 
 .container-middle {
@@ -444,11 +467,25 @@
 }
 
 .panel-top {
+    position: absolute;
     height: 50%;
     z-index: 5;
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
+    animation: fadeInDown 0.5s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
 .middlepanel {
@@ -564,6 +601,12 @@
         }
     }
 
+    .image-reserve,
+    .w-50 {
+        width: 100%;
+
+    }
+
     .td-vihicleId:nth-child(2),
     .td-vihicleId:nth-child(6) {
         display: none;
@@ -604,7 +647,7 @@
     }
 
     .list-room {
-        width: 33.3%;
+        width: 50%;
     }
 }
 

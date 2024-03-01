@@ -10,8 +10,8 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handl
 
     return (
         <>
-            <div className="black-wrap" onClick={handleOpenClose} />
-            <div className="white-wrap">
+            <div className="modal black-wrap" onClick={handleOpenClose} />
+            <div className="modal white-wrap">
 
                 {subOpen === true ? (
                     <div>

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef, useReducer, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../axiosInstance';
+import axios from '../../axiosInstance';
 import styled from "styled-components";
 import { TbArmchair2 } from "react-icons/tb";
-import Datepicker from '../util/datepicker';
-import reverse from '../styles/image/revert.png';
-import Constant from '../util/constant_variables';
-import AirPort from '../util/json/airport-list';
-import store from '../util/redux_storage';
+import Datepicker from '../../util/datepicker';
+import reverse from '../../styles/image/revert.png';
+import Constant from '../../util/constant_variables';
+import AirPort from '../../util/json/airport-list';
+import store from '../../util/redux_storage';
 import { BsExclamationCircle } from "react-icons/bs";
+import reducer from '../../util/reducers';
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
@@ -23,65 +24,54 @@ const LocationLabel = styled.label`
 const Label = styled.label`
     padding-left:5px;
     padding-bottom: 5px;
-    font-family: 'Pretendard-semibold';
+    font-family: Pretendard-semibold;
 `;
 const OptionLabel = styled.h3`
-    margin-left:10px
+    margin-left:-20px
 `;
 
 const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
 
 /** 에러메시지 (출발지-도착지, 날짜) */
-const ERROR_STATE = {
-    depError: false,
-    arrError: false,
-    locationError: false,
-    levelError: false,
-    dateError: false,
-    searchError: false,
-    loginError: false,
-    seatError: false,
-}
+const DEP_ERROR = 'depError';
+const ARR_ERROR = 'arrError';
+const LOCATION_ERROR = 'locationError';
+const LEVEL_ERROR = 'levelError';
+const DATE_ERROR = 'dateError';
+const SEARCH_ERROR='searchError';
+const LOGIN_ERROR='loginError';
+const SEAT_ERROR='seatError';
 
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'depError':
-            return { ...state, depError: true }
-        case 'arrError':
-            return { ...state, arrError: true }
-        case 'locationError':
-            return { ...state, locationError: true }
-        case 'levelError':
-            return { ...state, levelError: true }
-        case 'dateError':
-            return { ...state, dateError: true }
-        case 'searchError':
-            return { ...state, searchError: true }
-        case 'loginError':
-            return { ...state, loginError: true }
-        case 'seatError':
-            return { ...state, seatError: true }
-        default:
-            return ERROR_STATE
-    }
-}
+const ERROR_STATE = {
+    [DEP_ERROR]: false,
+    [ARR_ERROR]: false,
+    [LOCATION_ERROR]: false,
+    [LEVEL_ERROR]: false,
+    [DATE_ERROR]: false,
+    [SEARCH_ERROR]:false,
+    [LOGIN_ERROR]:false,
+    [SEAT_ERROR]:false,
+};
+
+const errorMapping = {
+    [DEP_ERROR]: '출발지를 입력해주세요',
+    [ARR_ERROR]: '도착지를 입력해주세요',
+    [LOCATION_ERROR]: '좌석을 선택해주세요',
+    [LEVEL_ERROR]: '출발지와 도착지가 같습니다',
+    [DATE_ERROR]: '날짜를 선택해주세요',
+    [SEARCH_ERROR]:'조회 실패하였습니다',
+    [LOGIN_ERROR]:'로그인이 필요한 서비스입니다',
+    [SEAT_ERROR]:'해당 항공편이 존재하지 않습니다',
+};
+
 /** top component */
 export default function TopComponent({ airports, setAirPorts }) {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId);
     const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-    const errorMapping = {
-        depError: '출발지를 입력해주세요',
-        arrError: '도착지를 입력해주세요',
-        levelError: '좌석을 선택해주세요',
-        locationError: '출발지와 도착지가 같습니다',
-        dateError: '날짜를 선택해주세요',
-        searchError: '조회 실패하였습니다',
-        loginError: '로그인이 필요한 서비스입니다',
-        seatError: '해당 항공편이 존재하지 않습니다',
-    };
+
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -112,7 +102,7 @@ export default function TopComponent({ airports, setAirPorts }) {
         return Object.keys(errorMapping).map((key) => {
             if (errorMessage[key]) {
                 return (
-                    <h3 className="white-wrap message" key={key}>
+                    <h3 className="modal white-wrap message" key={key}>
                         <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
                     </h3>
                 );
@@ -154,7 +144,7 @@ export default function TopComponent({ airports, setAirPorts }) {
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime <= new Date() //날짜를 선택하지 않았거나 선택한 날짜가 오늘날짜보다 이전일때
+            dateError: depTime < Date().now //선택한날짜가 지금시간대보다 이전일 때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈

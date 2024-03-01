@@ -6,20 +6,14 @@ import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
 import { IoCall } from "react-icons/io5";
 import NoData from '../../styles/image/noData.png';
-const Image = styled.img`
-    width:100%;
-    transition:all 0.5s;
-    &:hover{
-        transform : scale(1.1);
-    }
-`;
+
 const Hr = styled.hr`
     clear:both;
     border:1px solid var(--grey-color);
 `;
 
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
-const itemCountPerPage = 8; //한페이지당 보여줄 아이템 갯수
+const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 5; //보여줄 페이지 갯수
 const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
@@ -120,7 +114,7 @@ export default function ModalReserveCheck() {
 
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                 <div className="panel panel-top font-color-white" >
-                    <div className="container-flex">
+                    <div>
                         <h1 className="font-family-bold">숙소 검색</h1>
                     </div>
                 </div>
@@ -141,7 +135,7 @@ export default function ModalReserveCheck() {
                         ))
                     ) : (
                         <div className="container-content">
-                            <div className="container-column" style={{ height: '100%' }}>
+                            <div className="d-flex d-column" style={{ height: '100%' }}>
                                 <img src={NoData} />
                                 <h3>해당 내용이 존재하지 않습니다</h3>
                             </div>
@@ -178,13 +172,16 @@ const InfoComponent = ({ room }) => {
     }
     return (
         <div className="list-room">
-            <div onClick={handleLocation}>
-                <Image src={room.firstimage} alt={room.title} />
+            <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
                 <h3>{room.title.length > 12 ? room.title.substring(0, 12) + '...' : room.title}</h3>
-                <div style={{ color: 'var(--darkgrey-color)' }}>
-                    <p>{room.addr1}</p>
-                    <p><IoCall /> {room.tel}</p>
-                </div>
+                <button className="btn btn-style-reserve" onClick={handleLocation}>예약하기</button>
+            </div>
+
+            <img src={room.firstimage} alt={room.title} width={"100%"} />
+
+            <div className="font-color-darkgrey">
+                <p>{room.addr1}</p>
+                <p><IoCall /> {room.tel}</p>
             </div>
         </div>
 
@@ -201,7 +198,7 @@ const SelectComponent = ({ selectBoxRef, isShowOptions, show, handleOnChangeSele
             <div
                 ref={selectBoxRef}
                 className={`select select-email ${isShowOptions && 'active'}`}
-                style={{ float: 'left', width: '100px' }}
+                style={{ float: 'right', width: '100px' }}
                 onClick={show}
             >
                 <label>{areaCode}</label>
