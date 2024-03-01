@@ -312,15 +312,24 @@ export default function ModalBookCheck() {
         }
     }
     /**예약 취소 함수 */
-    async function reserveCancelAPI(flightReservationDTO) {
-        try {
-            const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
-                flightReservationDTO
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+    async function reserveCancelAPI(serverData) {
+      
+        const formData={
+            id:serverData.id,
+            flightId:serverData.flightId,
+            airLine:serverData.airLine,
+            arrAirport:serverData.arrAirport,
+            arrTime:serverData.arrTime,
+            depTime:serverData.depTime,
+            depAirport:serverData.depAirport,
+            charge:serverData.charge,
+            vihicleId:serverData.vihicleId,
+            userId:serverData.userId,
+            name:serverData.name
+        };
+        console.log("취소보낼 데이터 :",serverData)
+        try {// 결제 취소 알림 요청
+            const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, formData);
             console.log("취소완료");
             errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
             setTimeout(() => {

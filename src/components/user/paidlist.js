@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer,useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from '../../axiosInstance';
 import store from '../../util/redux_storage';
@@ -6,7 +6,6 @@ import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import styled from "styled-components";
-import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
 import NoData from '../../styles/image/noData.png';
 import AirPort from '../../util/json/airport-list';
@@ -39,9 +38,6 @@ export default function PaidList({ userId }) {
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [loading, setLoading] = useState(false);
-    //페이지네이션
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
-    const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
 
     useEffect(() => {
         callGetBookedListAPI().then((response) => {
@@ -70,15 +66,10 @@ export default function PaidList({ userId }) {
         setOpen(prev => !prev); //결재취소 확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
     }, []);
-    /** 페이지네이션 함수 */
-    const setCurrentPageFunc = (page) => {
-        let lastOffset = (page - 1) * itemCountPerPage;
-        setCurrentPage(page);
-        setOffset(lastOffset);
-    };
+
     /** 결제취소 함수 */
     const handleSubmit = async () => {
-        console.log("선택한 데이터 : ",selectedData);
+        console.log("선택한 데이터 : ", selectedData);
         try {
             await cancelPayment(selectedData.reservationId);
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
@@ -114,7 +105,7 @@ export default function PaidList({ userId }) {
     async function cancelPayment(merchant_uid) {
         try {
             await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 요청
-               merchant_uid
+                merchant_uid
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -125,10 +116,10 @@ export default function PaidList({ userId }) {
         }
     };
 
-    if (loading) return ( <div className="fixed d-flex container-fixed">
-    <img src={Spinner} alt="로딩" width="100px" />
-    <h3>목록을 불러오는 중입니다</h3>
-  </div>)
+    if (loading) return (<div className="fixed d-flex container-fixed">
+        <img src={Spinner} alt="로딩" width="100px" />
+        <h3>목록을 불러오는 중입니다</h3>
+    </div>)
     return (
         <div className="container">
             <div>{errorElements}</div>
@@ -137,32 +128,21 @@ export default function PaidList({ userId }) {
             }
 
 
-            <div className="w-50 container-content">
+            <div className="w-50">
                 {contents.length > 0 ? (
-                    contents.slice(offset, offset + itemCountPerPage).map((paidlist, i) => (
+                    contents.map((paidlist, i) => (
                         <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
                     ))
-                ) : (<div className="d-flex d-column" style={{ height: '100%' }}>
-                    <img src={NoData} />
-                    <h3>최근 결제된 내역이 없어요!</h3>
-                </div>
+                ) : (
+                    <div className="container-content">
+                        <div className=" d-flex d-column" style={{ height: '100%' }}>
+                            <img src={NoData} />
+                            <h3>최근 결제된 내역이 없어요!</h3>
+                        </div>
+                    </div>
                 )}
 
             </div>
-            <div className="background-color-white">
-                {contents.length > 0 && (
-                    <Pagination
-                        itemCount={contents.length}
-                        pageCountPerPage={pageCountPerPage}
-                        itemCountPerPage={itemCountPerPage}
-                        currentPage={currentPage}
-                        clickListener={setCurrentPageFunc}
-                    />
-                )}
-                <p>* 스케줄 및 기종은 부득이한 사유로 사전 예고없이 변경될 수 있습니다.</p>
-                <p>* 예약등급에 따라 마일리지 적립률이 상이하거나 마일리지가 제공되지 않습니다.</p>
-            </div>
-
         </div>
     )
 }
@@ -209,12 +189,17 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                 </tr>
                 <tr>
-                    <td colSpan={2}>
+                    <td >
                         <h2 className="font-family-extrabold">₩ {paidlist.charge.toLocaleString()}</h2>
                     </td>
+                    <td>
+                        <p>{paidlist.status}</p>
+                    </td>
                     <td colSpan={2}>
+                        {
+                            paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist)}>취소</button>
+                        }
 
-                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist)}>취소</button>
                     </td>
                 </tr>
             </tbody>
