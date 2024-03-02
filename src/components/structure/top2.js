@@ -30,27 +30,7 @@ export default function Top2Component() {
     const [loading, setLoading] = useState(false); //백엔드로 요청할 시에는 true로 변경하기
     const [areaCode, setAreaCode] = useState(areas[0].value); //기본 지역은 전체 검색
     const [clicked, setClicked] = useState(null);
-    //페이지네이션
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
-    const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
 
-    /** 셀렉트 전용 */
-    const [isShowOptions, setShowOptions] = useState(false);
-    const selectBoxRef = useRef(null);
-
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
-                setShowOptions(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleOutsideClick);
-
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, []);
     const handleSearch = useCallback(() => {
         setLoading(true);
         getRoomsListAPI().then((response) => {
@@ -83,9 +63,7 @@ export default function Top2Component() {
         });
         return filteredContents;
     }
-    const show = () => {
-        setShowOptions((prev) => !prev);
-    };
+
     /** 지역코드 찾기 */
     const getAccommodation = (value) => {
         const matchingareas = areas.find(areas => areas.value === value);
@@ -111,11 +89,7 @@ export default function Top2Component() {
                     <div style={{marginTop:'100px'}}>
                     <h2>국내</h2>
                     <SelectComponent
-                        areaCode={areaCode}
-                        selectBoxRef={selectBoxRef}
-                        isShowOptions={isShowOptions}
                         clicked={clicked}
-                        show={show}
                         handleOnChangeSelectValue={handleOnChangeSelectValue} />
                     </div>
                 <div className="second-container" style={{ clear: 'both' }}>
