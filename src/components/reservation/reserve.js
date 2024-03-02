@@ -5,7 +5,9 @@ import styled from "styled-components";
 import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
 import { IoCall } from "react-icons/io5";
+import NoImage from '../../styles/image/noImage.png';
 import NoData from '../../styles/image/noData.png';
+import axios from '../../axiosInstance';
 
 const Hr = styled.hr`
     clear:both;
@@ -14,7 +16,7 @@ const Hr = styled.hr`
 
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
-const pageCountPerPage = 5; //보여줄 페이지 갯수
+const pageCountPerPage = 10; //보여줄 페이지 갯수
 const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
 export default function ModalReserveCheck() {
@@ -33,12 +35,14 @@ export default function ModalReserveCheck() {
     const selectBoxRef = useRef(null);
     useEffect(() => {
         setLoading(true);
+        console.log("데이터불러오는중");
         getRoomsListAPI().then((response) => {
             setRooms(response);
             setRoomContents(response);
             setLoading(false);
+            console.log("데이터불러오기 완료");
         })
-    }, []);
+    }, [areaCode]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
@@ -77,38 +81,25 @@ export default function ModalReserveCheck() {
         setCurrentPage(page);
         setOffset(lastOffset);
     };
-
+    /** 지역코드 찾기 */
+    const getAccommodation = (value) => {
+        const matchingareas = areas.find(areas => areas.value === value);
+        return matchingareas ? matchingareas.code : "";
+    };
     /** 숙소 데이터 불러오는 함수 */
     async function getRoomsListAPI() {
-        // 테스트 데이터, 백엔드에서 보내줄 데이터는 아래의 contentid, title, addr1, tel, firstimage로 현재는 이렇게 있습니다.
-        const testRooms = [
-            { contentid: 1, title: '시상이 떠오르는 방', addr1: '서울시 강남구', tel: '02-1234-5678', firstimage: NoData },
-            { contentid: 2, title: '단풍과 차향이 어우러진 차실', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 3, title: '일상 순찰 속 즐거운 일들', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 4, title: '잠시 멀어진 소란과 고민', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 5, title: '방5', addr1: '서울시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 6, title: '방5', addr1: '인천시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 7, title: '방6', addr1: '인천시 강북구', tel: '02-8765-4321', firstimage: NoData },
-            { contentid: 8, title: '방7', addr1: '울산시 강북구', tel: '02-8765-4321', firstimage: NoData },
-
-            // 필요한 만큼 방 정보를 직접 추가하세요.
-        ];
+        const params = {
+            areaCode: getAccommodation(areaCode),
+        }
         try {
-            //const result = await axios.get(Constant.serviceURL + `/rooms/search`);
-            //return result.data;
-
-            return testRooms;
+            const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params, withCredentials: true });
+            console.log(response.data);
+            return response.data;
         } catch (error) {
             console.error(error);
         }
     }
-    if (loading) {
-        return (
-            <div className="loading">
-                <img src={Spinner} alt="로딩" width="100px" />
-            </div>
-        );
-    }
+
     return (
         <div className="container">
 
@@ -116,44 +107,51 @@ export default function ModalReserveCheck() {
                 <div className="panel panel-top font-color-white" >
                     <div>
                         <h1 className="font-family-bold">숙소 검색</h1>
+                        <h3>{areaCode}</h3>
                     </div>
                 </div>
             </div>
-            <div className="container-content middlepanel">
+            {
+                loading ? <div className="fixed d-flex container-fixed">
+                    <img src={Spinner} alt="로딩" width="100px" />
+                </div> : <div className="container-content middlepanel">
 
-                <SelectComponent
-                    areaCode={areaCode}
-                    selectBoxRef={selectBoxRef}
-                    isShowOptions={isShowOptions}
-                    show={show}
-                    handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                    <SelectComponent
+                        areaCode={areaCode}
+                        selectBoxRef={selectBoxRef}
+                        isShowOptions={isShowOptions}
+                        show={show}
+                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
 
-                <div>
-                    {roomContents.length > 0 ? (
-                        roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
-                            <InfoComponent key={room.contentid} room={room} />
-                        ))
-                    ) : (
-                        <div className="container-content">
-                            <div className="d-flex d-column" style={{ height: '100%' }}>
-                                <img src={NoData} />
-                                <h3>해당 내용이 존재하지 않습니다</h3>
-                            </div>
-                        </div>)}
+                    <div>
+                        {roomContents.length > 0 ? (
+                            roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
+                                <InfoComponent key={room.contentid} room={room} />
+                            ))
+                        ) : (
+                            <div className="container-content">
+                                <div className="d-flex d-column" style={{ height: '100%' }}>
+                                    <img src={NoData} />
+                                    <h3>해당 내용이 존재하지 않습니다</h3>
+                                </div>
+                            </div>)}
+                    </div>
+                    <div style={{ clear: 'both' }}>
+                        {roomContents.length > 0 && (
+                            <Pagination
+                                itemCount={roomContents.length}
+                                pageCountPerPage={pageCountPerPage}
+                                itemCountPerPage={itemCountPerPage}
+                                currentPage={currentPage}
+                                clickListener={setCurrentPageFunc}
+                            />
+                        )}
+                    </div>
+
                 </div>
-                <div style={{ clear: 'both' }}>
-                    {roomContents.length > 0 && (
-                        <Pagination
-                            itemCount={roomContents.length}
-                            pageCountPerPage={pageCountPerPage}
-                            itemCountPerPage={itemCountPerPage}
-                            currentPage={currentPage}
-                            clickListener={setCurrentPageFunc}
-                        />
-                    )}
-                </div>
 
-            </div>
+            }
+
         </div>
 
     )
@@ -174,10 +172,10 @@ const InfoComponent = ({ room }) => {
         <div className="list-room">
             <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
                 <h3>{room.title.length > 12 ? room.title.substring(0, 12) + '...' : room.title}</h3>
-                <button className="btn btn-style-reserve" onClick={handleLocation}>예약하기</button>
+                <button className="btn btn-style-reserve" onClick={handleLocation}>상세보기</button>
             </div>
 
-            <img src={room.firstimage} alt={room.title} width={"100%"} />
+            <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
             <div className="font-color-darkgrey">
                 <p>{room.addr1}</p>

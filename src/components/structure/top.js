@@ -284,9 +284,8 @@ export default function TopComponent({ airports, setAirPorts }) {
                         <table>
                             <thead>
                                 <tr>
-                                    <td><MarkTd>가는날</MarkTd></td>
-
                                     <td><MarkTd>좌석등급</MarkTd></td>
+                                    <td><MarkTd>가는날</MarkTd></td>
                                 </tr>
                             </thead>
                             <tbody>

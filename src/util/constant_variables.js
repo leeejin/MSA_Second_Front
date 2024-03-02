@@ -45,6 +45,14 @@ export default class Constant {
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
         ];
     }
+    static getSwiperMenus() {
+        return [
+            { key: 0, value: "제주", title: "이번 겨울", subTitle: "제주 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: Jeju },
+            { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
+            { key: 2, value: "부산", title: "이번 겨울", subTitle: "부산 여행을 감행하다 ", content: "다시 태어나도 살고 싶은 그린 스마트 도시 '부산'", imageUrl: Busan },
+            { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
+        ];
+    }
     static getLogos() {
         return [
             { key: 0, value: "진에어", imageUrl: Jin },
@@ -60,7 +68,6 @@ export default class Constant {
     }
     static getRegionList(){
        return[
-        { key: 0, value: '전체', name: '전체', code: 0 },
         { key: 1, value: '서울', name: '서울', code: 1 },
         { key: 2, value: '인천', name: '인천', code: 2 },
         { key: 3, value: '대전', name: '대전', code: 3 },

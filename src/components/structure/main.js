@@ -19,7 +19,7 @@ export default function Main() {
         <div>
            
             <TopComponent airports={airports} setAirPorts={setAirPorts} />
-            <MiddleComponent />
+            <MiddleComponent setAirPorts={setAirPorts}/>
             <FooterSlider setAirPorts={setAirPorts} />
 
         </div>

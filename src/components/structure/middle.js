@@ -6,11 +6,21 @@ import 'swiper/css/virtual';
 import Constant from '../../util/constant_variables';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const accommodation = Constant.getSliderMenus();
+const accommodation = Constant.getSwiperMenus();
 /** middle component */
-export default function MiddleComponent() {
+export default function MiddleComponent({ setAirPorts }) {
     const [activeSlide, setActiveSlide] = useState(0);
-
+    /** 선택한거 나와있는 지역으로 바꾸기 */
+    const handleReserve = (value) => {
+        setAirPorts(prev => ({
+            ...prev,
+            arr: value
+        }));
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    };
     const handleSlideChange = (swiper) => {
         setActiveSlide(swiper.activeIndex);
     }
@@ -24,8 +34,8 @@ export default function MiddleComponent() {
         <div className="container container-middle">
             <div>
                 <div className="middlepanel">
-                    <h1 className="font-family-bold">실시간 인기 숙소</h1>
-                    <p>다른 여행자들에게 인기 있는 숙소지를 소개합니다. 항공권을 검색하고 지금 바로 떠나세요!</p>
+                    <h1 className="font-family-bold">실시간 인기 여행지</h1>
+                    <p>다른 여행자들에게 인기 있는 여행지를 소개합니다. 항공권을 검색하고 지금 바로 떠나세요!</p>
                 </div>
                 <div>
                     <Swiper
@@ -56,7 +66,7 @@ export default function MiddleComponent() {
                                     <div className="swiper-slide-sub">
                                         <h1>{ac.value}</h1>
                                         <p>{ac.content}</p>
-                                        <button className="btn btn-style-border">
+                                        <button className="btn btn-style-border" onClick={() => handleReserve(ac.value)}>
                                             예약하기
                                         </button>
                                     </div>
