@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate,Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import styled from "styled-components";
 import Pagination from '../../util/pagenation';
@@ -35,15 +35,23 @@ export default function ModalReserveCheck() {
     const [isShowOptions, setShowOptions] = useState(false);
     const selectBoxRef = useRef(null);
     useEffect(() => {
-        setLoading(true);
-        console.log("데이터불러오는중");
-        getRoomsListAPI().then((response) => {
+    const fetchRoomsData = async () => {
+        try {
+            setLoading(true);
+            console.log("데이터불러오는중");
+            const response = await getRoomsListAPI();
             setRooms(response);
             setRoomContents(response);
-            setLoading(false);
             console.log("데이터불러오기 완료");
-        })
-    }, [areaCode]);
+        } catch (error) {
+            console.error("데이터 불러오는 중 에러 발생:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchRoomsData();
+}, [areaCode]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
@@ -101,6 +109,9 @@ export default function ModalReserveCheck() {
         }
     }
 
+    if(!location.state.areaCode){
+        return (<Navigate to={"*"}/>)
+    }
     return (
         <div className="container">
 
