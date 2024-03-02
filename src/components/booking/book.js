@@ -72,6 +72,7 @@ export default function ModalBookCheck() {
     const [listContents, setListContents] = useState(contents);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
+    const [email,setEmail] = useState(store.getState().username);
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
@@ -126,6 +127,7 @@ export default function ModalBookCheck() {
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
             userId: userId, //예약하는 userId
+            email:email,
             name: name
         };
 
