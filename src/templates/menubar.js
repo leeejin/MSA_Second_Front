@@ -55,11 +55,6 @@ export default function Menubar() {
             <div>
                 <Link to="/"><img src={logo} width={'100px'} /></Link>
                 <div>
-                    <NavLink
-                        className="btn btn-nav-item btn-style-item font-family-semibold"
-                        style={({ isActive }) => (isActive ? activeStyle : {})}
-                        to={`/Reserve`}
-                    >숙소예약</NavLink>
                     {
                         userId !== 0 ? <>
                             <NavLink

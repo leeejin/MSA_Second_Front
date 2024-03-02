@@ -104,7 +104,7 @@ const InfoComponent = ({ contents, handleOpenClose }) => {
                     </tr>
                     <tr>
                         <td>반려동물 동반</td>
-                        <td>될지도?</td>
+                        <td>가능</td>
                     </tr>
                     <tr>
                         <td>주차</td>
