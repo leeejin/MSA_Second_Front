@@ -68,7 +68,6 @@ export default class Constant {
     }
     static getRegionList(){
        return[
-        { key: 0, value: '전체', name: '전체', code: "" },
         { key: 1, value: '서울', name: '서울', code: 1 },
         { key: 2, value: '인천', name: '인천', code: 2 },
         { key: 3, value: '대전', name: '대전', code: 3 },

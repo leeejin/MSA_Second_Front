@@ -13,7 +13,9 @@ const Table = styled.table`
     }
 `;
 const Button = styled.button`
-    &:hover{
+    color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
+    &:hover,
+    &:active {
         color:var(--hovering-color);
     }
 `;
@@ -27,7 +29,7 @@ export default function Top2Component() {
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [loading, setLoading] = useState(false); //백엔드로 요청할 시에는 true로 변경하기
     const [areaCode, setAreaCode] = useState(areas[0].value); //기본 지역은 전체 검색
-
+    const [clicked, setClicked] = useState(null);
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
@@ -64,8 +66,9 @@ export default function Top2Component() {
         })
 
     }, [areaCode]);
-    const handleOnChangeSelectValue = (e) => {
+    const handleOnChangeSelectValue = (e, key) => {
         setAreaCode(e.target.value);
+        setClicked(key);
         /** 데이터 필터링 */
         setRoomContents(dataFiltering(e.target.value));
     };
@@ -105,49 +108,40 @@ export default function Top2Component() {
         <>
             <div className="container container-top" >
                 <div className="panel panel-top background-color-white">
-                  
-                        <Table>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <h3>어디로 여행하시겠어요 ? </h3>
-                                    <h2>{areaCode}</h2>
-                                </td>
-                                <td>
-                                    <SelectComponent
-                                        areaCode={areaCode}
-                                        selectBoxRef={selectBoxRef}
-                                        isShowOptions={isShowOptions}
-                                        show={show}
-                                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
-                                </td>
-                            </tr>
-                            </tbody>
-                        </Table>
-                   
-                    <div className="second-container" style={{ clear: 'both' }}>
-                        <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
+                    <div style={{marginTop:'100px'}}>
+                    <h2>국내</h2>
+                    <SelectComponent
+                        areaCode={areaCode}
+                        selectBoxRef={selectBoxRef}
+                        isShowOptions={isShowOptions}
+                        clicked={clicked}
+                        show={show}
+                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
                     </div>
-
-
-
+                <div className="second-container" style={{ clear: 'both' }}>
+                    <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
                 </div>
+
+
+
             </div>
+        </div >
         </>
 
     );
 }
 /** 지역 선택 컴포넌트 */
-const SelectComponent = ({ isShowOptions, show, handleOnChangeSelectValue, areaCode }) => {
+const SelectComponent = ({ handleOnChangeSelectValue, clicked }) => {
 
     return (
         <>
             {areas.map(area => (
                 <Button
-                    className="btn "
+                    className="btn"
+                    clicked={clicked === area.key}
                     key={area.key}
                     value={area.value}
-                    onClick={(e) => handleOnChangeSelectValue(e)}>
+                    onClick={(e) => handleOnChangeSelectValue(e, area.key)}>
                     {area.value}
                 </Button>
             ))}

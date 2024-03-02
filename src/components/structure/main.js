@@ -34,6 +34,7 @@ export default function Main() {
         level: '좌석을 선택해주세요',
     })
     const [mode, setMode] = useState(0);
+    
     const handleModeChange = (value) => {
         setMode(value);
     }

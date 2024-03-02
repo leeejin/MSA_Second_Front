@@ -82,6 +82,7 @@ export default function PaidList({ userId }) {
             setTimeout(() => {
                 errorDispatch({ type: 'error' });
             }, [1000])
+            window.location.reload();
         } catch (error) {
             errorDispatch({ type: 'cancelError', cancelError: true });
             setTimeout(() => {
