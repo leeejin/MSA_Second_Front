@@ -327,6 +327,7 @@ export default function ModalBookCheck() {
             charge:serverData.charge,
             vihicleId:serverData.vihicleId,
             userId:serverData.userId,
+            email:serverData.email,
             name:serverData.name
         };
         console.log("취소보낼 데이터 :",serverData)

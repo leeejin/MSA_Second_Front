@@ -21,11 +21,11 @@ const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
 export default function ModalReserveCheck() {
     const location = useLocation();
-   
+    const {code} = location.state ?? {};
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [loading, setLoading] = useState(false); //백엔드로 요청할 시에는 true로 변경하기
-    const [areaCode, setAreaCode] = useState(location.state.areaCode); //기본 지역은 전체 검색
+    const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
 
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
@@ -109,7 +109,7 @@ export default function ModalReserveCheck() {
         }
     }
 
-    if(!location.state.areaCode){
+    if(!location.state){
         return (<Navigate to={"*"}/>)
     }
     return (

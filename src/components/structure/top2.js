@@ -58,7 +58,7 @@ export default function Top2Component() {
             console.log("데이터불러오기 완료");
             navigate(`/Reserve`, {
                 state: {
-                    areaCode: areaCode
+                    code: areaCode
                 }
             });
         })
