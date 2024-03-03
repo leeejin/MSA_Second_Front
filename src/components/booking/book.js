@@ -50,7 +50,7 @@ const ERROR_STATE = {
 };
 
 const errorMapping = {
-    [RESERVE_ERROR]: '예약실패하였습니다',
+    [RESERVE_ERROR]: '이미 예약하신 항공편입니다',
     [PAY_SUCCESS]: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
     [PAY_ERROR]: '결제실패하였습니다',
     [CANCEL_ERROR]: '예약취소 실패하였습니다',

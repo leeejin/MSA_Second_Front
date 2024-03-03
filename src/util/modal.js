@@ -11,7 +11,7 @@ const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handl
     return (
         <>
             <div className="modal black-wrap" onClick={handleOpenClose} />
-            <div className="modal white-wrap">
+            <div className="modal white-wrap" style={{width:'300px'}}>
 
                 {subOpen === true ? (
                     <div>
