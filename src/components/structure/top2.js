@@ -1,17 +1,9 @@
-import React, { useState, useEffect, useRef, useReducer, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
 import Constant from '../../util/constant_variables';
-const Table = styled.table`
-    height:100%;
-    tr{
-        td:nth-child(1){
-            width:40%;
-            border-right: 1px solid var(--grey-color);
-        }
-    }
-`;
+
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     &:hover,

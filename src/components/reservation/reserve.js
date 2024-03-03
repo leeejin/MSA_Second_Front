@@ -204,7 +204,6 @@ const SelectComponent = ({ selectBoxRef, isShowOptions, show, handleOnChangeSele
 
     return (
         <>
-
             <div
                 ref={selectBoxRef}
                 className={`select select-email ${isShowOptions && 'active'}`}

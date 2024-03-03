@@ -1,15 +1,9 @@
-import React, { useState, useEffect, useReducer, useMemo } from 'react';
-import axios from '../../axiosInstance';
-import { useNavigate, Navigate, useLocation } from 'react-router-dom';
-import Constant from '../../util/constant_variables';
+import React, { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
-import ModalComponent from '../../util/modal';
 import store from '../../util/redux_storage';
 import { IoCall } from "react-icons/io5";
-import { RiKakaoTalkFill } from "react-icons/ri";
-import { BsExclamationCircle } from "react-icons/bs";
 import NoImage from '../../styles/image/noImage.png';
-import reducer from '../../util/reducers';
 const Hr = styled.hr`
     width:49px;
     border:1px solid var(--grey-color);
@@ -20,7 +14,6 @@ const Hr = styled.hr`
 
 /** 예약확인 목록 페이지 */
 export default function ModalRoomsReserveCheck() {
-    const navigate = useNavigate();
     const location = useLocation();
 
     const [userId, setUserId] = useState(store.getState().userId);
