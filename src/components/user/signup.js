@@ -1,42 +1,15 @@
-import React, { useState, useRef, useEffect, useReducer, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useReducer } from 'react';
 import styled from "styled-components";
 import ModalComponent from '../../util/modal';
 import Constant from '../../util/constant_variables';
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { BsExclamationCircle } from "react-icons/bs";
-import reducer from '../../util/reducers';
+import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
-/** 에러메시지 (출발지-도착지, 날짜) */
-const EMAIL_ERROR = 'emailError';
-const NAME_ERROR = 'nameError';
-const NICKNAME_ERROR = 'nicknameError';
-const PASSWORD_ERROR = 'passwordError';
-const CONFIRMPASSWORD_ERROR = 'confirmPasswordError';
-const DUPLICATE_ERROR = 'duplicateError';
-
-const ERROR_STATE = {
-    [EMAIL_ERROR]: false,
-    [NAME_ERROR]: false,
-    [NICKNAME_ERROR]: false,
-    [PASSWORD_ERROR]: false,
-    [CONFIRMPASSWORD_ERROR]: false,
-    [DUPLICATE_ERROR]: false
-};
-
-const errorMapping = {
-    [NAME_ERROR]: '이름은 2~5자 이내여야합니다.',
-    [NICKNAME_ERROR]: '닉네임은 2~5자 이내여야합니다.',
-    [EMAIL_ERROR]: '이메일은 영대소문자, 숫자 포함해야합니다.',
-    [PASSWORD_ERROR]: '비밀번호는 8~25자 이내의 영대소문자, 숫자, 특수문자 하나 이상 포함해야 합니다.',
-    [CONFIRMPASSWORD_ERROR]: '비밀번호가 다릅니다.',
-    [DUPLICATE_ERROR]: '다른 사용자가 있습니다. 다른 이메일로 바꿔주세요',
-};
-
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -53,7 +26,7 @@ export default function Signup() {
         confirmPassword: '',
     });
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
-    const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
 
     /** 셀렉트 전용 */
@@ -73,7 +46,13 @@ export default function Signup() {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
-
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+    
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 1000);
+    }
     const handleOnChangeSelectValue = (e) => {
         setSelect(e.target.getAttribute("value"));
     };
@@ -84,18 +63,7 @@ export default function Signup() {
             [infoType]: e.target.value
         }));
     }
-    const errorElements = useMemo(() => {
-        return Object.keys(errorMapping).map((key) => {
-            if (errorMessage[key]) {
-                return (
-                    <h3 className="modal white-wrap message" key={key}>
-                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
-                    </h3>
-                );
-            }
-            return null;
-        });
-    }, [errorMessage]);
+   
     /** 모달 창 뜨기전에 검사 */
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
@@ -114,19 +82,16 @@ export default function Signup() {
         } else {
             //안되면 에러뜨게 함
             if (errors.nameError) {
-                dispatch({ type: 'nameError', nameError: errors.nameError });
+                handleError('nameError',errors.nameError);
             } else if (errors.nicknameError) {
-                dispatch({ type: 'nicknameError', nicknameError: errors.nicknameError });
+                handleError('nicknameError',errors.nicknameError);
             } else if (errors.emailError) {
-                dispatch({ type: 'emailError', emailError: errors.emailError });
+                handleError('emailError',errors.emailError);
             } else if (errors.passwordError) {
-                dispatch({ type: 'passwordError', passwordError: errors.passwordError });
+                handleError('passwordError',errors.passwordError);
             } else if (errors.confirmPasswordError) {
-                dispatch({ type: 'confirmError', confirmError: errors.confirmError });
+                handleError('confirmPasswordError',errors.confirmPasswordError);
             }
-            setTimeout(() => {
-                dispatch({ type: 'error' });
-            }, 1500);
         }
 
     }
@@ -146,12 +111,8 @@ export default function Signup() {
 
         }).catch((error) => {
             console.log(error)
-            dispatch({ type: 'duplicateError', duplicateError: true });
+            handleError('duplicateError',true);
             setOpen(false);
-
-            setTimeout(() => {
-                dispatch({ type: 'duplicateError', duplicateError: false });
-            }, 1000);
         })
     }
     //회원가입 하는 API
@@ -169,12 +130,8 @@ export default function Signup() {
             return response.data;
         } catch (error) {
             console.error('오류 발생:', error);
-            dispatch({ type: 'duplicateError', duplicateError: true });
+            handleError('duplicateError',true);
             setOpen(false);
-
-            setTimeout(() => {
-                dispatch({ type: 'duplicateError', duplicateError: false });
-            }, 1000);
         }
     }
     return (
@@ -182,7 +139,7 @@ export default function Signup() {
             {
                 open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
-            <div>{errorElements}</div>
+           <Alert errorMessage={errorMessage} />
             <div className="fixed container-fixed background-color" />
             <div className="container-backbox-450 background-color-white">
                 <div className="background-color-white">
@@ -216,7 +173,7 @@ export default function Signup() {
                                 <label>{select}</label>
                                 {isShowOptions && (
                                     <ul className="select-option select-option-email">
-                                        {emailMenus.map((email, i) => (
+                                        {emailMenus.map((email) => (
                                             <li
                                                 className="option"
                                                 onClick={(e) => handleOnChangeSelectValue(e)}

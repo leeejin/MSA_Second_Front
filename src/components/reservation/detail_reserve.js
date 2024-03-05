@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
-import store from '../../util/redux_storage';
 import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
 const Hr = styled.hr`
@@ -16,10 +15,8 @@ const Hr = styled.hr`
 export default function ModalRoomsReserveCheck() {
     const location = useLocation();
 
-    const [userId, setUserId] = useState(store.getState().userId);
     const { contents } = location.state ?? {};
     const [open, setOpen] = useState(false); // 예약모달창
-
 
     /** 예약확인 함수 */
     const handleOpenClose = (() => {

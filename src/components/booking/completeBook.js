@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
@@ -6,7 +6,6 @@ import store from '../../util/redux_storage';
 import AirPort from '../../util/json/airport-list.json';
 
 const airport = AirPort.response.body.items.item; // 공항 목록
-const logos = Constant.getLogos();
 
 export default function PayCheck() {
     const navigate = useNavigate();
@@ -14,19 +13,12 @@ export default function PayCheck() {
     const { contents } = location.state;
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
 
-    const getAirlineLogo = (airLine) => {
-        const matchingLogo = logos.find(logo => logo.value === airLine);
-        return matchingLogo ? matchingLogo.imageUrl : '';
-    };
-
     const handleReservedList = () => {
         navigate(`/MyPage/${userId}`); //수정해야함
     }
-    /** 출발지, 도착지 Nm -> Id로 변경 */
-    const getAirportIdByName = (airportId) => {
-        const matchedAirport = airport.find((item) => item.airportId === airportId);
-        return matchedAirport ? matchedAirport.airportNm : null;
-    };
+    const handleLocation = () => {
+        navigate(-1);
+    }
     return (
         <div className="container">
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
@@ -41,7 +33,7 @@ export default function PayCheck() {
                     <tbody>
                         <tr>
                             <td colSpan={4}>
-                                <img src={getAirlineLogo(contents.airLine)} width={"130px"} alt={contents.airlineNm} />
+                                <img src={Constant.getAirlineLogo(contents.airLine)} width={"130px"} alt={contents.airlineNm} />
                                 <p>{contents.airLine}</p>
                             </td>
                         </tr>
@@ -51,14 +43,14 @@ export default function PayCheck() {
                             </td>
                             <td>
                                 <h1>{Constant.handleTimeFormatChange(contents.depTime)}</h1>
-                                <p>{getAirportIdByName(contents.depAirport)}</p>
+                                <p>{Constant.getAirportNmById(airport, contents.depAirport)}</p>
                             </td>
                             <td>
                                 {Constant.handleDateCalculate(contents.arrTime, contents.depTime)}
                             </td>
                             <td>
                                 <h1>{Constant.handleTimeFormatChange(contents.arrTime)}</h1>
-                                <p>{getAirportIdByName(contents.arrAirport)}</p>
+                                <p>{Constant.getAirportNmById(airport, contents.arrAirport)}</p>
                             </td>
                         </tr>
                         <tr>
@@ -81,7 +73,7 @@ export default function PayCheck() {
                 <h3>예약이 완료되었습니다 ! 예약목록으로 가시겠습니까 ?</h3>
                 <div className="d-flex d-row" >
                     <button className="btn btn-style-confirm" onClick={handleReservedList}>예</button>
-                    <button className="btn btn-style-grey" onClick={() => { navigate(-1) }}>아니오</button>
+                    <button className="btn btn-style-grey" onClick={handleLocation}>아니오</button>
                 </div>
             </div>
         </div>

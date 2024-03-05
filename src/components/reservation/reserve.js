@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate,Navigate } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
-import styled from "styled-components";
 import Pagination from '../../util/pagenation';
 import Spinner from '../../styles/image/loading.gif';
 import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
 import NoData from '../../styles/image/noData.png';
 import axios from '../../axiosInstance';
-
-const Hr = styled.hr`
-    clear:both;
-    border:1px solid var(--grey-color);
-`;
+import { useQuery } from 'react-query';
 
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
@@ -21,10 +16,9 @@ const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
 export default function ModalReserveCheck() {
     const location = useLocation();
-    const {code} = location.state ?? {};
+    const { code } = location.state ?? {};
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
-    const [loading, setLoading] = useState(false); //백엔드로 요청할 시에는 true로 변경하기
     const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
 
     //페이지네이션
@@ -34,24 +28,7 @@ export default function ModalReserveCheck() {
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
     const selectBoxRef = useRef(null);
-    useEffect(() => {
-    const fetchRoomsData = async () => {
-        try {
-            setLoading(true);
-            console.log("데이터불러오는중");
-            const response = await getRoomsListAPI();
-            setRooms(response);
-            setRoomContents(response);
-            console.log("데이터불러오기 완료");
-        } catch (error) {
-            console.error("데이터 불러오는 중 에러 발생:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    fetchRoomsData();
-}, [areaCode]);
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
@@ -67,19 +44,20 @@ export default function ModalReserveCheck() {
     const show = () => {
         setShowOptions((prev) => !prev);
     };
+
     const handleOnChangeSelectValue = (e) => {
-        setAreaCode(e.target.value);
+        const value = Constant.getAccommodationCodeByValue(areas, e.target.value);
+        setAreaCode(value);
         /** 데이터 필터링 */
         setRoomContents(dataFiltering(e.target.value));
     };
+
     const dataFiltering = (text) => {
         let filteredContents = [...rooms];
         //가맹점명으로 검색
         filteredContents = filteredContents.filter((item) => {
             if (item.addr1.includes(text))
                 return true;
-            else if (text === "전체")
-                return rooms;
         });
         return filteredContents;
     }
@@ -90,15 +68,20 @@ export default function ModalReserveCheck() {
         setCurrentPage(page);
         setOffset(lastOffset);
     };
-    /** 지역코드 찾기 */
-    const getAccommodation = (value) => {
-        const matchingareas = areas.find(areas => areas.value === value);
-        return matchingareas ? matchingareas.code : "";
-    };
+
+    const { error, isLoading } = useQuery(['rooms', areaCode], getRoomsListAPI, {
+        onSuccess: (data) => {
+            setRooms(data);
+            setRoomContents(data);
+        },
+        onError: (error) => {
+            console.error("데이터 불러오는 중 에러 발생:", error);
+        }
+    });
     /** 숙소 데이터 불러오는 함수 */
     async function getRoomsListAPI() {
         const params = {
-            areaCode: getAccommodation(areaCode),
+            areaCode: areaCode,
         }
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params, withCredentials: true });
@@ -109,9 +92,15 @@ export default function ModalReserveCheck() {
         }
     }
 
-    if(!location.state){
-        return (<Navigate to={"*"}/>)
+    if (!location.state) {
+        return (<Navigate to={"*"} />)
     }
+    if (isLoading) return (<div className="fixed d-flex container-fixed">
+        <img src={Spinner} alt="로딩" width="100px" />
+    </div>)
+    if (error) return (<div className="fixed d-flex container-fixed">
+        <h3>데이터 불러오는 도중 문제 발생 다시 시도해주세요</h3>
+    </div>)
     return (
         <div className="container">
 
@@ -119,50 +108,45 @@ export default function ModalReserveCheck() {
                 <div className="panel panel-top font-color-white" >
                     <div>
                         <h1 className="font-family-bold">숙소 검색</h1>
-                        <h3>{areaCode}</h3>
+                        <h3>{Constant.getAccommodationValueByCode(areas, areaCode)}</h3>
                     </div>
                 </div>
             </div>
-            {
-                loading ? <div className="fixed d-flex container-fixed">
-                    <img src={Spinner} alt="로딩" width="100px" />
-                </div> : <div className="container-content middlepanel">
+            <div className="container-content middlepanel">
 
-                    <SelectComponent
-                        areaCode={areaCode}
-                        selectBoxRef={selectBoxRef}
-                        isShowOptions={isShowOptions}
-                        show={show}
-                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                <SelectComponent
+                    areaCode={areaCode}
+                    selectBoxRef={selectBoxRef}
+                    isShowOptions={isShowOptions}
+                    show={show}
+                    handleOnChangeSelectValue={handleOnChangeSelectValue} />
 
-                    <div>
-                        {roomContents.length > 0 ? (
-                            roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
-                                <InfoComponent key={room.contentid} room={room} />
-                            ))
-                        ) : (
-                            <div className="container-content">
-                                <div className="d-flex d-column" style={{ height: '100%' }}>
-                                    <img src={NoData} />
-                                    <h3>해당 내용이 존재하지 않습니다</h3>
-                                </div>
-                            </div>)}
-                    </div>
-                    <div style={{ clear: 'both' }}>
-                        {roomContents.length > 0 && (
-                            <Pagination
-                                itemCount={roomContents.length}
-                                pageCountPerPage={pageCountPerPage}
-                                itemCountPerPage={itemCountPerPage}
-                                currentPage={currentPage}
-                                clickListener={setCurrentPageFunc}
-                            />
-                        )}
-                    </div>
-
+                <div>
+                    {roomContents.length > 0 ? (
+                        roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
+                            <InfoComponent key={room.contentid} room={room} />
+                        ))
+                    ) : (
+                        <div className="container-content">
+                            <div className="d-flex d-column" style={{ height: '100%' }}>
+                                <img src={NoData} alt="데이터 없음" />
+                                <h3>해당 내용이 존재하지 않습니다</h3>
+                            </div>
+                        </div>)}
+                </div>
+                <div style={{ clear: 'both' }}>
+                    {roomContents.length > 0 && (
+                        <Pagination
+                            itemCount={roomContents.length}
+                            pageCountPerPage={pageCountPerPage}
+                            itemCountPerPage={itemCountPerPage}
+                            currentPage={currentPage}
+                            clickListener={setCurrentPageFunc}
+                        />
+                    )}
                 </div>
 
-            }
+            </div>
 
         </div>
 
@@ -210,7 +194,7 @@ const SelectComponent = ({ selectBoxRef, isShowOptions, show, handleOnChangeSele
                 style={{ float: 'right', width: '100px' }}
                 onClick={show}
             >
-                <label>{areaCode}</label>
+                <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
                 {isShowOptions && (
                     <ul className="select-option select-option-email">
                         {areas.map(area => (
@@ -226,7 +210,7 @@ const SelectComponent = ({ selectBoxRef, isShowOptions, show, handleOnChangeSele
                 )}
             </div>
 
-            <Hr />
+
         </>
 
 

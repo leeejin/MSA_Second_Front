@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef, forwardRef, useReducer } from 'react';
+import React, { useState } from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import 'swiper/css';
 import 'swiper/css/virtual';
@@ -8,19 +8,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 const accommodation = Constant.getSwiperMenus();
 /** middle component */
-export default function MiddleComponent({ setAirPorts }) {
+export default function MiddleComponent({ handleReserve }) {
     const [activeSlide, setActiveSlide] = useState(0);
     /** 선택한거 나와있는 지역으로 바꾸기 */
-    const handleReserve = (value) => {
-        setAirPorts(prev => ({
-            ...prev,
-            arr: value
-        }));
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    };
+    
     const handleSlideChange = (swiper) => {
         setActiveSlide(swiper.activeIndex);
     }

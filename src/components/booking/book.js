@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
-import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
-import { BsExclamationCircle } from "react-icons/bs";
-import reducer from '../../util/reducers';
+import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const SubButton = styled.p`
     float:right;
     color:var(--darkgrey-color);
@@ -34,34 +32,12 @@ const Button = styled.button`
         width:50px;
     }
 `;
-/** 에러메시지 (출발지-도착지, 날짜) */
-const PAY_SUCCESS = 'paySuccess';
-const PAY_ERROR = 'payError';
-const CANCEL_SUCCESS = 'cancelSuccess';
-const CANCEL_ERROR = 'cancelErorr';
-const RESERVE_ERROR = 'reserveError';
 
-const ERROR_STATE = {
-    [PAY_SUCCESS]: false,
-    [PAY_ERROR]: false,
-    [CANCEL_SUCCESS]: false,
-    [CANCEL_ERROR]: false,
-    [RESERVE_ERROR]: false
-};
-
-const errorMapping = {
-    [RESERVE_ERROR]: '이미 예약하신 항공편입니다',
-    [PAY_SUCCESS]: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
-    [PAY_ERROR]: '결제실패하였습니다',
-    [CANCEL_ERROR]: '예약취소 실패하였습니다',
-    [CANCEL_SUCCESS]: '예약취소 성공하였습니다',
-};
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
-const itemCountPerPage = 5; //한페이지당 보여줄 아이템 갯수
-const pageCountPerPage = 5; //보여줄 페이지 갯수
-const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
+const itemCountPerPage = 4; //한페이지당 보여줄 아이템 갯수
+const pageCountPerPage = 10; //보여줄 페이지 갯수
 /** 예약확인 목록 페이지 */
-const airport = AirPort.response.body.items.item; // 공항 목록
+const logos = Constant.getLogos();
 export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
@@ -72,7 +48,7 @@ export default function ModalBookCheck() {
     const [listContents, setListContents] = useState(contents);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
-    const [email,setEmail] = useState(store.getState().username);
+    const [email, setEmail] = useState(store.getState().username);
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
@@ -87,9 +63,13 @@ export default function ModalBookCheck() {
         const { IMP } = window;
         IMP.init('imp01307537');
     }, []);
-    useEffect(()=>{
-        console.log(serverData)
-    },[serverData])
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 1000);
+    }
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setSelectedData(data);
@@ -98,13 +78,13 @@ export default function ModalBookCheck() {
             ...prevData,
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
-        
+
     }, []);
 
     const handleOpenCloseReserve = async () => {
         await reserveCancelAPI(serverData);
-        setPayOpen(prev => !prev);
         setOpen(prev => !prev);
+        setPayOpen(prev => !prev);
 
     };
     /** 페이지네이션 함수 */
@@ -119,15 +99,15 @@ export default function ModalBookCheck() {
         const formData = {
             flightId: selectedData.id,
             airLine: selectedData.airlineNm, //항공사
-            arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
-            depAirport: getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
+            arrAirport: Constant.getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
+            depAirport: Constant.getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
             arrTime: selectedData.arrPlandTime, //도착시간
             depTime: selectedData.depPlandTime, //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
             userId: userId, //예약하는 userId
-            email:email,
+            email: email,
             name: name
         };
 
@@ -152,21 +132,7 @@ export default function ModalBookCheck() {
 
         setListContents(filteredContents);
     };
-
-
-    const errorElements = useMemo(() => {
-        return Object.keys(errorMapping).map((key) => {
-            if (errorMessage[key]) {
-                return (
-                    <h3 className="modal white-wrap message" key={key}>
-                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
-                    </h3>
-                );
-            }
-            return null;
-        });
-    }, [errorMessage]);
-
+    /** 결제 함수 */
     const handlePay = async () => {
         const { IMP } = window;
         const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
@@ -178,7 +144,7 @@ export default function ModalBookCheck() {
             await preparePaymentAPI(merchant_uid, amount);
             console.log('Payment has been prepared successfully.');
         } catch (error) {
-            alert(error.message);
+            handleError('payError', true);
             return;
         }
 
@@ -192,41 +158,14 @@ export default function ModalBookCheck() {
         }, async rsp => {
             if (rsp.success) { // 결제가 성공되면
                 console.log('Payment succeeded');
-                try {
-                    const response = await axios.post(Constant.serviceURL + `/payments/validate`, { // 결제 사후 검증
-                        imp_uid: rsp.imp_uid,
-                        merchant_uid: rsp.merchant_uid,
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    console.log('Payment information saved successfully' + response);
-                    console.log(merchant_uid);
-                    setOpen(false);
-                    navigate(`/CompleteBook/${serverData.id} `, {
-                        state: {
-                            contents: serverData,
-                        }
-                    });
-                } catch (error) {
-                    errorDispatch({ type: 'payError', payError: true });
-                    setTimeout(() => {
-                        errorDispatch({ type: 'error' });
-                    }, [1000])
-                    await cancelPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 결제 취소 요청
-                }
+                await validatePaymentAPI(rsp);
             } else {
                 console.error(`Payment failed.Error: ${rsp.error_msg} `);
                 await cancelPaymentNotifyAPI(rsp.merchant_uid); // 결제 실패되었음을 알리는 요청
             }
         });
     }
-    /** 출발지, 도착지 Nm -> Id로 변경 */
-    const getAirportIdByName = (airportNm) => {
-        const matchedAirport = airport.find((item) => item.airportNm === airportNm);
-        return matchedAirport ? matchedAirport.airportId : null;
-    };
+
 
     /**  결제 사전 확인 함수 */
     async function checkPaymentAPI(merchant_uid) {
@@ -237,14 +176,32 @@ export default function ModalBookCheck() {
             console.log('Payment Check successfully');
         } catch (error) {
             console.error('Failed to check payment', error);
-            errorDispatch({ type: 'payError', payError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000]);
+           
             throw new Error("결제되어야할 정보가 존재하지 않습니다");
         }
     };
-
+    /** 결제 사후 검증 */
+    async function validatePaymentAPI(rsp) {
+        try {
+            const response = await axios.post(Constant.serviceURL + `/payments/validate`, { // 결제 사후 검증
+                imp_uid: rsp.imp_uid,
+                merchant_uid: rsp.merchant_uid,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Payment information saved successfully' + response);
+            setOpen(false);
+            navigate(`/CompleteBook/${serverData.id} `, {
+                state: {
+                    contents: serverData,
+                }
+            });
+        } catch (error) {
+            await cancelPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 결제 취소 요청
+        }
+    }
     /**  결제 사전 검증 함수 */
     async function preparePaymentAPI(merchant_uid, amount) {
         try {
@@ -255,10 +212,6 @@ export default function ModalBookCheck() {
             console.log('Payment Prepare successfully');
         } catch (error) {
             console.error('Failed to prepare payment', error);
-            errorDispatch({ type: 'payError', payError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000]);
             throw new Error("결제되어야할 정보가 일치하지 않습니다");
         }
     }
@@ -303,49 +256,40 @@ export default function ModalBookCheck() {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
-            setPayOpen({payopen :true});
+            setPayOpen({ payopen: true });
         } catch (error) {
             //안되면 에러뜨게 함
             setOpen(!open);
-            errorDispatch({ type: 'reserveError', reserveError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000])
+            handleError('reserveError', true);
         }
     }
     /**예약 취소 함수 */
     async function reserveCancelAPI(serverData) {
-      
-        const formData={
-            id:serverData.id,
-            flightId:serverData.flightId,
-            airLine:serverData.airLine,
-            arrAirport:serverData.arrAirport,
-            arrTime:serverData.arrTime,
-            depTime:serverData.depTime,
-            depAirport:serverData.depAirport,
-            charge:serverData.charge,
-            vihicleId:serverData.vihicleId,
-            userId:serverData.userId,
-            email:serverData.email,
-            name:serverData.name
+
+        const formData = {
+            id: serverData.id,
+            flightId: serverData.flightId,
+            airLine: serverData.airLine,
+            arrAirport: serverData.arrAirport,
+            arrTime: serverData.arrTime,
+            depTime: serverData.depTime,
+            depAirport: serverData.depAirport,
+            charge: serverData.charge,
+            vihicleId: serverData.vihicleId,
+            userId: serverData.userId,
+            email: serverData.email,
+            name: serverData.name
         };
-        console.log("취소보낼 데이터 :",serverData)
+        console.log("취소보낼 데이터 :", serverData)
         try {// 결제 취소 알림 요청
             const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, formData);
             console.log("취소완료");
-            errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000]);
+            handleError('reservecancelSuccess', true);
             return response;
 
         } catch (error) {
             console.error(error);
-            errorDispatch({ type: 'cancelError', cancelError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000]);
+            handleError('reservecancelError', true);
         }
     }
 
@@ -354,21 +298,18 @@ export default function ModalBookCheck() {
     } else {
         return (
             <div className="container">
-
-                <div>
-                    {errorElements}
-                </div>
+                <Alert errorMessage={errorMessage} />
                 {
                     open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
                 }
                 {
-                    payopen && <Modal handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
+                    payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
                 <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
                         <div className="d-flex d-row">
                             <h1 className="font-family-bold">{dep} </h1>
-                            <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
+                            <img alt="옆" src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
                             <h1 className="font-family-bold"> {arr}</h1>
                         </div>
                         <p>{Constant.handleDayFormatChange(depTime)}</p>
@@ -386,7 +327,7 @@ export default function ModalBookCheck() {
                         listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
                 </div>
-                {listContents.length > 0 && (
+                {listContents.length > itemCountPerPage && (
                     <Pagination
                         itemCount={listContents.length}
                         pageCountPerPage={pageCountPerPage}
@@ -404,10 +345,7 @@ export default function ModalBookCheck() {
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
-    const getAirlineLogo = (airLine) => {
-        const matchingLogo = logos.find(logo => logo.value === airLine);
-        return matchingLogo ? matchingLogo.imageUrl : '';
-    };
+
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {
@@ -418,7 +356,7 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                 <tbody>
                     <tr>
                         <td className="td-vihicleId">
-                            <img src={getAirlineLogo(info.airlineNm)} width={"100%"} alt={info.airlineNm} />
+                            <img src={Constant.getAirlineLogo(logos, info.airlineNm)} width={"100%"} alt={info.airlineNm} />
                             <p>{info.airlineNm}</p>
                             <p>{info.vihicleId}</p>
                         </td>
@@ -463,27 +401,7 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                 </tbody>
             </table>
 
-
         )
     }
 
 }
-const Modal = ({  message, handleSubmit, handleOpenClose }) => {
-    useEffect(() => {
-        document.body.style = `overflow: hidden`;
-        return () => document.body.style = `overflow: auto`
-    }, [])
-
-    return (
-        <>
-            <div className="modal black-wrap" />
-            <div className="modal white-wrap">
-                    <h2>{message}</h2>
-                    <div>
-                        <button className="btn btn-style-confirm" onClick={handleSubmit} >예</button>
-                        <button className="btn btn-style-grey" onClick={handleOpenClose} >아니오</button>
-                    </div>
-            </div>
-        </>
-    );
-};

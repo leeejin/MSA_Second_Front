@@ -1,32 +1,15 @@
-import React, { useState, useReducer, useEffect, useMemo } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
 import styled from "styled-components";
 import axios from '../../axiosInstance';
-import reducer from '../../util/reducers';
-import { BsExclamationCircle } from "react-icons/bs";
+import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const Hr = styled.hr`
     margin-top:50px;
     border:1px solid var(--grey-color);
 `;
-
-/** 에러메시지 (출발지-도착지, 날짜) */
-const EMAIL_ERROR = 'emailError';
-const PASSWORD_ERROR = 'passwordError';
-const SUCCESS_ERROR = 'successError';
-/** 에러메시지 (이메일,비밀번호, 로그인성공여부) */
-const ERROR_STATE = {
-    [EMAIL_ERROR]: false,
-    [PASSWORD_ERROR]: false,
-    [SUCCESS_ERROR]: false,
-}
-
-const errorMapping = {
-    [EMAIL_ERROR]: '이메일을 입력해주세요',
-    [PASSWORD_ERROR]: '비밀번호를 입력해주세요',
-    [SUCCESS_ERROR]: '로그인 실패했습니다 다시한번 시도해주세요',
-};
 
 export default function Login() {
     const navigate = useNavigate();
@@ -50,6 +33,9 @@ export default function Login() {
         setIsRemember(e.target.checked);
 
     }
+    const handleLocation = () => {
+        navigate('/Signup');
+    }
     /** Info 변화 */
     const handleChangeInfo = (infoType, e) => {
         setInfo((prev) => ({
@@ -57,49 +43,40 @@ export default function Login() {
             [infoType]: e.target.value
         }));
     }
-    const errorElements = useMemo(() => {
-        return Object.keys(errorMapping).map((key) => {
-            if (errorMessage[key]) {
-                return (
-                    <h3 className="modal white-wrap message" key={key}>
-                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
-                    </h3>
-                );
-            }
-            return null;
-        });
-    }, [errorMessage]);
-    const submit = async (e) => {
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 1000);
+    }
+    const mutation = useMutation(callLoginAPI, {
+        onSuccess: (response) => {
+            dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name, username: response.data.username, isRemember: isRemember } }); //리덕스에 로그인 정보 업데이트
+            const token = response.headers['authorization'];
+            window.sessionStorage.setItem('authToken', token);
+            axios.defaults.headers.common['Authorization'] = token;
+
+            navigate('/');
+        },
+        onError: (error) => {
+            handleError('successError', true);
+        }
+    })
+    const submit = (e) => {
         e.preventDefault();
         let errors = {
             emailError: info.email === '',
             passwordError: info.password === '',
         };
         if (!errors.emailError && !errors.passwordError) {
-            callLoginAPI().then((response) => {
-                console.log("로그인 성공 Id=", response);
-                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name, username: response.data.username, isRemember: isRemember } }); //리덕스에 로그인 정보 업데이트
-                const token = response.headers['authorization'];
-                window.sessionStorage.setItem('authToken', token);
-                axios.defaults.headers.common['Authorization'] = token;
-
-                navigate('/');
-            }).catch(() => {
-                errorDispatch({ type: 'successError', successError: true }); // 로그인 실패 시 loginError 상태를 true로 설정
-                setTimeout(() => {
-                    // 로그인 실패 시 loginError 상태를 true로 설정
-                    errorDispatch({ type: 'error' });
-                }, 1000);
-            })
+            mutation.mutate();
         } else {
             if (errors.emailError) {
-                errorDispatch({ type: 'emailError', emailError: errors.emailError });
+                handleError('loginemailError', true);
             } else if (errors.passwordError) {
-                errorDispatch({ type: 'passwordError', passwordError: errors.passwordError });
+                handleError('loginpasswordError', true);
             }
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, 1000);
         }
     }
     async function callLoginAPI() {
@@ -108,7 +85,6 @@ export default function Login() {
             username: info.email,
             password: info.password
         };
-
         const response = await axios.post(Constant.serviceURL + `/users/login`, formData, { withCredentials: true });
         return response;
 
@@ -116,7 +92,7 @@ export default function Login() {
 
     return (
         <>
-            <div>{errorElements}</div>
+            <Alert errorMessage={errorMessage} />
             <div className="fixed container-fixed background-color" />
             <div className="container container-backbox-450 background-color-white">
                 <div className="background-color-white">
@@ -147,7 +123,7 @@ export default function Login() {
                                 checked={isRemember}
                             /><label htmlFor="saveId">아이디 저장</label>
 
-                            <span className="btn-span-style-grey" onClick={() => { navigate('/Signup') }}>
+                            <span className="btn-span-style-grey" onClick={handleLocation}>
                                 회원가입 하기
                             </span>
 

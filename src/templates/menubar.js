@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import store from '../util/redux_storage'; // Redux 스토어 임포트
 import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMutation, useQueryClient } from 'react-query';
 import ModalComponent from '../util/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
+/** 메뉴선택하면 스타일 변함 */
+const activeStyle = {
+    color: 'var(--white-color)',
+    backgroundColor: 'var(--hovering-color)'
+}
 export default function Menubar() {
+    const queryClient = useQueryClient();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -17,23 +23,20 @@ export default function Menubar() {
         e.preventDefault();
         setOpen(!open);
     };
+    const mutation = useMutation(callLogoutAPI, {
+        onSuccess: () => {
+            // 로그아웃이 성공했을 때의 처리
+            dispatch({ type: "Logout" });
+            sessionStorage.removeItem('authToken');
+            setOpen(!open);
+            navigate("/");
+
+        }
+    });
     //로그아웃 체크
     const handleSubmit = () => {
-        callLogoutAPI().then((response) => {
-            if (response) {
-                dispatch({ type: "Logout" });
-                sessionStorage.removeItem('authToken');
-                navigate("/");
-                setOpen(!open);
-            }
-        })
-
+        mutation.mutate();
     };
-    /** 메뉴선택하면 스타일 변함 */
-    const activeStyle = {
-        color: 'var(--white-color)',
-        backgroundColor: 'var(--hovering-color)'
-    }
     //로그아웃하는 API
     async function callLogoutAPI() {
         //로그아웃 로직 

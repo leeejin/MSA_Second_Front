@@ -11,7 +11,6 @@ export default function MyPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
-    const [nickname, setNickname] = useState(store.getState().nickname); //리덕스에 있는 nickname를 가져옴
     const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
     const [open, setOpen] = useState(false); // 취소모달창
 

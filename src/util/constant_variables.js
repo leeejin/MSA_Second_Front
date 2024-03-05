@@ -1,5 +1,3 @@
-import React from "react";
-
 /*지역 이미지*/
 import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
 import Busan from '../styles/image/busan.jpg'; //부산 이미지
@@ -16,6 +14,8 @@ import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
 import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
 import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
 import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
+import AirPort from './json/airport-list';
+const airport = AirPort.response.body.items.item; // 공항 목록
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -66,26 +66,26 @@ export default class Constant {
             { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
-    static getRegionList(){
-       return[
-        { key: 1, value: '서울', name: '서울', code: 1 },
-        { key: 2, value: '인천', name: '인천', code: 2 },
-        { key: 3, value: '대전', name: '대전', code: 3 },
-        { key: 4, value: '대구', name: '대구', code: 4 },
-        { key: 5, value: '광주', name: '광주', code: 5 },
-        { key: 6, value: '부산', name: '부산', code: 6 },
-        { key: 7, value: '울산', name: '울산', code: 7 },
-        { key: 8, value: '세종', name: '세종', code: 8 },
-        { key: 31, value: '경기도', name: '경기도', code: 31 },
-        { key: 32, value: '강원도', name: '강원도', code: 32 },
-        { key: 33, value: '충청북도', name: '충청북도', code: 33 },
-        { key: 34, value: '충청남도', name: '충청남도', code: 34 },
-        { key: 35, value: '경상북도', name: '경상북도', code: 35 },
-        { key: 36, value: '경상남도', name: '경상남도', code: 36 },
-        { key: 37, value: '전라북도', name: '전라북도', code: 37 },
-        { key: 38, value: '전라남도', name: '전라남도', code: 38 },
-        { key: 39, value: '제주도', name: '제주도', code: 39 },
-       ];
+    static getRegionList() {
+        return [
+            { key: 1, value: '서울'},
+            { key: 2, value: '인천'},
+            { key: 3, value: '대전'},
+            { key: 4, value: '대구' },
+            { key: 5, value: '광주' },
+            { key: 6, value: '부산' },
+            { key: 7, value: '울산' },
+            { key: 8, value: '세종' },
+            { key: 31, value: '경기도'},
+            { key: 32, value: '강원도' },
+            { key: 33, value: '충청북도' },
+            { key: 34, value: '충청남도'},
+            { key: 35, value: '경상북도'},
+            { key: 36, value: '경상남도' },
+            { key: 37, value: '전라북도'},
+            { key: 38, value: '전라남도' },
+            { key: 39, value: '제주도' },
+        ];
     }
     static getCostMenus() { //좌석등급
         return [
@@ -103,17 +103,17 @@ export default class Constant {
         const minute = arrAirportTime.substr(10, 2);
         return { year, month, day, hour, minute };
     }
-    
+
     static handleDateFormatChange(date) {
         const { year, month, day, hour, minute } = this.parseDate(date);
         return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
     }
-    
+
     static handleDayFormatChange(date) {
         const { year, month, day } = this.parseDate(date);
         return `${year}년 ${month}월 ${day}일`;
     }
-    
+
     static handleTimeFormatChange(date) {
         const { hour, minute } = this.parseDate(date);
         return `${hour}:${minute}`;
@@ -124,7 +124,12 @@ export default class Constant {
         return Number(formattedTime);
 
     };
-    static handleDateCalculate (arrPlandTime, depPlandTime) {
+    static handleDateFormatISOChange = (date) => {
+        const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
+
+        return formattedDate;
+    };
+    static handleDateCalculate(arrPlandTime, depPlandTime) {
         // 숫자를 문자열로 변환하고 연, 월, 일, 시, 분을 추출
         const depStr = String(depPlandTime);
         const arrStr = String(arrPlandTime);
@@ -146,5 +151,37 @@ export default class Constant {
 
         return result.trim();
 
+    };
+    /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
+    static getSelectedAirport = (selectedAirportNm) => {
+        const selectedAirport = airport.find(
+            (airport) => airport.airportNm === selectedAirportNm
+        );
+        if (selectedAirport) {
+            return selectedAirport.airportId;
+        }
+    }
+    /** 출발지, 도착지 Nm -> Id로 변경 */
+    static getAirportIdByName = (airportNm) => {
+        const matchedAirport = airport.find((item) => item.airportNm === airportNm);
+        return matchedAirport ? matchedAirport.airportId : null;
+    };
+     /** 출발지, 도착지 Id -> Nm로 변경 */
+    static getAirportNmById = (airportId) => {
+        const matchedAirport = airport.find((item) => item.airportId === airportId);
+        return matchedAirport ? matchedAirport.airportNm : null;
+    };
+    /**로고 이미지 찾기 */
+    static getAirlineLogo = (logos,airLine) => {
+        const matchingLogo = logos.find(logo => logo.value === airLine);
+        return matchingLogo ? matchingLogo.imageUrl : '';
+    };
+    static getAccommodationCodeByValue = (areas,value) => {
+        const matchingareas = areas.find(areas => areas.value === value);
+        return matchingareas ? matchingareas.key : "";
+    };
+    static getAccommodationValueByCode = (areas,key) => {
+        const matchingareas = areas.find(areas => areas.key === key);
+        return matchingareas ? matchingareas.value : "";
     };
 }
