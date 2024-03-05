@@ -41,7 +41,7 @@ export default function MyPage() {
     async function callLogoutAPI() {
         //로그아웃 로직 
         try {
-            const response = await axios.post(Constant.serviceURL + `/users/logout`, { withCredentials: true });
+            const response = await axios.post(Constant.serviceURL + `/users/logout`);
             return response;
         }
         catch (error) {

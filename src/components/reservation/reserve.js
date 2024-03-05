@@ -84,7 +84,7 @@ export default function ModalReserveCheck() {
             areaCode: areaCode,
         }
         try {
-            const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params, withCredentials: true });
+            const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params });
             console.log(response.data);
             return response.data;
         } catch (error) {

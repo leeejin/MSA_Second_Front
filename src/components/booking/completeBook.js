@@ -11,10 +11,14 @@ export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
     const { contents } = location.state;
-    const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
+    const [loginInfo, setLoginInfo] = useState({
+        userId: store.getState().userId,
+        name: store.getState().name,
+        email:store.getState().username,
+    });
 
     const handleReservedList = () => {
-        navigate(`/MyPage/${userId}`); //수정해야함
+        navigate(`/MyPage/${loginInfo.userId}`); //수정해야함
     }
     const handleLocation = () => {
         navigate(-1);

@@ -85,7 +85,7 @@ export default function Login() {
             username: info.email,
             password: info.password
         };
-        const response = await axios.post(Constant.serviceURL + `/users/login`, formData, { withCredentials: true });
+        const response = await axios.post(Constant.serviceURL + `/users/login`, formData);
         return response;
 
     }

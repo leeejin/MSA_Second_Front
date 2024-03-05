@@ -95,6 +95,7 @@ export default class Constant {
         ];
     }
     static parseDate(date) {
+        console.log(date);
         const arrAirportTime = date.toString();
         const year = arrAirportTime.substr(0, 4);
         const month = arrAirportTime.substr(4, 2);

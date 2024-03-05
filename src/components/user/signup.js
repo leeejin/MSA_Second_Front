@@ -125,7 +125,7 @@ export default function Signup() {
             password: info.password
         };
         try {
-            const response = await axios.post(Constant.serviceURL + '/users/register', formData, { withCredentials: true });
+            const response = await axios.post(Constant.serviceURL + '/users/register', formData);
             console.log('서버 응답:', response.data);
             return response.data;
         } catch (error) {
