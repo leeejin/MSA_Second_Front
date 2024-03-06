@@ -95,7 +95,6 @@ export default class Constant {
         ];
     }
     static parseDate(date) {
-        console.log(date);
         const arrAirportTime = date.toString();
         const year = arrAirportTime.substr(0, 4);
         const month = arrAirportTime.substr(4, 2);
@@ -126,8 +125,9 @@ export default class Constant {
 
     };
     static handleDateFormatISOChange = (date) => {
+        date.setHours(date.getHours() + 9); // KST는 UTC보다 9시간 빠르므로
         const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
-
+    
         return formattedDate;
     };
     static handleDateCalculate(arrPlandTime, depPlandTime) {

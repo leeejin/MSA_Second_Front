@@ -59,6 +59,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
 
     /** 출발 날짜 핸들러 */
     const handleDateChange = (date) => {
+        console.log(date);
         setDepTime(date);
     }
     /** 경고 메시지 */
@@ -139,7 +140,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depTime: Constant.handleDateFormatISOChange(depTime), //날짜
         };
         try {
-            const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            const response = axios.get(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
 
             return response;
 

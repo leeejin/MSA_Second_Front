@@ -65,6 +65,7 @@ export default function ModalBookCheck() {
         const { IMP } = window;
         IMP.init('imp01307537');
     }, []);
+
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
 
@@ -317,7 +318,7 @@ export default function ModalBookCheck() {
                         <p>{Constant.handleDayFormatChange(depTime)}</p>
                     </div>
                 </div>
-                <div className="middlepanel">
+                <div className="middlepanel" style={{height:'500px'}}>
                     <div style={{ paddingTop: '15px' }}>
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
                         <SubButton> | </SubButton>

@@ -5,6 +5,7 @@ import Constant from '../../util/constant_variables';
 import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import { useMutation } from 'react-query';
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
@@ -104,17 +105,20 @@ export default function Signup() {
     };
     // 회원가입가기전에 체크 
     const handleSignup = () => {
-        callAddUserAPI().then((response) => { //백엔드로부터 무사히 response를 받았다면
-            console.log('addUser', response);
-            setSubOpen(!subOpen) //회원가입성공하면 로그인페이지로 가게함 modal.js에 
+        mutation.mutate({info, select});
+    };
+    const mutation = useMutation(callAddUserAPI, {
+        onSuccess: (data) => {
+            console.log('addUser', data);
+            setSubOpen(!subOpen); //회원가입성공하면 로그인페이지로 가게함 modal.js에 
             navigate('/Login');
-
-        }).catch((error) => {
-            console.log(error)
-            handleError('duplicateError',true);
+        },
+        onError: (error) => {
+            console.log(error);
+            handleError('duplicateError', true);
             setOpen(false);
-        })
-    }
+        }
+    });
     //회원가입 하는 API
     async function callAddUserAPI() {
         //회원가입할때 보낼 데이터

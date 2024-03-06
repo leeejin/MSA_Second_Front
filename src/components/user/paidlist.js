@@ -30,7 +30,14 @@ export default function PaidList({ userId }) {
             setContents(data);
         }
     });
+    /** 경고 메시지 */
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
 
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 1000);
+    }
     /** 결제확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setOpen(prev => !prev); //결재취소 확인 모달창 띄움
@@ -39,20 +46,13 @@ export default function PaidList({ userId }) {
     const mutation = useMutation(cancelPayment, {
         onError: (error) => {
             setOpen(!open);
-            errorDispatch({ type: 'cancelError', cancelError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000])
-
+            handleError('cancelError', true);
         },
         onSuccess: async () => {
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             await queryClient.invalidateQueries('bookedList');
             setOpen(!open);
-            errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000])
+            handleError('cancelSuccess', true);
             window.location.reload();
         },
         onSettled: (data) => {

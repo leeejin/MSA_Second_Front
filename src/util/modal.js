@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 const ModalComponent = ({ subOpen, message, handleSubmit, handleOpenClose, handleSignup }) => {
     const navigate = useNavigate();

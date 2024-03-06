@@ -16,6 +16,7 @@ const Signup = React.lazy(() => import('./pages/signup_page'));
 const MyPage = React.lazy(() => import('./pages/mypage_page'));
 
 /** 로그인/로그아웃 여부 */
+/** 로그인한 상태여야지 element로 감 */
 const LoginRoute = ({ userId, element }) => {
 
   if (userId !== 0) { //로그인한 상태라면
@@ -24,7 +25,15 @@ const LoginRoute = ({ userId, element }) => {
     return <Navigate to="*" />;
   }
 }
+/** 로그아웃한 상태여야지 element로 감 */
+const LogoutRoute = ({ userId, element }) => {
 
+  if (userId === 0) { //로그아웃한 상태라면
+    return element;
+  } else { //아니면 로그인창으로 날려버림
+    return <Navigate to="*" />;
+  }
+}
 export default function App() {
   const [userId, setUserId] = useState(parseInt(sessionStorage.getItem("userId")));
   const [name, setName] = useState(sessionStorage.getItem("name"));
@@ -49,8 +58,8 @@ export default function App() {
         </div>}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route exact path="/Login" element={<Login />} />
-          <Route exact path="/Signup" element={<Signup />} />
+          <Route exact path="/Login" element={<LogoutRoute userId={userId} element={<Login />} />} />
+          <Route exact path="/Signup" element={<LogoutRoute userId={userId} element={<Signup />} />} />
           <Route exact path="/Reserve" element={<Reserve />} />
           <Route exact path="/Rooms/searchDetail/:Id" element={<RoomsReserve />} />
           <Route exact path="/MyPage/:userId" element={<LoginRoute userId={userId} element={<MyPage />} />} />

@@ -19,7 +19,7 @@ const Button = styled.button`
 `;
 const Div = styled.div`
     position:absolute;
-   bottom:-25px;
+    bottom:-25px;
     text-align:center;
     width:100%;
 

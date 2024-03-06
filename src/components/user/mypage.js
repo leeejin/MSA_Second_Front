@@ -60,16 +60,16 @@ export default function MyPage() {
                 >
                     결제목록
                 </NavLink>
-                <NavLink
-                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected"}`}
-                    onClick={(e) => handleOpenClose(e)}
-                >로그아웃</NavLink>
                 {/* <NavLink
                     className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected" }`}
                     onClick={() => handleLocation('accommodationList')}
                 >
                     숙박목록
                 </NavLink> */}
+                <NavLink
+                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected"}`}
+                    onClick={(e) => handleOpenClose(e)}
+                >로그아웃</NavLink>
             </div>
             <div className="container-backbox-100">
                 <h3 className="container-title">마이페이지</h3>
