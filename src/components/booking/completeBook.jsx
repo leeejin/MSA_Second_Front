@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import store from '../../util/redux_storage';
 import AirPort from '../../util/json/airport-list.json';
@@ -11,11 +10,11 @@ export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
     const { contents } = location.state;
-    const [loginInfo, setLoginInfo] = useState({
+    const loginInfo = {
         userId: store.getState().userId,
         name: store.getState().name,
-        email:store.getState().username,
-    });
+        email: store.getState().username,
+    };
 
     const handleReservedList = () => {
         navigate(`/MyPage/${loginInfo.userId}`); //수정해야함

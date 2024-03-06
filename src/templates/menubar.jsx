@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import ModalComponent from '../util/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
@@ -13,7 +13,6 @@ const activeStyle = {
     backgroundColor: 'var(--hovering-color)'
 }
 export default function Menubar() {
-    const queryClient = useQueryClient();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -30,7 +29,9 @@ export default function Menubar() {
             sessionStorage.removeItem('authToken');
             setOpen(!open);
             navigate("/");
-
+        },
+        onError :(error)=>{
+            console.error(error);
         }
     });
     //로그아웃 체크
@@ -41,7 +42,7 @@ export default function Menubar() {
     async function callLogoutAPI() {
         //로그아웃 로직 
         try {
-            const response = await axios.post(Constant.serviceURL + `/users/logout`, { withCredentials: true });
+            const response = await axios.post(Constant.serviceURL + `/users/logout`);
             return response;
         }
         catch (error) {
@@ -69,6 +70,7 @@ export default function Menubar() {
                             <NavLink
                                 className="btn btn-nav-item btn-style-item font-family-semibold"
                                 onClick={(e) => handleOpenClose(e)}
+                                to="/"
                             >로그아웃</NavLink>
                         </>
                             : <>

@@ -17,7 +17,7 @@ export const ERROR_STATE = {
     'arrError': { active: false, message: '도착지를 입력해주세요' },
     'locationError': { active: false, message: '좌석을 선택해주세요' },
     'levelError': { active: false, message: '출발지와 도착지가 같습니다' },
-    'dateError': { active: false, message: '날짜를 선택해주세요' },
+    'dateError': { active: false, message: '당일 예약은 불가능합니다' },
     'searchError': { active: false, message: '조회 실패하였습니다' },
     'loginError': { active: false, message: '로그인이 필요한 서비스입니다' },
     'seatError': { active: false, message: '해당 항공편이 존재하지 않습니다' },

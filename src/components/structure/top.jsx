@@ -8,6 +8,7 @@ import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
     border-radius:15px;
@@ -32,9 +33,8 @@ const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
 
 /** top component */
-export default function TopComponent({ airports, handleChange, handleAirPortReverse }) {
+export default function TopComponent({ airports, handleChange, handleAirPortReverse,handleDateChange }) {
     const navigate = useNavigate();
-    const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
     /** 셀렉트 전용 */
@@ -57,11 +57,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
         };
     }, []);
 
-    /** 출발 날짜 핸들러 */
-    const handleDateChange = (date) => {
-        console.log(date);
-        setDepTime(date);
-    }
+   
     /** 경고 메시지 */
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
@@ -78,17 +74,16 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             arrError: airports.arr === '도착',
             levelError: airports.level === '좌석을 선택해주세요',
             locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: depTime < Date().now //선택한날짜가 지금시간대보다 이전일 때
+            dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
-            
             callPostAirInfoAPI().then((response) => {
                 if (response.data.length > 0) {
                     navigate(`/Book`, {
                         state: {
                             dep: airports.dep,
                             arr: airports.arr,
-                            depTime: Constant.handleDateFormatISOChange(depTime),
+                            depTime: Constant.handleDateFormatISOChange(airports.depTime),
                             contents: response.data,
                             seatLevel: airports.level
                         }
@@ -97,17 +92,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                 } else {
                     handleError('seatError', true);
                 }
-
-            }).catch((error) => {
-                if (error.response.status === 401) {
-                    handleError('loginError', true);
-                } else {
-                    handleError('searchError', true);
-                }
-
-            })
-
-
+            });
         } else {
             if (errors.depError) {
                 handleError('depError', errors.depError);
@@ -137,16 +122,20 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depAirport: Constant.getSelectedAirport(airports.dep), //출발지
             arrAirport: Constant.getSelectedAirport(airports.arr), //도착지
             seatLevel: airports.level, //좌석등급
-            depTime: Constant.handleDateFormatISOChange(depTime), //날짜
+            depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.get(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            const response = axios.get(Constant.serviceURL + `/flights/search`, { params: formData })
 
             return response;
 
         }
         catch (error) {
-            console.error(error);
+            if (error.response.status === 401) {
+                handleError('loginError', true);
+            } else {
+                handleError('searchError', true);
+            }
         }
     }
     return (
@@ -172,7 +161,6 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                             isShowOptions={selectBoxRef.current[1] && isShowOptions.dep}
                                             show={() => show('dep', isShowOptions.dep)} // show 함수를 호출할 때 'dep'을 전달합니다.
                                             airportsName={airports.dep}
-                                            airport={airport}
                                             handleChange={(e) => handleChange("dep", e)}
                                         />
                                     </td>
@@ -186,7 +174,6 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                             isShowOptions={selectBoxRef.current[2] && isShowOptions.arr}
                                             show={() => show('arr', isShowOptions.arr)} // show 함수를 호출할 때 'dep'을 전달합니다.
                                             airportsName={airports.arr}
-                                            airport={airport}
                                             handleChange={(e) => handleChange("arr", e)}
                                         />
                                     </td>
@@ -210,13 +197,12 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                             isShowOptions={selectBoxRef.current[3] && isShowOptions.level}
                                             show={() => show('level', isShowOptions.level)} // show 함수를 호출할 때 'dep'을 전달합니다.
                                             airportsName={airports.level}
-                                            level={level}
                                             handleChange={(e) => handleChange("level", e)}
                                         />
                                     </td>
 
                                     <td>
-                                        <Datepicker handleDateChange={handleDateChange} depTime={depTime} />
+                                        <Datepicker handleDateChange={handleDateChange} depTime={airports.depTime} />
                                     </td>
                                 </tr>
                             </tbody>
@@ -234,7 +220,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
     );
 }
 /** 출발지,도착지,좌석 컴포넌트 */
-const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsName, airport, level, handleChange }) => {
+const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsName, handleChange }) => {
     if (number === 3) {
         return (
             <div

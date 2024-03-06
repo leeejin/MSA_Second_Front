@@ -30,11 +30,12 @@ export default function Main() {
         dep: '출발',
         arr: '도착',
         level: '좌석을 선택해주세요',
+        depTime: new Date()
     })
     const [mode, setMode] = useState(0);
 
-    const handleModeChange = (value) => {
-        setMode(value);
+    const handleModeChange = (number) => {
+        setMode(number);
     }
     const handleReserve = (value) => {
         setAirPorts(prev => ({
@@ -52,6 +53,14 @@ export default function Main() {
             [locationType]: e.target.getAttribute("value")
         }));
     };
+    /** 출발 날짜 핸들러 */
+    const handleDateChange = (date) => {
+        console.log(date);
+        setAirPorts(prev => ({
+            ...prev,
+            depTime: date
+        }));
+    }
     /**출발지와 도착지 리버스 핸들러 */
     const handleAirPortReverse = () => {
         setAirPorts(prev => {
@@ -68,10 +77,11 @@ export default function Main() {
         <div>
             <div style={{ position: 'relative' }}>
                 {
-                    mode === 0 ? <TopComponent 
-                    airports={airports} 
-                    handleChange={handleChange}
-                    handleAirPortReverse={handleAirPortReverse} /> :
+                    mode === 0 ? <TopComponent
+                        airports={airports}
+                        handleChange={handleChange}
+                        handleAirPortReverse={handleAirPortReverse}
+                        handleDateChange={handleDateChange} /> :
                         <Top2Component />
                 }
                 <Div>

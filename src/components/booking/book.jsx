@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import React, { useState, useEffect,useReducer } from 'react';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useLocation } from 'react-router';
+import { useNavigate, Navigate,useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import store from '../../util/redux_storage';
@@ -44,15 +43,17 @@ export default function ModalBookCheck() {
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
-
+    const { IMP } = window;
     const [listContents, setListContents] = useState(contents);
-    const [loginInfo, setLoginInfo] = useState({
+    const loginInfo = {
         userId: store.getState().userId,
         name: store.getState().name,
-        email:store.getState().username,
-    });
-    const [open, setOpen] = useState(false); // 예약모달창
-    const [payopen, setPayOpen] = useState(false); //결제모달창
+        email: store.getState().username,
+    };
+    const [open, setOpen] = useState({
+        reserveopen: false,
+        payopen: false,
+    }); // 예약,결제 모달창
     const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
     const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
 
@@ -62,7 +63,6 @@ export default function ModalBookCheck() {
 
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
-        const { IMP } = window;
         IMP.init('imp01307537');
     }, []);
 
@@ -74,20 +74,23 @@ export default function ModalBookCheck() {
         }, 1000);
     }
     /** 예약확인 함수 */
-    const handleOpenClose = useCallback((data) => {
-        setSelectedData(data);
-        setOpen(prev => !prev);
+    const handleOpenClose = (data) => {
         setSelectedData(prevData => ({
             ...prevData,
+            ...data,
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
+        setOpen(prev => !prev);
 
-    }, []);
+    };
 
     const handleOpenCloseReserve = async () => {
         await reserveCancelAPI(serverData);
-        setOpen(prev => !prev);
-        setPayOpen(prev => !prev);
+        setOpen(prev => ({
+            ...prev,
+            reserveopen: false,
+            payopen: !prev.payopen
+        }));
 
     };
     /** 페이지네이션 함수 */
@@ -137,7 +140,6 @@ export default function ModalBookCheck() {
     };
     /** 결제 함수 */
     const handlePay = async () => {
-        const { IMP } = window;
         const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         const amount = serverData.charge;
 
@@ -179,7 +181,7 @@ export default function ModalBookCheck() {
             console.log('Payment Check successfully');
         } catch (error) {
             console.error('Failed to check payment', error);
-           
+
             throw new Error("결제되어야할 정보가 존재하지 않습니다");
         }
     };
@@ -246,8 +248,11 @@ export default function ModalBookCheck() {
                 }
             });
             console.log('Payment cancellation notified successfully');
-            setPayOpen(false);
-            setOpen(false);
+            setOpen(prev => ({
+                ...prev,
+                payopen: !prev.payopen,
+                reserveopen: !prev.reserveopen
+            }));
         } catch (error) {
 
             console.error('Failed to notify payment cancellation', error);
@@ -259,10 +264,16 @@ export default function ModalBookCheck() {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
-            setPayOpen({ payopen: true });
+            setOpen(prev => ({
+                ...prev,
+                payopen: true
+            }));
         } catch (error) {
             //안되면 에러뜨게 함
-            setOpen(!open);
+            setOpen(prev => ({
+                ...prev,
+                reserveopen: !prev.reserveopen
+            }));
             handleError('reserveError', true);
         }
     }
@@ -303,10 +314,10 @@ export default function ModalBookCheck() {
             <div className="container">
                 <Alert errorMessage={errorMessage} />
                 {
-                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
+                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
                 }
                 {
-                    payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
+                    open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
                 <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
@@ -318,7 +329,7 @@ export default function ModalBookCheck() {
                         <p>{Constant.handleDayFormatChange(depTime)}</p>
                     </div>
                 </div>
-                <div className="middlepanel" style={{height:'500px'}}>
+                <div className="middlepanel" style={{ height: '500px' }}>
                     <div style={{ paddingTop: '15px' }}>
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
                         <SubButton> | </SubButton>
@@ -348,7 +359,6 @@ export default function ModalBookCheck() {
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
-
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {

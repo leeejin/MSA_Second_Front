@@ -5,11 +5,6 @@ import Constant from '../../util/constant_variables';
 const footer = Constant.getSliderMenus(); //푸터 이미지 내용
 /** footer slider */
 export default function FooterSlider ({ handleReserve }) {
-
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const handleChange = (index) => {
-        setCurrentIndex(index);
-    }
     const renderSlides = footer.map((footer) => (
         <div className="container-bottom" style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
             <div className="panel panel-bottom">
@@ -31,7 +26,6 @@ export default function FooterSlider ({ handleReserve }) {
             autoPlay={true}
             infiniteLoop={true}
             showThumbs={false}
-            onChange={handleChange}
             >
             {renderSlides}
         </Carousel>

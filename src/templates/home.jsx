@@ -1,5 +1,5 @@
 import React from "react";
-import Menubar from "./menubar.js";
+import Menubar from "./menubar";
 
 import '../styles/main.css'; //className 써서 쓰는 style
 import '../styles/datepicker.css'; //datepicker 전용 style

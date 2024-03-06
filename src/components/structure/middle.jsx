@@ -35,13 +35,11 @@ export default function MiddleComponent({ handleReserve }) {
                         centeredSlides={true} // center slides
                         onSlideChange={handleSlideChange}
                         breakpoints={{
-                            // when window width is >= 980px
                             980: {
-                                slidesPerView: 3.5,
+                                slidesPerView: 3.5, // when window width is >= 980px
                             },
-                            // when window width is <= 568px
                             568: {
-                                slidesPerView: 2.5,
+                                slidesPerView: 2.5, // when window width is <= 568px
                             },
                             0: {
                                 slidesPerView: 1.5,

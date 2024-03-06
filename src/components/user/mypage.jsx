@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import store from '../../util/redux_storage';
 import axios from '../../axiosInstance';
 import Constant from '../../util/constant_variables';
@@ -10,15 +10,15 @@ import { useDispatch } from 'react-redux';
 export default function MyPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
+    const userId = store.getState().userId; //리덕스에 있는 userId를 가져옴
     const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
     const [open, setOpen] = useState(false); // 취소모달창
 
     const handleLocation = (selectedMenu) => {
         if (selectedMenu === 'payList') {
-            setSubBoxVisible({ accommodationList: false, payList: true });
+            setSubBoxVisible({ accommodationList: false, payList: true, logout: false });
         } else if (selectedMenu === 'accommodationList') {
-            setSubBoxVisible({ accommodationList: true, payList: false });
+            setSubBoxVisible({ accommodationList: true, payList: false, logout: false });
         }
     }
     const handleOpenClose = (e) => {
@@ -54,22 +54,22 @@ export default function MyPage() {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"로그아웃하시겠습니까 ?"} />
             }
             <div className="fixed menubar-sub">
-                <NavLink
+                <div
                     className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.payList && "menubar-sub-selected"}`}
                     onClick={() => handleLocation('payList')}
                 >
                     결제목록
-                </NavLink>
-                {/* <NavLink
-                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected" }`}
+                </div>
+                <div
+                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected"}`}
                     onClick={() => handleLocation('accommodationList')}
                 >
                     숙박목록
-                </NavLink> */}
-                <NavLink
-                    className={`d-flex menubar-sub-content font-family-semibold ${subBoxVisible.accommodationList && "menubar-sub-selected"}`}
+                </div>
+                <div
+                    className={`d-flex menubar-sub-content font-family-semibold`}
                     onClick={(e) => handleOpenClose(e)}
-                >로그아웃</NavLink>
+                >로그아웃</div>
             </div>
             <div className="container-backbox-100">
                 <h3 className="container-title">마이페이지</h3>

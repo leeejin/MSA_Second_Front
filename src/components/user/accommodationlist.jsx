@@ -1,18 +1,17 @@
-import React, { useState, useCallback, useReducer } from 'react';
+import React, { useState, useReducer } from 'react';
 import axios from '../../axiosInstance';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 import Plane from '../../styles/image/plane.png'
 import Spinner from '../../styles/image/loading.gif';
 import NoData from '../../styles/image/noData.png';
-import AirPort from '../../util/json/airport-list';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-const airport = AirPort.response.body.items.item; // 공항 목록
+const logos = Constant.getLogos();
 /** 에러메시지 (출발지-도착지, 날짜) */
 
 /** 결제한 목록을 보여주는 함수 */
-export default function PaidList({ userId }) {
+export default function AccommodationList({ userId }) {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
@@ -21,10 +20,7 @@ export default function PaidList({ userId }) {
 
     const { isLoading } = useQuery('bookedList', callGetBookedListAPI, {
         onError: () => {
-            errorDispatch({ type: 'listError', listError: true });
-            setTimeout(() => {
-                errorDispatch({ type: 'error' });
-            }, [1000])
+            handleError('listError', true);
         },
         onSuccess: (data) => {
             setContents(data);
@@ -39,10 +35,10 @@ export default function PaidList({ userId }) {
         }, 1000);
     }
     /** 결제확인 함수 */
-    const handleOpenClose = useCallback((data) => {
+    const handleOpenClose = (data) => {
         setOpen(prev => !prev); //결재취소 확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
-    }, []);
+    };
     const mutation = useMutation(cancelPayment, {
         onError: (error) => {
             setOpen(!open);
@@ -89,30 +85,31 @@ export default function PaidList({ userId }) {
         }
     };
 
-    if (isLoading) return (<div className="fixed d-flex container-fixed">
-        <img src={Spinner} alt="로딩" width="100px" />
-    </div>)
     return (
         <div className="container">
             <Alert errorMessage={errorMessage} />
             {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
             }
-
-
             <div className="w-50">
-                {contents.length > 0 ? (
-                    contents.map((paidlist) => (
-                        <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
-                    ))
-                ) : (
-                    <div className="container-content">
-                        <div className=" d-flex d-column" style={{ height: '100%' }}>
-                            <img src={NoData} alt="데이터없음" />
-                            <h3>최근 결제된 내역이 없어요!</h3>
-                        </div>
-                    </div>
-                )}
+                {
+                    isLoading ? <div className="fixed d-flex container-fixed">
+                        <img src={Spinner} alt="로딩" width="100px" />
+                    </div> : <>
+                        {contents.length > 0 ? (
+                            contents.map((paidlist) => (
+                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
+                            ))
+                        ) : (
+                            <div className="container-content">
+                                <div className=" d-flex d-column" style={{ height: '100%' }}>
+                                    <img src={NoData} alt="데이터없음" />
+                                    <h3>최근 결제된 내역이 없어요!</h3>
+                                </div>
+                            </div>
+                        )}</>
+                }
+
 
             </div>
         </div>
@@ -135,12 +132,12 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
             <tbody>
                 <tr>
                     <td>
-                        <img src={Constant.getAirlineLogo(paidlist.airLine)} width={"130px"} alt={paidlist.airlineNm} />
+                        <img src={Constant.getAirlineLogo(logos, paidlist.airLine)} width={"130px"} alt={paidlist.airlineNm} />
                         <h3>{paidlist.airLine}</h3>
                         <p>{paidlist.vihicleId}</p>
                     </td>
                     <td>
-                        <h1 className="font-color-special">{Constant.getAirportIdByName(airport, paidlist.depAirport)}</h1>
+                        <h1 className="font-color-special">{Constant.getAirportNmById(paidlist.depAirport)}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.depTime)}</p>
 
                     </td>
@@ -148,7 +145,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                         <img src={Plane} width={'40px'} alt="비행기" />
                     </td>
                     <td>
-                        <h1 className="font-color-special">{Constant.getAirportIdByName(airport, paidlist.arrAirport)}</h1>
+                        <h1 className="font-color-special">{Constant.getAirportNmById(paidlist.arrAirport)}</h1>
                         <p>{Constant.handleDateFormatChange(paidlist.arrTime)}</p>
                     </td>
                 </tr>
