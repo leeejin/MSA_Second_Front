@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
 import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
+import ModalComponent from '../../util/modal';
+import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const Hr = styled.hr`
     width:49px;
     border:1px solid var(--grey-color);
@@ -16,25 +18,41 @@ const Img = styled.img`
 /** 예약확인 목록 페이지 */
 export default function ModalRoomsReserveCheck() {
     const location = useLocation();
-
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const { contents } = location.state ?? {};
     const [open, setOpen] = useState(false); // 예약모달창
     const [larger, setLarger] = useState(false); //사진 크게 보기
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 1000);
+    }
     /** 예약확인 함수 */
     const handleOpenClose = (() => {
         setOpen(prev => !prev);
     });
+    const handleSubmit = (() => {
+        console.log("예약됨");
+        setOpen(prev => !prev);
+        handleError('accommodationReserveSuccess', true);
+    });
     const handleViewLarger = (() => {
         setLarger(prev => !prev);
-    })
+    });
     if (!location.state) {
         return (<Navigate to="*" />)
     }
     else {
         return (
             <div className="container" style={{ textAlign: 'center' }}>
+                <Alert errorMessage={errorMessage} />
                 {
                     larger && <ModalLargerComponent title={contents.title} firstimage={contents.firstimage} handleViewLarger={handleViewLarger} />
+                }
+                {
+                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
                 }
                 <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
@@ -123,8 +141,8 @@ const InfoComponent = ({ contents, handleOpenClose, handleViewLarger }) => {
     )
 }
 
-/** 자세히 보기 */ 
-const ModalLargerComponent = ({ title,firstimage, handleViewLarger }) => {
+/** 자세히 보기 */
+const ModalLargerComponent = ({ title, firstimage, handleViewLarger }) => {
     return (
         <>
             <div className="modal black-wrap" onClick={handleViewLarger} />

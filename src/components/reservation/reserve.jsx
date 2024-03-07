@@ -52,8 +52,8 @@ export default function ModalReserveCheck() {
         setRoomContents(dataFiltering(searchText, value));
     }
     const handleOnChangeSelectValue = (e) => {
-        const value = Constant.getAccommodationCodeByValue(areas, e.target.value);
-        setAreaCode(value);
+        const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
+        setAreaCode(code);
         /** 데이터 필터링 */
         setRoomContents(dataFiltering(searchText, e.target.value));
     };
@@ -186,7 +186,7 @@ const InfoComponent = ({ room }) => {
             <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
             <div className="font-color-darkgrey">
-                <p>{room.addr1.length > 32 ? room.addr1.substring(0, 32) + '...' : room.addr1}</p>
+                <p>{room.addr1.length > 25 ? room.addr1.substring(0, 25) + '...' : room.addr1}</p>
                 <p><IoCall /> {room.tel}</p>
             </div>
         </div>
