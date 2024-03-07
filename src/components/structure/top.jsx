@@ -38,7 +38,7 @@ const loginInfo = {
     email: store.getState().username,
 };
 /** top component */
-export default function TopComponent({ airports, handleChange, handleAirPortReverse,handleDateChange }) {
+export default function TopComponent({ airports, handleChange, handleAirPortReverse, handleDateChange }) {
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
@@ -62,7 +62,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
         };
     }, []);
 
-   
+
     /** 경고 메시지 */
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
@@ -114,11 +114,15 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
     }
 
     const show = (type, value) => {
-        setShowOptions((prev) => ({
+        setShowOptions(prev => ({
             ...prev,
-            [type]: !value
+            dep: type === 'dep' && !value,
+            arr: type === 'arr' && !value,
+            level: type === 'level' && !value
         }));
+
     };
+
     /** main.js 조회 데이터 API요청 */
     async function callPostAirInfoAPI() {
 
