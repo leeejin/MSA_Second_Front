@@ -7,6 +7,7 @@ import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
+import store from '../../util/redux_storage';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 
 const MarkTd = styled.span`
@@ -31,7 +32,11 @@ const OptionLabel = styled.h3`
 
 const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
-
+const loginInfo = {
+    userId: store.getState().userId,
+    name: store.getState().name,
+    email: store.getState().username,
+};
 /** top component */
 export default function TopComponent({ airports, handleChange, handleAirPortReverse,handleDateChange }) {
     const navigate = useNavigate();
@@ -125,10 +130,8 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.get(Constant.serviceURL + `/flights/search`, { params: formData })
-
+            const response = axios.get(Constant.serviceURL + `/flightInfos/${loginInfo.userId}`, { params: formData })
             return response;
-
         }
         catch (error) {
             if (error.response.status === 401) {

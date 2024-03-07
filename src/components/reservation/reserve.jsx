@@ -133,7 +133,7 @@ export default function ModalReserveCheck() {
                     show={show}
                     handleOnChangeSelectValue={handleOnChangeSelectValue} />
                 <hr className="hr" />
-                <div>
+                <div style={{ height: '550px' }}>
                     {roomContents.length > 0 ? (
                         roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
                             <InfoComponent key={room.contentid} room={room} />
