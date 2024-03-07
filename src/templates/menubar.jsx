@@ -55,7 +55,6 @@ export default function Menubar() {
         }
         <div className="fixed menubar">
 
-
             <div>
                 <Link to="/"><img src={logo} width={'100px'} /></Link>
                 <div>

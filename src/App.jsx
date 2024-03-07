@@ -17,13 +17,21 @@ const MyPage = React.lazy(() => import('./pages/mypage_page'));
 /** 로그인/로그아웃 여부 */
 const LoginRoute = ({ userId, element }) => {
 
-  if (userId && userId !== 0) { //로그인한 상태라면
+  if (userId && userId > 0) { //로그인한 상태라면
     return element;
   } else { //아니면 로그인창으로 날려버림
     return <Navigate to="*" />;
   }
 }
+/** 로그인/로그아웃 여부 */
+// const LogoutRoute = ({ userId, element }) => {
 
+//   if (userId <= 0 ||userId ===null || userId ===undefined) { //로그인한 상태라면
+//     return element;
+//   } else { //아니면 로그인창으로 날려버림
+//     return <Navigate to="*" />;
+//   }
+// }
 export default function App() {
   const storedUserId = sessionStorage.getItem("userId");
   const [userId, setUserId] = useState(storedUserId ? parseInt(storedUserId):0);

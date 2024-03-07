@@ -525,6 +525,10 @@
 
 }
 
+.hr{
+    clear:both;
+    border:1px solid var(--grey-color);
+}
 
 .logo {
     content: url(./image/main_logo.png);

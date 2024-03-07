@@ -16,11 +16,6 @@ const SubButton = styled.p`
         cursor:pointer;
     }
 `;
-const Hr = styled.hr`
-    margin-top:30px;
-    clear:both;
-    border:1px solid var(--grey-color);
-`;
 const H2 = styled.h2`
     @media (max-width: 980px) {
         font-size: 1.0rem;
@@ -35,6 +30,11 @@ const Button = styled.button`
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 4; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
+const loginInfo = {
+    userId: store.getState().userId,
+    name: store.getState().name,
+    email: store.getState().username,
+};
 /** 예약확인 목록 페이지 */
 const logos = Constant.getLogos();
 export default function ModalBookCheck() {
@@ -45,16 +45,12 @@ export default function ModalBookCheck() {
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
     const { IMP } = window;
     const [listContents, setListContents] = useState(contents);
-    const loginInfo = {
-        userId: store.getState().userId,
-        name: store.getState().name,
-        email: store.getState().username,
-    };
+    
     const [open, setOpen] = useState({
         reserveopen: false,
         payopen: false,
     }); // 예약,결제 모달창
-    const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
+    const [selectedData, setSelectedData] = useState([]); //선택한 컴포넌트 객체
     const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
 
     //페이지네이션
@@ -334,7 +330,7 @@ export default function ModalBookCheck() {
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
                         <SubButton> | </SubButton>
                         <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
-                        <Hr />
+                        <hr className="hr"/>
                     </div>
 
                     {

@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import store from '../../util/redux_storage';
-import AirPort from '../../util/json/airport-list.json';
 
-const airport = AirPort.response.body.items.item; // 공항 목록
-
+const loginInfo = {
+    userId: store.getState().userId,
+    name: store.getState().name,
+    email: store.getState().username,
+};
 export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { contents } = location.state;
-    const loginInfo = {
-        userId: store.getState().userId,
-        name: store.getState().name,
-        email: store.getState().username,
-    };
+    const { contents } = location.state ?? {};
 
     const handleReservedList = () => {
         navigate(`/MyPage/${loginInfo.userId}`); //수정해야함
@@ -22,6 +19,7 @@ export default function PayCheck() {
     const handleLocation = () => {
         navigate(-1);
     }
+    if (!location.state) return (<Navigate to="*" />)
     return (
         <div className="container">
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
@@ -46,14 +44,14 @@ export default function PayCheck() {
                             </td>
                             <td>
                                 <h1>{Constant.handleTimeFormatChange(contents.depTime)}</h1>
-                                <p>{Constant.getAirportNmById(airport, contents.depAirport)}</p>
+                                <p>{Constant.getAirportNmById(contents.depAirport)}</p>
                             </td>
                             <td>
                                 {Constant.handleDateCalculate(contents.arrTime, contents.depTime)}
                             </td>
                             <td>
                                 <h1>{Constant.handleTimeFormatChange(contents.arrTime)}</h1>
-                                <p>{Constant.getAirportNmById(airport, contents.arrAirport)}</p>
+                                <p>{Constant.getAirportNmById(contents.arrAirport)}</p>
                             </td>
                         </tr>
                         <tr>

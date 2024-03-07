@@ -66,10 +66,6 @@ export default function MiddleComponent({ handleReserve }) {
                 </div>
 
             </div>
-
-
-
-
         </div>
     );
 }

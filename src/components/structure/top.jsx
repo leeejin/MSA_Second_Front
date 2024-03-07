@@ -43,7 +43,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            const isOutsideClick = selectBoxRef.current.every((ref, index) => {
+            const isOutsideClick = selectBoxRef.current.every((ref) => {
                 return !ref?.contains(event.target);
             });
             if (isOutsideClick) {

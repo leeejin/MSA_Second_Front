@@ -20,7 +20,7 @@ export default function ModalReserveCheck() {
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
-
+    const [searchText, setSearchText] = useState(''); //검색어
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
@@ -44,20 +44,28 @@ export default function ModalReserveCheck() {
     const show = () => {
         setShowOptions((prev) => !prev);
     };
-
+    const changeSearch = (e) => {
+        setSearchText(e.target.value);
+    }
+    const handleSearch = () => {
+        const value = Constant.getAccommodationValueByCode(areas, areaCode);
+        setRoomContents(dataFiltering(searchText, value));
+    }
     const handleOnChangeSelectValue = (e) => {
         const value = Constant.getAccommodationCodeByValue(areas, e.target.value);
         setAreaCode(value);
         /** 데이터 필터링 */
-        setRoomContents(dataFiltering(e.target.value));
+        setRoomContents(dataFiltering(searchText, e.target.value));
     };
 
-    const dataFiltering = (text) => {
+    const dataFiltering = (text, areaCode) => {
         let filteredContents = [...rooms];
-        //가맹점명으로 검색
+        // 가맹점명으로 검색
         filteredContents = filteredContents.filter((item) => {
-            if (item.addr1.includes(text))
-                return true;
+            return item.title.toLowerCase().includes(text.toLowerCase()) && item.addr1.includes(areaCode);
+        }).sort((a, b) => {
+            // 검색어가 title의 시작 부분에 위치한 경우 우선적으로 보여줌
+            return a.title.toLowerCase().startsWith(text.toLowerCase()) ? -1 : b.title.toLowerCase().startsWith(text.toLowerCase()) ? 1 : 0;
         });
         return filteredContents;
     }
@@ -114,13 +122,17 @@ export default function ModalReserveCheck() {
             </div>
             <div className="container-content middlepanel">
 
+                <input
+                    placeholder='호텔명으로 검색해주세요'
+                    onChange={(e) => changeSearch(e)} />
+                <button className="btn " onClick={handleSearch}>검색</button>
                 <SelectComponent
                     areaCode={areaCode}
                     selectBoxRef={selectBoxRef}
                     isShowOptions={isShowOptions}
                     show={show}
                     handleOnChangeSelectValue={handleOnChangeSelectValue} />
-
+                <hr className="hr" />
                 <div>
                     {roomContents.length > 0 ? (
                         roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
@@ -135,7 +147,7 @@ export default function ModalReserveCheck() {
                         </div>)}
                 </div>
                 <div style={{ clear: 'both' }}>
-                    {roomContents.length > 0 && (
+                    {roomContents.length > 6 && (
                         <Pagination
                             itemCount={roomContents.length}
                             pageCountPerPage={pageCountPerPage}
@@ -174,7 +186,7 @@ const InfoComponent = ({ room }) => {
             <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
             <div className="font-color-darkgrey">
-                <p>{room.addr1}</p>
+                <p>{room.addr1.length > 32 ? room.addr1.substring(0, 32) + '...' : room.addr1}</p>
                 <p><IoCall /> {room.tel}</p>
             </div>
         </div>

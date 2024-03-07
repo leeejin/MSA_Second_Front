@@ -5,7 +5,7 @@ import Constant from '../../util/constant_variables';
 import Spinner from '../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const Button = styled.button`
-    color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
+    color: ${props => props.clicked === 'true' ? 'var(--hovering-color)' : 'initial'};
     &:hover,
     &:active {
         color:var(--hovering-color);
@@ -24,7 +24,6 @@ export default function Top2Component() {
             handleError('accommodationError', true);
         } else {
             setLoading(true);
-
             navigate(`/Reserve`, {
                 state: {
                     code: areaCode
@@ -67,8 +66,6 @@ export default function Top2Component() {
                     <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
                 </div>
 
-
-
             </div>
         </div >
     );
@@ -81,7 +78,7 @@ const SelectComponent = ({ handleOnChangeSelectValue, clicked }) => {
             {areas.map(area => (
                 <Button
                     className="btn"
-                    clicked={clicked === area.key}
+                    clicked={clicked === area.key ? 'true' : 'false'}
                     key={area.key}
                     value={area.value}
                     onClick={(e) => handleOnChangeSelectValue(e, area.key)}>

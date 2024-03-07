@@ -90,8 +90,6 @@ export default function Main() {
                 </Div>
             </div>
 
-
-
             <MiddleComponent handleReserve={handleReserve} />
             <FooterSlider handleReserve={handleReserve} />
 
