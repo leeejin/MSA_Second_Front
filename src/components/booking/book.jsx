@@ -220,7 +220,7 @@ export default function ModalBookCheck() {
     async function cancelPaymentAPI(merchant_uid, imp_uid) {
         console.log(merchant_uid);
         try {
-            await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 요청(사용자 단순 변심으로 결제취소및 결제 시간 만료를 위한 메서드)
+            await axios.post(Constant.serviceURL + `/payments/refund`, { // 결제 취소 요청(사용자 단순 변심으로 결제취소및 결제 시간 만료를 위한 메서드)
                 merchant_uid,
                 imp_uid
             }, {
@@ -236,7 +236,7 @@ export default function ModalBookCheck() {
     /** 결제 취소 알림 함수 */
     async function cancelPaymentNotifyAPI(merchant_uid) {
         try {
-            await axios.post(Constant.serviceURL + `/payments/fail`, { // 결제 취소 알림 요청
+            await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제 취소 알림 요청
                 merchant_uid
             }, {
                 headers: {
