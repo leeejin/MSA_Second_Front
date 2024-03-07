@@ -32,7 +32,7 @@ export default function PaidList({ userId }) {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 2000);
+        }, 1000);
     }
     /** 결제확인 함수 */
     const handleOpenClose = (data) => {

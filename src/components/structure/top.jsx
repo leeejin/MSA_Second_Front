@@ -8,6 +8,7 @@ import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
+import Spinner from '../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 
 const MarkTd = styled.span`
@@ -41,7 +42,8 @@ const loginInfo = {
 export default function TopComponent({ airports, handleChange, handleAirPortReverse, handleDateChange }) {
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-
+    const [isLoading,setIsLoading] = useState(false);
+    
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -82,8 +84,10 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
         };
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
+            setIsLoading(true);
             callPostAirInfoAPI().then((response) => {
                 if (response.data.length > 0) {
+                    
                     navigate(`/Book`, {
                         state: {
                             dep: airports.dep,
@@ -93,11 +97,11 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                             seatLevel: airports.level
                         }
                     });
-
                 } else {
                     handleError('seatError', true);
                 }
             });
+            setIsLoading(false);
         } else {
             if (errors.depError) {
                 handleError('depError', errors.depError);
@@ -143,6 +147,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             } else {
                 handleError('searchError', true);
             }
+            setIsLoading(false);
         }
     }
     return (
@@ -151,6 +156,10 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             <div className="container container-top" >
                 <div className="panel panel-top background-color-white">
                     <div className='parent-container'>
+                        {
+                            isLoading ? <div className="fixed d-flex container-fixed">
+                            <img src={Spinner} alt="로딩" width="100px" />
+                        </div> : <>
                         <table>
                             <thead>
                                 <tr>
@@ -214,6 +223,8 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                 </tr>
                             </tbody>
                         </table>
+                        </>
+                        }
                         <div className="second-container" style={{ clear: 'both' }}>
                             <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>
                         </div>

@@ -3,6 +3,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
 import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
+import ModalComponent from '../../util/modal';
+import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const Hr = styled.hr`
     width:49px;
     border:1px solid var(--grey-color);
@@ -19,13 +21,14 @@ export default function ModalRoomsReserveCheck() {
     const location = useLocation();
     const { contents } = location.state ?? {};
     const [larger, setLarger] = useState(false); //사진 크게 보기
-
+    const [open, setOpen] = useState(false); //예약 모달창
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     /** 지도 api */
     useEffect(() => {
         var container = document.getElementById('map');
         var options = {
             center: new kakao.maps.LatLng(contents.mapx, contents.mapy),
-            level:contents.mlevel ? contents.mlevel : 3
+            level: contents.mlevel ? contents.mlevel : 3
         };
 
         var map = new kakao.maps.Map(container, options);
@@ -35,9 +38,26 @@ export default function ModalRoomsReserveCheck() {
         });
         marker.setMap(map);
 
-    }, [])
+    }, []);
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 2000);
+    };
+    /** 자세히 보기 */
     const handleViewLarger = (() => {
         setLarger(prev => !prev);
+    });
+    /** 모달창 on/off */
+    const handleOpenClose = (() => {
+        setOpen(prev => !prev);
+    });
+    /** 예약 확인함수 */
+    const handleSubmit = (() => {
+        handleError('accommodationReserveSuccess', true);
+        setOpen(prev => !prev);
     });
     if (!location.state) {
         return (<Navigate to="*" />)
@@ -45,6 +65,10 @@ export default function ModalRoomsReserveCheck() {
     else {
         return (
             <div className="container" style={{ textAlign: 'center' }}>
+                <Alert errorMessage={errorMessage} />
+                {
+                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"숙소예약하시겠습니까?"} />
+                }
                 {
                     larger && <ModalLargerComponent title={contents.title} firstimage={contents.firstimage} handleViewLarger={handleViewLarger} />
                 }
@@ -55,8 +79,8 @@ export default function ModalRoomsReserveCheck() {
                         </div>
                     </div>
                 </div>
-                <div className="container-middle middlepanel" style={{ height: '1370px' }}>
-                    <InfoComponent contents={contents}  handleViewLarger={handleViewLarger} />
+                <div className="container-middle middlepanel" style={{ height: '1200px' }}>
+                    <InfoComponent contents={contents} handleViewLarger={handleViewLarger} handleOpenClose={handleOpenClose} />
                 </div>
 
             </div>
@@ -65,7 +89,7 @@ export default function ModalRoomsReserveCheck() {
 
 };
 
-const InfoComponent = ({ contents, handleViewLarger }) => {
+const InfoComponent = ({ contents, handleViewLarger, handleOpenClose }) => {
     return (
         <>
             <div className="w-50">
@@ -76,7 +100,7 @@ const InfoComponent = ({ contents, handleViewLarger }) => {
 
                 <Hr />
                 <p>{contents.overview}</p>
-                {/* <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
+                <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
                     <div className="d-flex" style={{ gap: '10px' }}>
                         <p>가격</p>
                         <h3 style={{ margin: '0 0 0 10px' }}>{contents.charge} 원</h3>
@@ -86,19 +110,19 @@ const InfoComponent = ({ contents, handleViewLarger }) => {
                             예약하러 가기
                         </button>
                     </div>
-                </div> */}
+                </div>
             </div>
 
             <Hr />
-            <div>
+            <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
                 <Img
                     src={contents.firstimage ? contents.firstimage : NoImage}
                     alt={contents.title}
-                    width={"100%"} height={"400px"}
+                    width={"48%"} height={"400px"}
                     onClick={handleViewLarger} />
-                <div id="map" style={{ width: '100%', height: '400px' }}></div>
+                <div id="map" style={{ width: '48%', height: '400px' }}></div>
             </div>
-            <table className="w-50 table-list" style={{ marginTop: '50px' }}>
+            <table className="w-50 table-list" style={{ marginTop: '40px' }}>
                 <tbody>
                     <tr>
                         <td>체크인</td>
@@ -123,7 +147,7 @@ const InfoComponent = ({ contents, handleViewLarger }) => {
                     <tr>
                         <td>홈페이지</td>
                         <td><a href={contents.homepage}>{contents.homepage}</a></td>
-                        </tr>
+                    </tr>
                 </tbody>
             </table>
 
