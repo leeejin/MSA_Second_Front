@@ -48,7 +48,7 @@ export default function Login() {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     const mutation = useMutation(callLoginAPI, {
         onSuccess: (response) => {

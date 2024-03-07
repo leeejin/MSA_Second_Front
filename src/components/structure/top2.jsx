@@ -38,7 +38,7 @@ export default function Top2Component() {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     const handleOnChangeSelectValue = (e, key) => {
         const value = Constant.getAccommodationCodeByValue(areas, e.target.value);

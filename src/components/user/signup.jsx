@@ -49,10 +49,10 @@ export default function Signup() {
     }, []);
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
-    
+
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     const handleOnChangeSelectValue = (e) => {
         setSelect(e.target.getAttribute("value"));

@@ -67,7 +67,7 @@ export default function ModalBookCheck() {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     /** 예약확인 함수 */
     const handleOpenClose = (data) => {

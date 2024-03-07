@@ -69,7 +69,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     /** 검색 핸들러 */
     const handleSearch = async () => {

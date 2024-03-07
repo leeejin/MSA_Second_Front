@@ -324,7 +324,7 @@
     width: 200px;
     top: -100%;
     /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
-    animation: slideDown 0.5s forwards;
+    animation: slideDown 2s forwards;
     /* 애니메이션 적용 및 지속 시간 설정 */
 
 }
@@ -334,9 +334,11 @@
         top: -100%;
         /* 시작 위치 */
     }
-
-    100% {
+    40%,50%{
         top: 10%;
+    }
+    100% {
+        top: -100%;
         /* 최종 위치 */
     }
 }
@@ -525,10 +527,6 @@
 
 }
 
-.hr{
-    clear:both;
-    border:1px solid var(--grey-color);
-}
 
 .logo {
     content: url(./image/main_logo.png);

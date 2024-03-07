@@ -32,7 +32,7 @@ export default function AccommodationList({ userId }) {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 1000);
+        }, 2000);
     }
     /** 결제확인 함수 */
     const handleOpenClose = (data) => {
