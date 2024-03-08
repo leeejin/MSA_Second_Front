@@ -7,14 +7,16 @@ import Spinner from '../../styles/image/loading.gif';
 import NoData from '../../styles/image/noData.png';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();
 
 /** 결제한 목록을 보여주는 함수 */
-export default function PaidList({ userId }) {
+export default function PaidList() {
     const queryClient = useQueryClient();
+    const userId = useSelector((state) => state.userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
-    const [selectedData, setSelectedData] = useState([]); //선택한 컴포넌트 객체
+    const [selectedData, setSelectedData] = useState({}); //선택한 컴포넌트 객체
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
     const { isLoading } = useQuery('bookedList', callGetBookedListAPI, {

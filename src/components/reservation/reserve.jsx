@@ -126,12 +126,17 @@ export default function ModalReserveCheck() {
                     placeholder='호텔명으로 검색해주세요'
                     onChange={(e) => changeSearch(e)} />
                 <button className="btn " onClick={handleSearch}>검색</button>
-                <SelectComponent
-                    areaCode={areaCode}
-                    selectBoxRef={selectBoxRef}
-                    isShowOptions={isShowOptions}
-                    show={show}
-                    handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                <div
+                    ref={selectBoxRef}
+                    className={`select select-email ${isShowOptions && 'active'}`}
+                    style={{ float: 'right', width: '100px' }}
+                    onClick={show}
+                >
+                    <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
+                    <SelectComponent
+                        isShowOptions={isShowOptions}
+                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                </div>
                 <hr className="hr" />
                 <div style={{ height: '550px' }}>
                     {roomContents.length > 0 ? (
@@ -147,13 +152,13 @@ export default function ModalReserveCheck() {
                         </div>)}
                 </div>
                 <div style={{ clear: 'both' }}>
-                    {roomContents.length > 6 && (
+                    {roomContents.length > itemCountPerPage && (
                         <Pagination
                             itemCount={roomContents.length}
                             pageCountPerPage={pageCountPerPage}
                             itemCountPerPage={itemCountPerPage}
                             currentPage={currentPage}
-                            clickListener={()=>setCurrentPageFunc(currentPage)}
+                            clickListener={() => setCurrentPageFunc(currentPage)}
                         />
                     )}
                 </div>
@@ -196,35 +201,23 @@ const InfoComponent = ({ room }) => {
 }
 
 /** 지역 선택 컴포넌트 */
-const SelectComponent = ({ selectBoxRef, isShowOptions, show, handleOnChangeSelectValue, areaCode }) => {
+const SelectComponent = ({ isShowOptions, handleOnChangeSelectValue }) => {
 
     return (
         <>
-            <div
-                ref={selectBoxRef}
-                className={`select select-email ${isShowOptions && 'active'}`}
-                style={{ float: 'right', width: '100px' }}
-                onClick={show}
-            >
-                <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
-                {isShowOptions && (
-                    <ul className="select-option select-option-email">
-                        {areas.map(area => (
-                            <option
-                                className="option"
-                                key={area.key}
-                                value={area.value}
-                                onClick={(e) => handleOnChangeSelectValue(e)}>
-                                {area.value}
-                            </option>
-                        ))}
-                    </ul>
-                )}
-            </div>
-
-
+            {isShowOptions && (
+                <ul className="select-option select-option-email">
+                    {areas.map(area => (
+                        <option
+                            className="option"
+                            key={area.key}
+                            value={area.value}
+                            onClick={(e) => handleOnChangeSelectValue(e)}>
+                            {area.value}
+                        </option>
+                    ))}
+                </ul>
+            )}
         </>
-
-
     )
 }

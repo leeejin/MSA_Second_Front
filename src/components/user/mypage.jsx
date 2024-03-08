@@ -6,11 +6,10 @@ import Constant from '../../util/constant_variables';
 import PayList from './paidlist';
 import ModalComponent from '../../util/modal';
 import AccommodationList from './accommodationlist';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 export default function MyPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userId = useSelector(state=>state.userId); //리덕스에 있는 userId를 가져옴
     const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
     const [open, setOpen] = useState(false); // 취소모달창
 
@@ -75,7 +74,7 @@ export default function MyPage() {
                 <h3 className="container-title">마이페이지</h3>
                 <div>
                     {
-                        subBoxVisible.payList === true ? <PayList userId={userId} /> : <AccommodationList userId={userId} />
+                        subBoxVisible.payList === true ? <PayList  /> : <AccommodationList  />
                     }
                 </div>
             </div>

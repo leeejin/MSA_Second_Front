@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 //     name: store.getState().name,
 //     email: store.getState().username,
 // };
+const logos = Constant.getLogos();
 export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -39,7 +40,7 @@ export default function PayCheck() {
                     <tbody>
                         <tr>
                             <td colSpan={4}>
-                                <img src={Constant.getAirlineLogo(contents.airLine)} width={"130px"} alt={contents.airlineNm} />
+                                <img src={Constant.getAirlineLogo(logos,contents.airLine)} width={"130px"} alt={contents.airlineNm} />
                                 <p>{contents.airLine}</p>
                             </td>
                         </tr>

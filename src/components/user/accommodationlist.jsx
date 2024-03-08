@@ -7,15 +7,16 @@ import Spinner from '../../styles/image/loading.gif';
 import NoData from '../../styles/image/noData.png';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();
-/** 에러메시지 (출발지-도착지, 날짜) */
 
 /** 결제한 목록을 보여주는 함수 */
-export default function AccommodationList({ userId }) {
+export default function AccommodationList() {
     const queryClient = useQueryClient();
+    const userId = useSelector((state) => state.userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
     const [contents, setContents] = useState([]); //백엔드로부터 받은 예약목록 리스트를 여기다가 저장
-    const [selectedData, setSelectedData] = useState([]); //선택한 컴포넌트 객체
+    const [selectedData, setSelectedData] = useState({}); //선택한 컴포넌트 객체
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
     const { isLoading } = useQuery('bookedList', callGetBookedListAPI, {
@@ -32,22 +33,25 @@ export default function AccommodationList({ userId }) {
 
         setTimeout(() => {
             errorDispatch({ type: 'error' });
-        }, 2000);
+        }, 1000);
     }
     /** 결제확인 함수 */
-    const handleOpenClose = (data) => {
+    const handleOpenClose = () => {
+        setOpen(prev => !prev); //결재취소 확인 모달창 띄움
+    };
+    const handleOpenCloseData = (data) => {
         setOpen(prev => !prev); //결재취소 확인 모달창 띄움
         setSelectedData(data); //선택한 데이터의 객체 저장
     };
     const mutation = useMutation(cancelPayment, {
         onError: (error) => {
-            setOpen(!open);
+            setOpen(prev => !prev);
             handleError('cancelError', true);
         },
         onSuccess: async () => {
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             await queryClient.invalidateQueries('bookedList');
-            setOpen(!open);
+            setOpen(prev => !prev);
             handleError('cancelSuccess', true);
             window.location.reload();
         },
@@ -89,7 +93,7 @@ export default function AccommodationList({ userId }) {
         <div className="container">
             <Alert errorMessage={errorMessage} />
             {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={() => handleOpenClose(selectedData)} message={"결제취소 하시겠습니까?"} />
             }
             <div className="w-50">
                 {
@@ -98,7 +102,7 @@ export default function AccommodationList({ userId }) {
                     </div> : <>
                         {contents.length > 0 ? (
                             contents.map((paidlist) => (
-                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
+                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenCloseData={() => handleOpenCloseData(paidlist)} />
                             ))
                         ) : (
                             <div className="container-content">
@@ -117,7 +121,7 @@ export default function AccommodationList({ userId }) {
 }
 
 /** 결제 목록 리스트 아이템 */
-const PaidListItem = ({ paidlist, handleOpenClose }) => {
+const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
 
     return (
         <table className="table-list-card">
@@ -158,7 +162,7 @@ const PaidListItem = ({ paidlist, handleOpenClose }) => {
                     </td>
                     <td colSpan={2}>
                         {
-                            paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenClose(paidlist)}>취소</button>
+                            paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenCloseData(paidlist)}>취소</button>
                         }
 
                     </td>

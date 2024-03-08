@@ -14,7 +14,7 @@ import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
 import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
 import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
 import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
-import AirPort from './json/airport-list';
+import AirPort from './json/airport-list.json';
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
@@ -174,15 +174,15 @@ export default class Constant {
     };
     /**로고 이미지 찾기 */
     static getAirlineLogo = (logos,airLine) => {
-        const matchingLogo = logos.find(logo => logo.value === airLine);
+        const matchingLogo = logos.find((logo) => logo.value === airLine);
         return matchingLogo ? matchingLogo.imageUrl : '';
     };
     static getAccommodationCodeByValue = (areas,value) => {
-        const matchingareas = areas.find(areas => areas.value === value);
+        const matchingareas = areas.find((areas) => areas.value === value);
         return matchingareas ? matchingareas.key : "";
     };
     static getAccommodationValueByCode = (areas,key) => {
-        const matchingareas = areas.find(areas => areas.key === key);
+        const matchingareas = areas.find((areas) => areas.key === key);
         return matchingareas ? matchingareas.value : "";
     };
 }

@@ -55,8 +55,8 @@ export default function ModalBookCheck() {
         reserveopen: false,
         payopen: false,
     }); // 예약,결제 모달창
-    const [selectedData, setSelectedData] = useState([]); //선택한 컴포넌트 객체
-    const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
+    const [selectedData, setSelectedData] = useState({}); //선택한 컴포넌트 객체
+    const [serverData, setServerData] = useState({}); //서버에서 받은 데이터
 
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
