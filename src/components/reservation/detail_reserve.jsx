@@ -54,6 +54,10 @@ export default function ModalRoomsReserveCheck() {
     const handleOpenClose = (() => {
         setOpen(prev => !prev);
     });
+    const handleOpenCloseData = ((data) => {
+        console.log(data);
+        setOpen(prev => !prev);
+    });
     /** 예약 확인함수 */
     const handleSubmit = (() => {
         handleError('accommodationReserveSuccess', true);
@@ -80,7 +84,7 @@ export default function ModalRoomsReserveCheck() {
                     </div>
                 </div>
                 <div className="container-middle middlepanel" style={{ height: '1200px' }}>
-                    <InfoComponent contents={contents} handleViewLarger={handleViewLarger} handleOpenClose={handleOpenClose} />
+                    <InfoComponent contents={contents} handleViewLarger={handleViewLarger} handleOpenCloseData={handleOpenCloseData} />
                 </div>
 
             </div>
@@ -89,7 +93,7 @@ export default function ModalRoomsReserveCheck() {
 
 };
 
-const InfoComponent = ({ contents, handleViewLarger, handleOpenClose }) => {
+const InfoComponent = ({ contents, handleViewLarger, handleOpenCloseData }) => {
     return (
         <>
             <div className="w-50">
@@ -106,7 +110,7 @@ const InfoComponent = ({ contents, handleViewLarger, handleOpenClose }) => {
                         <h3 style={{ margin: '0 0 0 10px' }}>{contents.charge} 원</h3>
                     </div>
                     <div>
-                        <button className="btn btn-style-reserve" onClick={handleOpenClose}>
+                        <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
                             예약하러 가기
                         </button>
                     </div>

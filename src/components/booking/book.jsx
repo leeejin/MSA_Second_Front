@@ -75,14 +75,18 @@ export default function ModalBookCheck() {
         }, 2000);
     }
     /** 예약확인 함수 */
-    const handleOpenClose = (data) => {
-        setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
+    const handleOpenCloseData = (data) => {
         setSelectedData(prevData => ({
             ...prevData,
             ...data,
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
+        setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
 
+    };
+    /** 예약확인 함수 */
+    const handleOpenClose = () => {
+        setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
     };
 
     const handleOpenCloseReserve = async () => {
@@ -308,7 +312,7 @@ export default function ModalBookCheck() {
             <div className="container">
                 <Alert errorMessage={errorMessage} />
                 {
-                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={() => handleOpenClose(selectedData)} message={`예약하시겠습니까?`} />
+                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} data={selectedData} />
                 }
                 {
                     open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
@@ -334,7 +338,7 @@ export default function ModalBookCheck() {
 
                     {
                         listContents.slice(offset, offset + itemCountPerPage).map((info) =>
-                            <InfoComponent key={info.id} info={info} handleOpenClose={() => handleOpenClose(info)} seatLevel={seatLevel} />)
+                            <InfoComponent key={info.id} info={info} handleOpenCloseData={() => handleOpenCloseData(info)} seatLevel={seatLevel} />)
                     }
                 </div>
                 {listContents.length > itemCountPerPage && (
@@ -343,7 +347,7 @@ export default function ModalBookCheck() {
                         pageCountPerPage={pageCountPerPage}
                         itemCountPerPage={itemCountPerPage}
                         currentPage={currentPage}
-                        clickListener={()=>setCurrentPageFunc(currentPage)}
+                        clickListener={() => setCurrentPageFunc(currentPage)}
                     />
                 )}
             </div>
@@ -354,7 +358,7 @@ export default function ModalBookCheck() {
 
 };
 
-const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
+const InfoComponent = ({ info, handleOpenCloseData, seatLevel }) => {
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {
@@ -404,7 +408,7 @@ const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
                                 }</H2>
                         </td>
                         <td>
-                            <Button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</Button>
+                            <Button className="btn btn-style-grey" onClick={() => handleOpenCloseData(info)}>선택</Button>
                         </td>
                     </tr>
                 </tbody>
