@@ -431,6 +431,7 @@
         td:nth-child(2) {
             img {
                 width: 40px;
+                height: 40px;
             }
         }
 
@@ -562,7 +563,6 @@
 
     .parent-container {
         display: block;
-        padding: 0px;
     }
 
     .parent-container table:nth-child(1) {
@@ -574,17 +574,6 @@
             td:nth-child(1),
             td:nth-child(3) {
                 border: none;
-            }
-
-            td:nth-child(2) {
-                margin: 0;
-                padding: 0;
-
-                img {
-                    width: 20px;
-                    height: 100%;
-
-                }
             }
         }
 

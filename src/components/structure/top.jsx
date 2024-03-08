@@ -180,7 +180,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                                 />
                                             </td>
                                             <td>
-                                                <button className="btn btn-style-none" onClick={handleAirPortReverse}><img src={reverse} alt="뒤바꾸기" /></button>
+                                                <button className="btn" ><img src={reverse} alt="뒤바꾸기" onClick={handleAirPortReverse}/></button>
                                             </td>
                                             <td>
                                                 <SelectComponent
