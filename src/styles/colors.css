@@ -42,6 +42,7 @@
     background-color: var(--background-hovering);
 }
 .selected {
+    border-radius: 25px;
     background-color: var(--hovering-color);
     color: var(--white-color);
     font-family: 'Pretendard-semibold';
