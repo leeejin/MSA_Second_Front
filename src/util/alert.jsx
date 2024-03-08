@@ -20,7 +20,7 @@ export const ERROR_STATE = {
     'dateError': { active: false, message: '당일 예약은 불가능합니다' },
     'searchError': { active: false, message: '조회 실패하였습니다' },
     'loginError': { active: false, message: '로그인이 필요한 서비스입니다' },
-    'seatError': { active: false, message: '해당 항공편이 존재하지 않습니다' },
+    'seatError': { active: false, message: '해당 조건에 맞는 항공편이 존재하지 않습니다' },
     'paySuccess': { active: false, message: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다' },
     'payError': { active: false, message: '결제실패하였습니다' },
     'reservecancelSuccess': { active: false, message: '예약취소 성공하였습니다' },

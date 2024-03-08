@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
-import store from '../../util/redux_storage';
+import { useSelector } from 'react-redux';
+// import store from '../../util/redux_storage';
 
-const loginInfo = {
-    userId: store.getState().userId,
-    name: store.getState().name,
-    email: store.getState().username,
-};
+// const loginInfo = {
+//     userId: store.getState().userId,
+//     name: store.getState().name,
+//     email: store.getState().username,
+// };
 export default function PayCheck() {
     const navigate = useNavigate();
     const location = useLocation();
     const { contents } = location.state ?? {};
-
+    const loginInfo = {
+        userId : useSelector(state=>state.userId),
+        name : useSelector(state=>state.name),
+        email: useSelector(state=>state.email)
+    };
     const handleReservedList = () => {
         navigate(`/MyPage/${loginInfo.userId}`); //수정해야함
     }

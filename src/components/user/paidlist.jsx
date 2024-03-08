@@ -8,7 +8,6 @@ import NoData from '../../styles/image/noData.png';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 const logos = Constant.getLogos();
-/** 에러메시지 (출발지-도착지, 날짜) */
 
 /** 결제한 목록을 보여주는 함수 */
 export default function PaidList({ userId }) {
@@ -41,13 +40,13 @@ export default function PaidList({ userId }) {
     };
     const mutation = useMutation(cancelPayment, {
         onError: (error) => {
-            setOpen(!open);
+            setOpen(prev=>!prev);
             handleError('cancelError', true);
         },
         onSuccess: async () => {
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
             await queryClient.invalidateQueries('bookedList');
-            setOpen(!open);
+            setOpen(prev=>!prev);
             handleError('cancelSuccess', true);
             window.location.reload();
         },

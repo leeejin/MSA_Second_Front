@@ -4,10 +4,11 @@ import styled from "styled-components";
 import { useNavigate, Navigate,useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
-import store from '../../util/redux_storage';
+//import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/pagenation';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import { useSelector } from 'react-redux';
 const SubButton = styled.p`
     float:right;
     color:var(--darkgrey-color);
@@ -30,11 +31,11 @@ const Button = styled.button`
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 4; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
-const loginInfo = {
-    userId: store.getState().userId,
-    name: store.getState().name,
-    email: store.getState().username,
-};
+// const loginInfo = {
+//     userId: store.getState().userId,
+//     name: store.getState().name,
+//     email: store.getState().username,
+// };
 const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const logos = Constant.getLogos();
@@ -44,7 +45,11 @@ export default function ModalBookCheck() {
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
-    
+    const loginInfo = {
+        userId : useSelector(state=>state.userId),
+        name : useSelector(state=>state.name),
+        email: useSelector(state=>state.email)
+    };
     const [listContents, setListContents] = useState(contents);
     const [open, setOpen] = useState({
         reserveopen: false,

@@ -3,11 +3,12 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import NonPage from './pages/nonPage';
 import MyStorage from './util/redux_storage';
 import Spinner from "../src/styles/image/loading.gif"
+import { useSelector } from 'react-redux';
 const Home = React.lazy(() => import('./pages/main_page'));
 const Book = React.lazy(() => import('./pages/book_page'));
 const CompleteBook = React.lazy(() => import('./pages/completeBook_page'));
 const Reserve = React.lazy(() => import('./pages/reserve_page'));
-const RoomsReserve =React.lazy(()=>import('./pages/roomsreserve_page'));
+const RoomsReserve = React.lazy(() => import('./pages/roomsreserve_page'));
 
 const Login = React.lazy(() => import('./pages/login_page'));
 const Signup = React.lazy(() => import('./pages/signup_page'));
@@ -23,21 +24,13 @@ const LoginRoute = ({ userId, element }) => {
     return <Navigate to="*" />;
   }
 }
-/** 로그인/로그아웃 여부 */
-// const LogoutRoute = ({ userId, element }) => {
-
-//   if (userId <= 0 ||userId ===null || userId ===undefined) { //로그인한 상태라면
-//     return element;
-//   } else { //아니면 로그인창으로 날려버림
-//     return <Navigate to="*" />;
-//   }
-// }
 export default function App() {
-  const storedUserId = sessionStorage.getItem("userId");
-  const [userId, setUserId] = useState(storedUserId ? parseInt(storedUserId):0);
+  const storedUserId = useSelector(state => state.userId);
+  const [userId, setUserId] = useState(storedUserId ? parseInt(storedUserId) : 0);
 
   useEffect(() => {
     const unsubscribe = MyStorage.subscribe(onStorageChange);
+    console.log('리덕스에서 값들 : '+storedUserId);
     return () => {
       unsubscribe();
     };

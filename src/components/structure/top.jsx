@@ -7,9 +7,10 @@ import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
-import store from '../../util/redux_storage';
+//import store from '../../util/redux_storage';
 import Spinner from '../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import { useSelector } from 'react-redux';
 
 const MarkTd = styled.span`
     border:1px solid var(--grey-color);
@@ -33,17 +34,13 @@ const OptionLabel = styled.h3`
 
 const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
-const loginInfo = {
-    userId: store.getState().userId,
-    name: store.getState().name,
-    email: store.getState().username,
-};
+
 /** top component */
 export default function TopComponent({ airports, handleChange, handleAirPortReverse, handleDateChange }) {
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
-    const [isLoading,setIsLoading] = useState(false);
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const userId = useSelector(state=>state.userId);
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -74,47 +71,52 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
         }, 2000);
     }
     /** 검색 핸들러 */
-    const handleSearch = async () => {
-        /** 에러모음 */
-        let errors = {
-            depError: airports.dep === '출발',
-            arrError: airports.arr === '도착',
-            levelError: airports.level === '좌석을 선택해주세요',
-            locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-            dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
-        };
-        if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
-            setIsLoading(true);
-            callPostAirInfoAPI().then((response) => {
-                if (response.data.length > 0) {
-                    
-                    navigate(`/Book`, {
-                        state: {
-                            dep: airports.dep,
-                            arr: airports.arr,
-                            depTime: Constant.handleDateFormatISOChange(airports.depTime),
-                            contents: response.data,
-                            seatLevel: airports.level
-                        }
-                    });
-                } else {
-                    handleError('seatError', true);
-                }
-            });
-            setIsLoading(false);
+    const handleSearch = () => {
+        setIsLoading(prev=>!prev);
+        if (userId <= 0) { //먼저 로그인 했는지 안했는지 검사
+            handleError('loginError', true);
         } else {
-            if (errors.depError) {
-                handleError('depError', errors.depError);
-            } else if (errors.arrError) {
-                handleError('arrError', errors.arrError);
-            } else if (errors.locationError) {
-                handleError('locationError', errors.locationError);
-            } else if (errors.levelError) {
-                handleError('levelError', errors.levelError);
-            } else if (errors.dateError) {
-                handleError('dateError', errors.dateError);
+            /** 에러모음 */
+            let errors = {
+                depError: airports.dep === '출발',
+                arrError: airports.arr === '도착',
+                levelError: airports.level === '좌석을 선택해주세요',
+                locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
+                dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
+            };
+            if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
+
+                callPostAirInfoAPI().then((response) => {
+                    if (response.data.length > 0) {
+
+                        navigate(`/Book`, {
+                            state: {
+                                dep: airports.dep,
+                                arr: airports.arr,
+                                depTime: Constant.handleDateFormatISOChange(airports.depTime),
+                                contents: response.data,
+                                seatLevel: airports.level
+                            }
+                        });
+                    } else {
+                        handleError('seatError', true);
+                    }
+                });
+            } else {
+                if (errors.depError) {
+                    handleError('depError', errors.depError);
+                } else if (errors.arrError) {
+                    handleError('arrError', errors.arrError);
+                } else if (errors.locationError) {
+                    handleError('locationError', errors.locationError);
+                } else if (errors.levelError) {
+                    handleError('levelError', errors.levelError);
+                } else if (errors.dateError) {
+                    handleError('dateError', errors.dateError);
+                }
             }
         }
+        setIsLoading(prev=>!prev);
     }
 
     const show = (type, value) => {
@@ -138,16 +140,13 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.get(Constant.serviceURL + `/flightInfos/${loginInfo.userId}`, { params: formData })
+            const response = axios.get(Constant.serviceURL + `/flightInfos/${userId}`, { params: formData });
+            setIsLoading(prev=>!prev);
             return response;
         }
         catch (error) {
-            if (error.response.status === 401) {
-                handleError('loginError', true);
-            } else {
-                handleError('searchError', true);
-            }
-            setIsLoading(false);
+            handleError('searchError', true);
+            setIsLoading(prev=>!prev);
         }
     }
     return (
@@ -158,72 +157,72 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                     <div className='parent-container'>
                         {
                             isLoading ? <div className="fixed d-flex container-fixed">
-                            <img src={Spinner} alt="로딩" width="100px" />
-                        </div> : <>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <td><MarkTd>출발지</MarkTd></td>
-                                    <td />
-                                    <td><MarkTd>도착지</MarkTd></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <SelectComponent
-                                            selectBoxRef={selectBoxRef}
-                                            number={1}
-                                            isShowOptions={selectBoxRef.current[1] && isShowOptions.dep}
-                                            show={() => show('dep', isShowOptions.dep)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                            airportsName={airports.dep}
-                                            handleChange={(e) => handleChange("dep", e)}
-                                        />
-                                    </td>
-                                    <td>
-                                        <button className="btn btn-style-none" onClick={handleAirPortReverse}><img src={reverse} alt="뒤바꾸기" /></button>
-                                    </td>
-                                    <td>
-                                        <SelectComponent
-                                            selectBoxRef={selectBoxRef}
-                                            number={2}
-                                            isShowOptions={selectBoxRef.current[2] && isShowOptions.arr}
-                                            show={() => show('arr', isShowOptions.arr)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                            airportsName={airports.arr}
-                                            handleChange={(e) => handleChange("arr", e)}
-                                        />
-                                    </td>
+                                <img src={Spinner} alt="로딩" width="100px" />
+                            </div> : <>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td><MarkTd>출발지</MarkTd></td>
+                                            <td />
+                                            <td><MarkTd>도착지</MarkTd></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <SelectComponent
+                                                    selectBoxRef={selectBoxRef}
+                                                    number={1}
+                                                    isShowOptions={selectBoxRef.current[1] && isShowOptions.dep}
+                                                    show={() => show('dep', isShowOptions.dep)} // show 함수를 호출할 때 'dep'을 전달합니다.
+                                                    airportsName={airports.dep}
+                                                    handleChange={(e) => handleChange("dep", e)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-style-none" onClick={handleAirPortReverse}><img src={reverse} alt="뒤바꾸기" /></button>
+                                            </td>
+                                            <td>
+                                                <SelectComponent
+                                                    selectBoxRef={selectBoxRef}
+                                                    number={2}
+                                                    isShowOptions={selectBoxRef.current[2] && isShowOptions.arr}
+                                                    show={() => show('arr', isShowOptions.arr)} // show 함수를 호출할 때 'dep'을 전달합니다.
+                                                    airportsName={airports.arr}
+                                                    handleChange={(e) => handleChange("arr", e)}
+                                                />
+                                            </td>
 
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <td><MarkTd>좌석등급</MarkTd></td>
-                                    <td><MarkTd>가는날</MarkTd></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <SelectComponent
-                                            selectBoxRef={selectBoxRef}
-                                            number={3}
-                                            isShowOptions={selectBoxRef.current[3] && isShowOptions.level}
-                                            show={() => show('level', isShowOptions.level)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                            airportsName={airports.level}
-                                            handleChange={(e) => handleChange("level", e)}
-                                        />
-                                    </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td><MarkTd>좌석등급</MarkTd></td>
+                                            <td><MarkTd>가는날</MarkTd></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <SelectComponent
+                                                    selectBoxRef={selectBoxRef}
+                                                    number={3}
+                                                    isShowOptions={selectBoxRef.current[3] && isShowOptions.level}
+                                                    show={() => show('level', isShowOptions.level)} // show 함수를 호출할 때 'dep'을 전달합니다.
+                                                    airportsName={airports.level}
+                                                    handleChange={(e) => handleChange("level", e)}
+                                                />
+                                            </td>
 
-                                    <td>
-                                        <Datepicker handleDateChange={handleDateChange} depTime={airports.depTime} />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        </>
+                                            <td>
+                                                <Datepicker handleDateChange={handleDateChange} depTime={airports.depTime} />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </>
                         }
                         <div className="second-container" style={{ clear: 'both' }}>
                             <button className="btn btn-style-border" onClick={handleSearch} >검색하기</button>

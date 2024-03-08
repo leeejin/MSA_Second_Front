@@ -6,11 +6,11 @@ import Constant from '../../util/constant_variables';
 import PayList from './paidlist';
 import ModalComponent from '../../util/modal';
 import AccommodationList from './accommodationlist';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 export default function MyPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const userId = store.getState().userId; //리덕스에 있는 userId를 가져옴
+    const userId = useSelector(state=>state.userId); //리덕스에 있는 userId를 가져옴
     const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
     const [open, setOpen] = useState(false); // 취소모달창
 
@@ -23,7 +23,7 @@ export default function MyPage() {
     }
     const handleOpenClose = (e) => {
         e.preventDefault();
-        setOpen(!open);
+        setOpen(prev=>!prev);
     };
     //로그아웃 체크
     const handleSubmit = () => {
@@ -32,7 +32,7 @@ export default function MyPage() {
                 dispatch({ type: "Logout" });
                 sessionStorage.removeItem('authToken');
                 navigate("/");
-                setOpen(!open);
+                setOpen(prev=>!prev);
             }
         })
 

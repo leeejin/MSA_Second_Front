@@ -20,14 +20,14 @@ export default function Menubar() {
     const userId = useSelector(state => state.userId);
     const handleOpenClose = (e) => {
         e.preventDefault();
-        setOpen(!open);
+        setOpen(prev=>!prev);
     };
     const mutation = useMutation(callLogoutAPI, {
         onSuccess: () => {
             // 로그아웃이 성공했을 때의 처리
             dispatch({ type: "Logout" });
             sessionStorage.removeItem('authToken');
-            setOpen(!open);
+            setOpen(prev=>!prev);
             navigate("/");
         },
         onError :(error)=>{

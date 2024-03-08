@@ -31,7 +31,6 @@ export default function Login() {
     }, [])
     const handleOnChange = (e) => {
         setIsRemember(e.target.checked);
-
     }
     const handleLocation = () => {
         navigate('/Signup');

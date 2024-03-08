@@ -8,7 +8,6 @@ const loginState = {
 };
 
 function reducer(state = loginState, action) {
-    console.log("리덕스에서의 값들 = ", loginState);
     switch (action.type) {
         case "Login":
             sessionStorage.setItem("userId", action.data.userId);
