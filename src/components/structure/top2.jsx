@@ -5,7 +5,7 @@ import Constant from '../../util/constant_variables';
 import Spinner from '../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 const Button = styled.button`
-    color: ${props => props.clicked === 'true' ? 'var(--hovering-color)' : 'initial'};
+    color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     &:hover,
     &:active {
         color:var(--hovering-color);
@@ -15,12 +15,12 @@ const areas = Constant.getRegionList();
 /** top2 component */
 export default function Top2Component() {
     const navigate = useNavigate();
-    const [areaCode, setAreaCode] = useState(null); //기본 지역은 서울
-    const [clicked, setClicked] = useState(null);
+    const [areaCode, setAreaCode] = useState(-1); //기본 지역코드를 -1로 설정
+    const [clicked, setClicked] = useState(-1);
     const [loading, setLoading] = useState(false);
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const handleSearch = () => {
-        if (areaCode === null) {
+        if (areaCode === -1) {
             handleError('accommodationError', true);
         } else {
             setLoading(true);
@@ -78,7 +78,7 @@ const SelectComponent = ({ handleOnChangeSelectValue, clicked }) => {
             {areas.map(area => (
                 <Button
                     className="btn"
-                    clicked={clicked === area.key ? 'true' : 'false'}
+                    clicked={clicked === area.key}
                     key={area.key}
                     value={area.value}
                     onClick={(e) => handleOnChangeSelectValue(e, area.key)}>

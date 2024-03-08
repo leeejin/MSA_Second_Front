@@ -48,6 +48,7 @@ export default function Main() {
         });
     };
     const handleChange = (locationType, e) => {
+        
         setAirPorts((prev) => ({
             ...prev,
             [locationType]: e.target.getAttribute("value")

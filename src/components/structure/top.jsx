@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, { useState, useEffect, useRef, useReducer, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
@@ -7,7 +7,6 @@ import Datepicker from '../../util/datepicker';
 import reverse from '../../styles/image/revert.png';
 import Constant from '../../util/constant_variables';
 import AirPort from '../../util/json/airport-list';
-//import store from '../../util/redux_storage';
 import Spinner from '../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../util/alert';
 import { useSelector } from 'react-redux';
@@ -30,6 +29,7 @@ const Label = styled.label`
 `;
 const OptionLabel = styled.h3`
     margin-left:-20px
+    
 `;
 
 const level = Constant.getSeatLevel(); // 좌석등급
@@ -169,27 +169,33 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <SelectComponent
-                                                    selectBoxRef={selectBoxRef}
-                                                    number={1}
-                                                    isShowOptions={selectBoxRef.current[1] && isShowOptions.dep}
-                                                    show={() => show('dep', isShowOptions.dep)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                                    airportsName={airports.dep}
-                                                    handleChange={(e) => handleChange("dep", e)}
-                                                />
+                                                <div
+                                                    ref={(el) => selectBoxRef.current[1] = el}
+                                                    className={`select select-location ${isShowOptions && 'active'}`}
+                                                    onClick={() => show('dep', isShowOptions.dep)} // show 함수를 호출할 때 'dep'을 전달합니다.
+                                                >
+                                                    <LocationLabel color={airports.dep === '출발' ? 'var(--darkgrey-color)' : 'var(--black-color)'}>{airports.dep}</LocationLabel>
+                                                    <SelectLocationComponent
+                                                        isShowOptions={selectBoxRef.current[1] && isShowOptions.dep}
+                                                        onClick={(e) => handleChange("dep", e)}
+                                                    />
+                                                </div>
                                             </td>
                                             <td>
                                                 <button className="btn" ><img src={reverse} alt="뒤바꾸기" onClick={handleAirPortReverse} /></button>
                                             </td>
                                             <td>
-                                                <SelectComponent
-                                                    selectBoxRef={selectBoxRef}
-                                                    number={2}
-                                                    isShowOptions={selectBoxRef.current[2] && isShowOptions.arr}
-                                                    show={() => show('arr', isShowOptions.arr)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                                    airportsName={airports.arr}
-                                                    handleChange={(e) => handleChange("arr", e)}
-                                                />
+                                                <div
+                                                    ref={(el) => selectBoxRef.current[2] = el}
+                                                    className={`select select-location ${isShowOptions && 'active'}`}
+                                                    onClick={() => show('arr', isShowOptions.arr)} // show 함수를 호출할 때 'arr'을 전달합니다.
+                                                >
+                                                    <LocationLabel color={airports.arr === '도착' ? 'var(--darkgrey-color)' : 'var(--black-color)'}>{airports.arr}</LocationLabel>
+                                                    <SelectLocationComponent
+                                                        isShowOptions={selectBoxRef.current[2] && isShowOptions.arr}
+                                                        onClick={(e) => handleChange("arr", e)}
+                                                    />
+                                                </div>
                                             </td>
 
                                         </tr>
@@ -205,14 +211,17 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <SelectComponent
-                                                    selectBoxRef={selectBoxRef}
-                                                    number={3}
-                                                    isShowOptions={selectBoxRef.current[3] && isShowOptions.level}
-                                                    show={() => show('level', isShowOptions.level)} // show 함수를 호출할 때 'dep'을 전달합니다.
-                                                    airportsName={airports.level}
-                                                    handleChange={(e) => handleChange("level", e)}
-                                                />
+                                                <div
+                                                    ref={(el) => selectBoxRef.current[3] = el}
+                                                    className={`select select-level ${isShowOptions && 'active'}`}
+                                                    onClick={() => show('level', isShowOptions.level)} >
+                                                    <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
+                                                    <Label style={{ color: airports.level === '좌석을 선택해주세요' ? 'var(--darkgrey-color)' : 'var(--black-color)' }}>{airports.level}</Label>
+                                                    <SelectLevelComponent
+                                                        isShowOptions={selectBoxRef.current[3] && isShowOptions.level}
+                                                        onClick={(e) => handleChange("level", e)}
+                                                    />
+                                                </div>
                                             </td>
 
                                             <td>
@@ -235,68 +244,58 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
 
     );
 }
-/** 출발지,도착지,좌석 컴포넌트 */
-const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsName, handleChange }) => {
-    if (number === 3) {
-        return (
-            <div
-                ref={el => selectBoxRef.current[number] = el}
-                className={`select select-level ${isShowOptions && 'active'}`}
-                onClick={show}>
-                <TbArmchair2 style={{ fontSize: "1.6rem", margin: -5 }} />
-                <Label style={{ color: airportsName === '좌석을 선택해주세요' ? 'grey' : 'var(--black-color)' }}>{airportsName}</Label>
-                {
-                    isShowOptions && (
-                        <ul
-                            className="select-option select-option-level"
-                        >
-                            <OptionLabel>좌석 등급 선택</OptionLabel>
-                            {
-                                level.map((level) => (
-                                    <li
-                                        className="option level-style"
-                                        onClick={handleChange}
-                                        key={level.key}
-                                        value={level.value}>
-                                        {level.name}
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    )
-                }
+/** 출발지,도착지 컴포넌트 */
+const SelectLocationComponent = (({ isShowOptions, onClick }) => {
+    return (
+        <>
+            {
+                isShowOptions && (
+                    <ul
+                        className="select-option select-option-location"
+                    >
+                        {
+                            airport.map((ap) => (
+                                <li
+                                    className="option"
+                                    onClick={onClick}
+                                    key={ap.airportId}
+                                    value={ap.airportNm}>
+                                    {ap.airportNm}
+                                </li>
+                            ))
+                        }
+                    </ul>
+                )
+            }
+        </>
+    )
 
-            </div>
-        )
-    } else {
-        return (
-            <div
-                ref={el => selectBoxRef.current[number] = el}
-                className={`select select-location ${isShowOptions && 'active'}`}
-                onClick={show}>
-                <LocationLabel color={airportsName === '출발' || airportsName === '도착' ? 'var(--darkgrey-color)' : 'var(--black-color)'}>{airportsName}</LocationLabel>
-                {
-                    isShowOptions && (
-                        <ul
-                            className="select-option select-option-location"
-                        >
-                            {
-                                airport.map((ap) => (
-                                    <li
-                                        className="option"
-                                        onClick={handleChange}
-                                        key={ap.airportId}
-                                        value={ap.airportNm}>
-                                        {ap.airportNm}
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                    )
-                }
+});
 
-            </div>
-        )
-    }
-
-}
+/** 좌석 컴포넌트 */
+const SelectLevelComponent = ({ isShowOptions, onClick }) => {
+    return (
+        <>
+            {
+                isShowOptions && (
+                    <ul
+                        className="select-option select-option-level"
+                    >
+                        <OptionLabel>좌석 등급 선택</OptionLabel>
+                        {
+                            level.map((level) => (
+                                <li
+                                    className="option level-style"
+                                    onClick={onClick}
+                                    key={level.key}
+                                    value={level.value}>
+                                    {level.name}
+                                </li>
+                            ))
+                        }
+                    </ul>
+                )
+            }
+        </>
+    )
+};
