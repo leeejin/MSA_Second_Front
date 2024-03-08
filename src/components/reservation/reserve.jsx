@@ -153,7 +153,7 @@ export default function ModalReserveCheck() {
                             pageCountPerPage={pageCountPerPage}
                             itemCountPerPage={itemCountPerPage}
                             currentPage={currentPage}
-                            clickListener={setCurrentPageFunc}
+                            clickListener={()=>setCurrentPageFunc(currentPage)}
                         />
                     )}
                 </div>

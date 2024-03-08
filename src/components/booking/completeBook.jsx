@@ -14,9 +14,9 @@ export default function PayCheck() {
     const location = useLocation();
     const { contents } = location.state ?? {};
     const loginInfo = {
-        userId : useSelector(state=>state.userId),
-        name : useSelector(state=>state.name),
-        email: useSelector(state=>state.email)
+        userId : useSelector((state)=>state.userId),
+        name : useSelector((state)=>state.name),
+        email: useSelector((state)=>state.username)
     };
     const handleReservedList = () => {
         navigate(`/MyPage/${loginInfo.userId}`); //수정해야함

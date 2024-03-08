@@ -1,7 +1,7 @@
-import React, { useState, useEffect,useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import axios from '../../axiosInstance';
 import styled from "styled-components";
-import { useNavigate, Navigate,useLocation } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import ModalComponent from '../../util/modal';
 //import store from '../../util/redux_storage';
@@ -46,9 +46,9 @@ export default function ModalBookCheck() {
 
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
     const loginInfo = {
-        userId : useSelector(state=>state.userId),
-        name : useSelector(state=>state.name),
-        email: useSelector(state=>state.email)
+        userId: useSelector((state) => state.userId),
+        name: useSelector((state) => state.name),
+        email: useSelector((state) => state.username)
     };
     const [listContents, setListContents] = useState(contents);
     const [open, setOpen] = useState({
@@ -76,12 +76,12 @@ export default function ModalBookCheck() {
     }
     /** 예약확인 함수 */
     const handleOpenClose = (data) => {
+        setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
         setSelectedData(prevData => ({
             ...prevData,
             ...data,
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
-        setOpen(prev => !prev);
 
     };
 
@@ -101,29 +101,8 @@ export default function ModalBookCheck() {
         setOffset(lastOffset);
     };
     /** 예약 보내는 핸들러 함수 */
-    const handleSubmit = () => {
-        //백엔드에 보낼 예약정보
-        const formData = {
-            flightId: selectedData.id,
-            airLine: selectedData.airlineNm, //항공사
-            arrAirport: Constant.getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
-            depAirport: Constant.getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: selectedData.arrPlandTime, //도착시간
-            depTime: selectedData.depPlandTime, //출발시간
-            charge: selectedData.charge, //비용
-            vihicleId: selectedData.vihicleId, //항공사 id
-            status: "결제전",
-            userId: loginInfo.userId, //예약하는 userId
-            email: loginInfo.email,
-            name: loginInfo.name
-        };
-
-        console.log("선택한 컴포넌트 객체 : " + selectedData);
-        console.log("폼데이터 : ", formData);
-        // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
-
-        reserveInfoAPI(formData);
-
+    const handleSubmit = async () => {
+        await reserveInfoAPI();
     };
 
     /** 데이터 필터링 */
@@ -198,7 +177,7 @@ export default function ModalBookCheck() {
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            setOpen(false);
+            setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
             navigate(`/CompleteBook/${serverData.id} `, {
                 state: {
                     contents: serverData,
@@ -260,7 +239,22 @@ export default function ModalBookCheck() {
         }
     };
     /** 예약 함수  */
-    async function reserveInfoAPI(formData) {
+    async function reserveInfoAPI() {
+        //백엔드에 보낼 예약정보
+        const formData = {
+            flightId: selectedData.id,
+            airLine: selectedData.airlineNm, //항공사
+            arrAirport: Constant.getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
+            depAirport: Constant.getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
+            arrTime: selectedData.arrPlandTime, //도착시간
+            depTime: selectedData.depPlandTime, //출발시간
+            charge: selectedData.charge, //비용
+            vihicleId: selectedData.vihicleId, //항공사 id
+            status: "결제전",
+            userId: loginInfo.userId, //예약하는 userId
+            email: loginInfo.email,
+            name: loginInfo.name
+        };
         try {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
@@ -279,7 +273,7 @@ export default function ModalBookCheck() {
         }
     }
     /**예약 취소 함수 */
-    async function reserveCancelAPI(serverData) {
+    async function reserveCancelAPI() {
         // 취소보낼 데이터
         const formData = {
             id: serverData.id,
@@ -314,7 +308,7 @@ export default function ModalBookCheck() {
             <div className="container">
                 <Alert errorMessage={errorMessage} />
                 {
-                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
+                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={() => handleOpenClose(selectedData)} message={`예약하시겠습니까?`} />
                 }
                 {
                     open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
@@ -334,11 +328,13 @@ export default function ModalBookCheck() {
                         <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
                         <SubButton> | </SubButton>
                         <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
-                        <hr className="hr"/>
+                        <div style={{ clear: 'both' }} />
+                        <hr className="hr" />
                     </div>
 
                     {
-                        listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                        listContents.slice(offset, offset + itemCountPerPage).map((info) =>
+                            <InfoComponent key={info.id} info={info} handleOpenClose={() => handleOpenClose(info)} seatLevel={seatLevel} />)
                     }
                 </div>
                 {listContents.length > itemCountPerPage && (
@@ -347,7 +343,7 @@ export default function ModalBookCheck() {
                         pageCountPerPage={pageCountPerPage}
                         itemCountPerPage={itemCountPerPage}
                         currentPage={currentPage}
-                        clickListener={setCurrentPageFunc}
+                        clickListener={()=>setCurrentPageFunc(currentPage)}
                     />
                 )}
             </div>

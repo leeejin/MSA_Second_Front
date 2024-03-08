@@ -88,7 +88,7 @@ export default function PaidList({ userId }) {
         <div className="container">
             <Alert errorMessage={errorMessage} />
             {
-                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"결제취소 하시겠습니까?"} />
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={()=>handleOpenClose(selectedData)} message={"결제취소 하시겠습니까?"} />
             }
             <div className="w-50">
                 {
@@ -97,7 +97,7 @@ export default function PaidList({ userId }) {
                     </div> : <>
                         {contents.length > 0 ? (
                             contents.map((paidlist) => (
-                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={handleOpenClose} />
+                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenClose={()=>handleOpenClose(paidlist)} />
                             ))
                         ) : (
                             <div className="container-content">

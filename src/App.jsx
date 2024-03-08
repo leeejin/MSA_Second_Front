@@ -25,7 +25,7 @@ const LoginRoute = ({ userId, element }) => {
   }
 }
 export default function App() {
-  const storedUserId = useSelector(state => state.userId);
+  const storedUserId = useSelector((state) => state.userId);
   const [userId, setUserId] = useState(storedUserId ? parseInt(storedUserId) : 0);
 
   useEffect(() => {

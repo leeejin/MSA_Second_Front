@@ -321,7 +321,7 @@
 
 /**메시지 */
 .message {
-    width: 200px;
+    width: 210px;
     top: -100%;
     /* 초기에는 왼쪽으로 이동한 상태로 설정합니다. */
     animation: slideDown 2s forwards;

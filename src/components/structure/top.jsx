@@ -40,7 +40,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [isLoading, setIsLoading] = useState(false);
-    const userId = useSelector(state=>state.userId);
+    const userId = useSelector((state) => state.userId);
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -72,7 +72,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
     }
     /** 검색 핸들러 */
     const handleSearch = () => {
-        setIsLoading(prev=>!prev);
+        setIsLoading(prev => !prev);
         if (userId <= 0) { //먼저 로그인 했는지 안했는지 검사
             handleError('loginError', true);
         } else {
@@ -116,7 +116,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                 }
             }
         }
-        setIsLoading(prev=>!prev);
+        setIsLoading(prev => !prev);
     }
 
     const show = (type, value) => {
@@ -140,13 +140,12 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.get(Constant.serviceURL + `/flightInfos/${userId}`, { params: formData });
-            setIsLoading(prev=>!prev);
+            const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            //const response = axios.get(Constant.serviceURL + `/flightInfos/${userId}`, { params: formData });
             return response;
         }
         catch (error) {
             handleError('searchError', true);
-            setIsLoading(prev=>!prev);
         }
     }
     return (
@@ -180,7 +179,7 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
                                                 />
                                             </td>
                                             <td>
-                                                <button className="btn" ><img src={reverse} alt="뒤바꾸기" onClick={handleAirPortReverse}/></button>
+                                                <button className="btn" ><img src={reverse} alt="뒤바꾸기" onClick={handleAirPortReverse} /></button>
                                             </td>
                                             <td>
                                                 <SelectComponent
