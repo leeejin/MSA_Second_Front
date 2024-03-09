@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../../axiosInstance';
 import styled from "styled-components";
 import { TbArmchair2 } from "react-icons/tb";
-import Datepicker from '../../../util/datepicker';
+import Datepicker from '../../../util/custom/datepicker';
 import reverse from '../../../styles/image/revert.png';
 import Constant from '../../../util/constant_variables';
 import Spinner from '../../../styles/image/loading.gif';
-import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
+import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 import AirPort from '../../../util/json/airport-list';
 import { useSelector } from 'react-redux';
 

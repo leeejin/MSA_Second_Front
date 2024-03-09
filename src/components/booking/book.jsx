@@ -3,11 +3,11 @@ import axios from '../../axiosInstance';
 import styled from "styled-components";
 import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
-import ModalComponent from '../../util/modal';
+import ModalComponent from '../../util/custom/modal';
 //import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
-import Pagination from '../../util/pagenation';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import Pagination from '../../util/custom/pagenation';
+import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 import { useSelector } from 'react-redux';
 const SubButton = styled.p`
     float:right;

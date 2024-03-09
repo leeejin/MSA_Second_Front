@@ -4,7 +4,7 @@ import store from '../../util/redux_storage';
 import axios from '../../axiosInstance';
 import Constant from '../../util/constant_variables';
 import PayList from './mypage_part/paidlist';
-import ModalComponent from '../../util/modal';
+import ModalComponent from '../../util/custom/modal';
 import AccommodationList from './mypage_part/accommodationlist';
 import { useDispatch } from 'react-redux';
 const MyPage=()=> {

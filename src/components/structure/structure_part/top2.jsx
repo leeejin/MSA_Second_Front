@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import Constant from '../../../util/constant_variables';
 import Spinner from '../../../styles/image/loading.gif';
-import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
+import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     &:hover,

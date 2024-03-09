@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
-import ModalComponent from '../util/modal';
+import ModalComponent from '../util/custom/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
 /** 메뉴선택하면 스타일 변함 */

@@ -5,15 +5,15 @@ import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
 import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
 
 /*항공사 로고 이미지*/
-import Jin from '../styles/image_logo/jinair.png'; // 진에어
-import Tway from '../styles/image_logo/tway.png'; // 대한항공
-import A_jeju from '../styles/image_logo/jejuair.png'; // 제주항공
-import Estar from '../styles/image_logo/estarjet.png'; // 이스타
-import Korean from '../styles/image_logo/koreanair.png'; // 대한항공
-import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
-import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
-import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
-import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
+import Jin from '../styles/airline_logo/jinair.png'; // 진에어
+import Tway from '../styles/airline_logo/tway.png'; // 대한항공
+import A_jeju from '../styles/airline_logo/jejuair.png'; // 제주항공
+import Estar from '../styles/airline_logo/estarjet.png'; // 이스타
+import Korean from '../styles/airline_logo/koreanair.png'; // 대한항공
+import Aerok from '../styles/airline_logo/aerok.png'; // 에어로케이
+import Asiana from '../styles/airline_logo/asiana.png'; // 아시아나
+import A_busan from '../styles/airline_logo/airbusan.png'; // 에어부산
+import A_seoul from '../styles/airline_logo/airseoul.png'; // 에어서울
 import AirPort from './json/airport-list.json';
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default class Constant {

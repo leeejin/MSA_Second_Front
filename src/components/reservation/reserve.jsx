@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
-import Pagination from '../../util/pagenation';
+import Pagination from '../../util/custom/pagenation';
 import Spinner from '../../styles/image/loading.gif';
 import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';

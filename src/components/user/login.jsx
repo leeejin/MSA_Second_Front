@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
 import styled from "styled-components";
 import axios from '../../axiosInstance';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 const Hr = styled.hr`
     margin-top:50px;
     border:1px solid var(--grey-color);

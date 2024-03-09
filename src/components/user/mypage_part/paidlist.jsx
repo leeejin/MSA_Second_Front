@@ -1,11 +1,11 @@
 import React, { useState, useReducer } from 'react';
 import axios from '../../../axiosInstance';
 import Constant from '../../../util/constant_variables';
-import ModalComponent from '../../../util/modal';
+import ModalComponent from '../../../util/custom/modal';
 import Plane from '../../../styles/image/plane.png'
 import Spinner from '../../../styles/image/loading.gif';
 import NoData from '../../../styles/image/noData.png';
-import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
+import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();

@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useReducer } from 'react';
 import styled from "styled-components";
-import ModalComponent from '../../util/modal';
+import ModalComponent from '../../util/custom/modal';
 import Constant from '../../util/constant_variables';
 import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 import { useMutation } from 'react-query';
 /**이메일 스타일 */
 const Flex = styled.div`
