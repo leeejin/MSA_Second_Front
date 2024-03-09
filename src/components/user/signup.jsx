@@ -11,8 +11,7 @@ const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
-
-export default function Signup() {
+const Signup=()=> {
     const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
 
@@ -214,3 +213,5 @@ export default function Signup() {
         </div>
     )
 }
+
+export default Signup;

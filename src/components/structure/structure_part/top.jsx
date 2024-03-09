@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useReducer, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosInstance';
+import axios from '../../../axiosInstance';
 import styled from "styled-components";
 import { TbArmchair2 } from "react-icons/tb";
-import Datepicker from '../../util/datepicker';
-import reverse from '../../styles/image/revert.png';
-import Constant from '../../util/constant_variables';
-import AirPort from '../../util/json/airport-list';
-import Spinner from '../../styles/image/loading.gif';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import Datepicker from '../../../util/datepicker';
+import reverse from '../../../styles/image/revert.png';
+import Constant from '../../../util/constant_variables';
+import Spinner from '../../../styles/image/loading.gif';
+import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
+import AirPort from '../../../util/json/airport-list';
 import { useSelector } from 'react-redux';
 
 const MarkTd = styled.span`
@@ -36,7 +36,7 @@ const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
 
 /** top component */
-export default function TopComponent({ airports, handleChange, handleAirPortReverse, handleDateChange }) {
+const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateChange })=> {
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [isLoading, setIsLoading] = useState(false);
@@ -140,8 +140,8 @@ export default function TopComponent({ airports, handleChange, handleAirPortReve
             depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
-            //const response = axios.get(Constant.serviceURL + `/flightInfos/${userId}`, { params: formData });
+            //const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            const response = axios.get(Constant.serviceURL + `/flightInfos/${userId}`, { params: formData });
             return response;
         }
         catch (error) {
@@ -299,3 +299,5 @@ const SelectLevelComponent = ({ isShowOptions, onClick }) => {
         </>
     )
 };
+
+export default TopComponent;

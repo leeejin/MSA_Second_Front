@@ -1,17 +1,17 @@
 import React, { useState, useReducer } from 'react';
-import axios from '../../axiosInstance';
-import Constant from '../../util/constant_variables';
-import ModalComponent from '../../util/modal';
-import Plane from '../../styles/image/plane.png'
-import Spinner from '../../styles/image/loading.gif';
-import NoData from '../../styles/image/noData.png';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import axios from '../../../axiosInstance';
+import Constant from '../../../util/constant_variables';
+import ModalComponent from '../../../util/modal';
+import Plane from '../../../styles/image/plane.png'
+import Spinner from '../../../styles/image/loading.gif';
+import NoData from '../../../styles/image/noData.png';
+import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();
 
 /** 결제한 목록을 보여주는 함수 */
-export default function PaidList() {
+const PaidList=()=> {
     const queryClient = useQueryClient();
     const userId = useSelector((state) => state.userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
@@ -173,3 +173,5 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
 
     )
 }
+
+export default PaidList;

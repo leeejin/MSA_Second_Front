@@ -3,11 +3,11 @@ import { useNavigate} from "react-router-dom";
 import store from '../../util/redux_storage';
 import axios from '../../axiosInstance';
 import Constant from '../../util/constant_variables';
-import PayList from './paidlist';
+import PayList from './mypage_part/paidlist';
 import ModalComponent from '../../util/modal';
-import AccommodationList from './accommodationlist';
+import AccommodationList from './mypage_part/accommodationlist';
 import { useDispatch } from 'react-redux';
-export default function MyPage() {
+const MyPage=()=> {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
@@ -82,3 +82,4 @@ export default function MyPage() {
 
     )
 }
+export default MyPage;

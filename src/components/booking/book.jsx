@@ -39,7 +39,7 @@ const pageCountPerPage = 10; //보여줄 페이지 갯수
 const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const logos = Constant.getLogos();
-export default function ModalBookCheck() {
+const ModalBookCheck=() =>{
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
@@ -418,3 +418,4 @@ const InfoComponent = ({ info, handleOpenCloseData, seatLevel }) => {
     }
 
 }
+export default ModalBookCheck;

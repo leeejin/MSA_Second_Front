@@ -2,15 +2,9 @@ import React from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import { useSelector } from 'react-redux';
-// import store from '../../util/redux_storage';
 
-// const loginInfo = {
-//     userId: store.getState().userId,
-//     name: store.getState().name,
-//     email: store.getState().username,
-// };
 const logos = Constant.getLogos();
-export default function PayCheck() {
+const PayCheck=()=> {
     const navigate = useNavigate();
     const location = useLocation();
     const { contents } = location.state ?? {};
@@ -86,3 +80,5 @@ export default function PayCheck() {
         </div>
     )
 }
+
+export default PayCheck;

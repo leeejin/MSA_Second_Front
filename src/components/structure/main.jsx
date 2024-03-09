@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import FooterSlider from './footer';
-import MiddleComponent from './middle';
-import TopComponent from './top';
-import Top2Component from './top2';
+import FooterSlider from './structure_part/footer';
+import MiddleComponent from './structure_part/middle';
+import TopComponent from './structure_part/top';
+import Top2Component from './structure_part/top2';
 const Button = styled.button`
     background-color:var(--white-color);
     border-radius:25px;
@@ -25,7 +25,7 @@ const Div = styled.div`
 
 `;
 /** 메인페이지 - 여기서 예약조회 하기 위한 검색 */
-export default function Main() {
+const Main=()=> {
     const [airports, setAirPorts] = useState({
         dep: '출발',
         arr: '도착',
@@ -98,3 +98,4 @@ export default function Main() {
 
     );
 }
+export default Main;

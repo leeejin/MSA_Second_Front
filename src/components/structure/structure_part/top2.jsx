@@ -1,9 +1,9 @@
 import React, { useState, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
-import Constant from '../../util/constant_variables';
-import Spinner from '../../styles/image/loading.gif';
-import { reducer, ERROR_STATE, Alert } from '../../util/alert';
+import Constant from '../../../util/constant_variables';
+import Spinner from '../../../styles/image/loading.gif';
+import { reducer, ERROR_STATE, Alert } from '../../../util/alert';
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     &:hover,
@@ -13,7 +13,7 @@ const Button = styled.button`
 `;
 const areas = Constant.getRegionList();
 /** top2 component */
-export default function Top2Component() {
+const Top2Component=()=> {
     const navigate = useNavigate();
     const [areaCode, setAreaCode] = useState(-1); //기본 지역코드를 -1로 설정
     const [clicked, setClicked] = useState(-1);
@@ -90,3 +90,4 @@ const SelectComponent = ({ handleOnChangeSelectValue, clicked }) => {
 
     )
 }
+export default Top2Component;

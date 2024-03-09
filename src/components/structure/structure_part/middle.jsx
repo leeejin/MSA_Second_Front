@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import 'swiper/css';
 import 'swiper/css/virtual';
-import Constant from '../../util/constant_variables';
+import Constant from '../../../util/constant_variables';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 const accommodation = Constant.getSwiperMenus();
 /** middle component */
-export default function MiddleComponent({ handleReserve }) {
+const MiddleComponent=({ handleReserve }) => {
     const [activeSlide, setActiveSlide] = useState(0);
     /** 선택한거 나와있는 지역으로 바꾸기 */
     
@@ -70,3 +70,4 @@ export default function MiddleComponent({ handleReserve }) {
     );
 }
 
+export default MiddleComponent;

@@ -14,7 +14,7 @@ const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
 const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
-export default function ModalReserveCheck() {
+const ModalReserveCheck=()=> {
     const location = useLocation();
     const { code } = location.state ?? {};
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
@@ -221,3 +221,5 @@ const SelectComponent = ({ isShowOptions, handleOnChangeSelectValue }) => {
         </>
     )
 }
+
+export default ModalReserveCheck;

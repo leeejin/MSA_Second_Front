@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-import Constant from '../../util/constant_variables';
+import Constant from '../../../util/constant_variables';
 const footer = Constant.getSliderMenus(); //푸터 이미지 내용
 /** footer slider */
-export default function FooterSlider ({ handleReserve }) {
+const FooterSlider= ({ handleReserve })=> {
     const renderSlides = footer.map((footer) => (
         <div className="container-bottom" style={{ backgroundImage: `url(${footer.imageUrl})` }} key={footer.key}>
             <div className="panel panel-bottom">
@@ -31,3 +31,4 @@ export default function FooterSlider ({ handleReserve }) {
         </Carousel>
     );
 }
+export default FooterSlider;

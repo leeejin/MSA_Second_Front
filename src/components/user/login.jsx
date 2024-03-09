@@ -11,7 +11,7 @@ const Hr = styled.hr`
     border:1px solid var(--grey-color);
 `;
 
-export default function Login() {
+const Login=()=> {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -135,3 +135,5 @@ export default function Login() {
         </>
     );
 }
+
+export default Login;
