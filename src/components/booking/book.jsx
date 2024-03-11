@@ -338,7 +338,7 @@ const ModalBookCheck = () => {
                         pageCountPerPage={pageCountPerPage}
                         itemCountPerPage={itemCountPerPage}
                         currentPage={currentPage}
-                        clickListener={() => setCurrentPageFunc(currentPage)}
+                        clickListener={setCurrentPageFunc}
                     />
                 )}
             </div>

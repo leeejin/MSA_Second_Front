@@ -16,12 +16,12 @@ const areas = Constant.getRegionList();
 const ModalReserveCheck = () => {
     const location = useLocation();
     const { code, sigunguCode, cities } = location.state ?? {};
-    const [citiesMenu,setCitiesMenu] = useState(cities);
+    const [citiesMenu, setCitiesMenu] = useState(cities);
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
-    const [clicked,setClicked] = useState({
-        areaCode:code,
-        cityCode:sigunguCode
+    const [clicked, setClicked] = useState({
+        areaCode: code,
+        cityCode: sigunguCode
     });
     const [searchText, setSearchText] = useState(''); //검색어
     const [isLoading, setIsLoading] = useState(false);
@@ -51,20 +51,15 @@ const ModalReserveCheck = () => {
         const fetchRoomsData = async () => {
             try {
                 setIsLoading(true);
-                const response = await getRoomsListAPI();
-                setRooms(response);
-                setRoomContents(response);
-                setIsLoading(false);
+                await getRoomsListAPI();
             } catch (error) {
                 console.error("데이터 불러오는 중 에러 발생:", error);
-            } finally {
-                setIsLoading(false);
             }
         };
 
         fetchRoomsData();
 
-    }, []);
+    }, [clicked.cityCode]);
     const show = (type, value) => {
         setShowOptions(prev => ({
             ...prev,
@@ -80,21 +75,21 @@ const ModalReserveCheck = () => {
         setRoomContents(dataFiltering(searchText, value));
     }
     const handleOnChangeSelectValue = (e) => {
-        setClicked((prev)=>({
+        setClicked((prev) => ({
             ...prev,
-            areaCode:e.target.value
+            areaCode: e.target.value
         }))
         const city = Constant.getCityCode(e.target.value);
         setCitiesMenu(city);
     };
-    const handleOnChangeSelectValue2 = (e,cityCode) => {
+    const handleOnChangeSelectValue2 = async (e, cityCode) => {
         console.log(e.target.value);
-        setClicked((prev)=>({
+        setClicked((prev) => ({
             ...prev,
-            cityCode:cityCode
+            cityCode: cityCode
         }))
-        // /** 데이터 필터링 */
-        // setRoomContents(dataFiltering(searchText, e.target.value));
+        /** 데이터 필터링 */
+        //setRoomContents(dataFiltering(searchText, clicked.areaCode));
     };
 
     const dataFiltering = (text, areaCode) => {
@@ -120,14 +115,16 @@ const ModalReserveCheck = () => {
     async function getRoomsListAPI() {
         const params = {
             areaCode: clicked.areaCode,
-            //sigunguCode: cityCode
+            //sigunguCode: clicked.cityCode
         }
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params });
-            console.log(response.data);
-            return response.data;
+            setRooms(response.data);
+            setRoomContents(response.data);
+            setIsLoading(false);
         } catch (error) {
             console.error(error);
+            setIsLoading(false);
         }
     }
 
@@ -162,7 +159,7 @@ const ModalReserveCheck = () => {
                             style={{ width: '100px' }}
                             onClick={() => show('area', isShowOptions.area)}
                         >
-                            <label>{Constant.getAccommodationValueByCode(areas,clicked.areaCode)}</label>
+                            <label>{Constant.getAccommodationValueByCode(areas, clicked.areaCode)}</label>
                             {(selectBoxRef.current[1] && isShowOptions.area) && (
                                 <ul className="select-option select-option-email">
                                     {areas.map(area => (
@@ -192,7 +189,7 @@ const ModalReserveCheck = () => {
                                             className="option"
                                             key={citiesMenu.rnum}
                                             value={citiesMenu.code}
-                                            onClick={(e) => handleOnChangeSelectValue2(e,citiesMenu.code)}>
+                                            onClick={(e) => handleOnChangeSelectValue2(e, citiesMenu.code)}>
                                             {citiesMenu.name}
                                         </li>
                                     ))}
@@ -207,7 +204,7 @@ const ModalReserveCheck = () => {
                 <hr className="hr" />
                 <div style={{ height: '550px' }}>
                     {roomContents.length > 0 ? (
-                        roomContents.slice(offset, offset + itemCountPerPage).map((room, i) => (
+                        roomContents.slice(offset, offset + itemCountPerPage).map((room) => (
                             <InfoComponent key={room.contentid} room={room} />
                         ))
                     ) : (
@@ -225,7 +222,7 @@ const ModalReserveCheck = () => {
                             pageCountPerPage={pageCountPerPage}
                             itemCountPerPage={itemCountPerPage}
                             currentPage={currentPage}
-                            clickListener={() => setCurrentPageFunc(currentPage)}
+                            clickListener={setCurrentPageFunc}
                         />
                     )}
                 </div>
