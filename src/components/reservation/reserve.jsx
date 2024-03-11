@@ -7,32 +7,35 @@ import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
 import NoData from '../../styles/image/noData.png';
 import axios from '../../axiosInstance';
-import { useQuery } from 'react-query';
 
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
 const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
-const ModalReserveCheck=()=> {
+const ModalReserveCheck = () => {
     const location = useLocation();
-    const { code } = location.state ?? {};
+    const { code, sigunguCode } = location.state ?? {};
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
+    const [cityCode, setCityCode] = useState(sigunguCode); //기본 지역은 전체 검색
     const [searchText, setSearchText] = useState(''); //검색어
+    const [isLoading, setIsLoading] = useState(false);
     //페이지네이션
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
     const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
-
     /** 셀렉트 전용 */
-    const [isShowOptions, setShowOptions] = useState(false);
-    const selectBoxRef = useRef(null);
+    const [isShowOptions, setShowOptions] = useState({ area: false, city: false });
+    const selectBoxRef = useRef([null, null]);
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
-            if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
-                setShowOptions(false);
+            const isOutsideClick = selectBoxRef.current.every((ref) => {
+                return !ref?.contains(event.target);
+            });
+            if (isOutsideClick) {
+                setShowOptions({ area: false, city: false });
             }
         };
         document.addEventListener('mousedown', handleOutsideClick);
@@ -41,8 +44,12 @@ const ModalReserveCheck=()=> {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
-    const show = () => {
-        setShowOptions((prev) => !prev);
+    const show = (type, value) => {
+        setShowOptions(prev => ({
+            ...prev,
+            area: type === 'area' && !value,
+            city: type === 'city' && !value,
+        }));
     };
     const changeSearch = (e) => {
         setSearchText(e.target.value);
@@ -54,8 +61,14 @@ const ModalReserveCheck=()=> {
     const handleOnChangeSelectValue = (e) => {
         const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
         setAreaCode(code);
-        /** 데이터 필터링 */
-        setRoomContents(dataFiltering(searchText, e.target.value));
+        // /** 데이터 필터링 */
+         setRoomContents(dataFiltering(searchText, e.target.value));
+    };
+    const handleOnChangeSelectValue2 = (e) => {
+        const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
+        setCityCode(code);
+        // /** 데이터 필터링 */
+        // setRoomContents(dataFiltering(searchText, e.target.value));
     };
 
     const dataFiltering = (text, areaCode) => {
@@ -70,6 +83,17 @@ const ModalReserveCheck=()=> {
         return filteredContents;
     }
 
+    const handleAreaSearch = () => {
+        setIsLoading(true);
+        getRoomsListAPI().then((resposne) => {
+            setRooms(resposne);
+            setRoomContents(resposne);
+            setIsLoading(false);
+        }).catch((error) => {
+            console.error("데이터 불러오는 중 에러 발생:", error);
+            setIsLoading(false);
+        })
+    }
     /** 페이지네이션 함수 */
     const setCurrentPageFunc = (page) => {
         let lastOffset = (page - 1) * itemCountPerPage;
@@ -77,19 +101,11 @@ const ModalReserveCheck=()=> {
         setOffset(lastOffset);
     };
 
-    const { error, isLoading } = useQuery(['rooms', areaCode], getRoomsListAPI, {
-        onSuccess: (data) => {
-            setRooms(data);
-            setRoomContents(data);
-        },
-        onError: (error) => {
-            console.error("데이터 불러오는 중 에러 발생:", error);
-        }
-    });
     /** 숙소 데이터 불러오는 함수 */
     async function getRoomsListAPI() {
         const params = {
             areaCode: areaCode,
+            //sigunguCode: cityCode
         }
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params });
@@ -106,9 +122,6 @@ const ModalReserveCheck=()=> {
     if (isLoading) return (<div className="fixed d-flex container-fixed">
         <img src={Spinner} alt="로딩" width="100px" />
     </div>)
-    if (error) return (<div className="fixed d-flex container-fixed">
-        <h3>데이터 불러오는 도중 문제 발생 다시 시도해주세요</h3>
-    </div>)
     return (
         <div className="container">
 
@@ -121,22 +134,44 @@ const ModalReserveCheck=()=> {
                 </div>
             </div>
             <div className="container-content middlepanel">
+                <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
+                    <div>
+                        <input
+                            placeholder='호텔명으로 검색해주세요'
+                            onChange={(e) => changeSearch(e)} />
+                        <button className="btn " onClick={handleSearch}>검색</button>
+                    </div>
+                    <div className="d-flex">
+                        <div
+                            ref={(el) => selectBoxRef.current[1] = el}
+                            className={`select select-email ${isShowOptions && 'active'}`}
+                            style={{ width: '100px' }}
+                            onClick={() => show('area', isShowOptions.area)}
+                        >
+                            <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
+                            <SelectComponent
+                                isShowOptions={selectBoxRef.current[1] && isShowOptions.area}
+                                onClick={(e) => handleOnChangeSelectValue(e)} />
 
-                <input
-                    placeholder='호텔명으로 검색해주세요'
-                    onChange={(e) => changeSearch(e)} />
-                <button className="btn " onClick={handleSearch}>검색</button>
-                <div
-                    ref={selectBoxRef}
-                    className={`select select-email ${isShowOptions && 'active'}`}
-                    style={{ float: 'right', width: '100px' }}
-                    onClick={show}
-                >
-                    <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
-                    <SelectComponent
-                        isShowOptions={isShowOptions}
-                        handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                        </div>
+                        <div
+                            ref={(el) => selectBoxRef.current[2] = el}
+                            className={`select select-email ${isShowOptions && 'active'}`}
+                            style={{ width: '100px' }}
+                            onClick={() => show('city', isShowOptions.city)}
+                        >
+                            <label>{Constant.getAccommodationValueByCode(areas, cityCode)}</label>
+                            <SelectComponent
+                                isShowOptions={selectBoxRef.current[2] && isShowOptions.city}
+                                onClick={(e) => handleOnChangeSelectValue2(e)} />
+
+                        </div>
+                        <button className="btn"
+                            onClick={handleAreaSearch}>검색</button>
+                    </div>
                 </div>
+
+
                 <hr className="hr" />
                 <div style={{ height: '550px' }}>
                     {roomContents.length > 0 ? (
@@ -201,25 +236,24 @@ const InfoComponent = ({ room }) => {
 }
 
 /** 지역 선택 컴포넌트 */
-const SelectComponent = ({ isShowOptions, handleOnChangeSelectValue }) => {
+const SelectComponent = ({ isShowOptions, onClick }) => {
 
     return (
         <>
             {isShowOptions && (
                 <ul className="select-option select-option-email">
                     {areas.map(area => (
-                        <option
+                        <li
                             className="option"
                             key={area.key}
                             value={area.value}
-                            onClick={(e) => handleOnChangeSelectValue(e)}>
+                            onClick={onClick}>
                             {area.value}
-                        </option>
+                        </li>
                     ))}
                 </ul>
             )}
         </>
     )
 }
-
 export default ModalReserveCheck;

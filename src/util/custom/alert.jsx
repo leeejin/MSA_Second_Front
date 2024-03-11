@@ -26,7 +26,8 @@ export const ERROR_STATE = {
     'reservecancelSuccess': { active: false, message: '예약취소 성공하였습니다' },
     'reservecancelError': { active: false, message: '예약취소 실패하였습니다' },
     'reserveError': { active: false, message: '이미 예약하신 항공편입니다' },
-    'accommodationError': { active: false, message: '지역을 선택해주세요' },
+    'accommodationAreaError': { active: false, message: '지역을 선택해주세요' },
+    'accommodationSigunguError': { active: false, message: '시군구를 선택해주세요' },
     'accommodationReserveSuccess': { active: false, message: '숙소예약완료되었습니다!' },
 };
 

@@ -39,7 +39,7 @@ const pageCountPerPage = 10; //보여줄 페이지 갯수
 const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const logos = Constant.getLogos();
-const ModalBookCheck=() =>{
+const ModalBookCheck = () => {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
@@ -260,7 +260,7 @@ const ModalBookCheck=() =>{
             name: loginInfo.name
         };
         try {
-            const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
+            const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations/create`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
             setOpen(prev => ({
@@ -280,18 +280,8 @@ const ModalBookCheck=() =>{
     async function reserveCancelAPI() {
         // 취소보낼 데이터
         const formData = {
-            id: serverData.id,
-            flightId: serverData.flightId,
-            airLine: serverData.airLine,
-            arrAirport: serverData.arrAirport,
-            arrTime: serverData.arrTime,
-            depTime: serverData.depTime,
-            depAirport: serverData.depAirport,
-            charge: serverData.charge,
-            vihicleId: serverData.vihicleId,
-            userId: serverData.userId,
-            email: serverData.email,
-            name: serverData.name
+            flightReservationDTO: serverData.id, // flightReservationDTO : flightReservationId
+
         };
         try {// 결제 취소 알림 요청
             const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, formData);
