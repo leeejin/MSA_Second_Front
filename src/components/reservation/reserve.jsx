@@ -59,7 +59,7 @@ const ModalReserveCheck = () => {
 
         fetchRoomsData();
 
-    }, [clicked.cityCode]);
+    }, []);
     const show = (type, value) => {
         setShowOptions(prev => ({
             ...prev,
@@ -77,7 +77,8 @@ const ModalReserveCheck = () => {
     const handleOnChangeSelectValue = (e) => {
         setClicked((prev) => ({
             ...prev,
-            areaCode: e.target.value
+            areaCode: e.target.value,
+            cityCode: "-1",
         }))
         const city = Constant.getCityCode(e.target.value);
         setCitiesMenu(city);
@@ -90,6 +91,8 @@ const ModalReserveCheck = () => {
         }))
         /** 데이터 필터링 */
         //setRoomContents(dataFiltering(searchText, clicked.areaCode));
+        setIsLoading(true);
+        await getRoomsListAPI();
     };
 
     const dataFiltering = (text, areaCode) => {
@@ -131,9 +134,6 @@ const ModalReserveCheck = () => {
     if (!location.state) {
         return (<Navigate to={"*"} />)
     }
-    if (isLoading) return (<div className="fixed d-flex container-fixed">
-        <img src={Spinner} alt="로딩" width="100px" />
-    </div>)
     return (
         <div className="container">
 
@@ -149,13 +149,16 @@ const ModalReserveCheck = () => {
                     <div>
                         <input
                             placeholder='호텔명으로 검색해주세요'
-                            onChange={(e) => changeSearch(e)} />
-                        <button className="btn " onClick={handleSearch}>검색</button>
+                            onChange={(e) => changeSearch(e)} 
+                            onKeyPress={(e)=>{
+                                if(e.key==="Enter"){handleSearch()}
+                            }}/>
+                       
                     </div>
                     <div className="d-flex">
                         <div
                             ref={(el) => selectBoxRef.current[1] = el}
-                            className={`select select-email ${isShowOptions && 'active'}`}
+                            className={`select select-email ${isShowOptions.area && 'active'}`}
                             style={{ width: '100px' }}
                             onClick={() => show('area', isShowOptions.area)}
                         >
@@ -177,7 +180,7 @@ const ModalReserveCheck = () => {
                         </div>
                         <div
                             ref={(el) => selectBoxRef.current[2] = el}
-                            className={`select select-email ${isShowOptions && 'active'}`}
+                            className={`select select-email ${isShowOptions.city && 'active'}`}
                             style={{ width: '100px' }}
                             onClick={() => show('city', isShowOptions.city)}
                         >
@@ -202,6 +205,10 @@ const ModalReserveCheck = () => {
 
 
                 <hr className="hr" />
+                {
+                    isLoading ? <div className="fixed d-flex container-fixed">
+                    <img src={Spinner} alt="로딩" width="100px" />
+                </div> : <>
                 <div style={{ height: '550px' }}>
                     {roomContents.length > 0 ? (
                         roomContents.slice(offset, offset + itemCountPerPage).map((room) => (
@@ -226,6 +233,9 @@ const ModalReserveCheck = () => {
                         />
                     )}
                 </div>
+                </>
+                }
+                
 
             </div>
 
