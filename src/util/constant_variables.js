@@ -37,23 +37,6 @@ import JeolLaNamJSON from './json/전라남도 시군구.json';
 import JeJuJSON from './json/제주도 시군구.json';
 const airport = AirPort.response.body.items.item; // 공항 목록
 
-const seoulCityCode = SeoulJSON.response.body.items.item;
-const incheonCityCode = InCheonJSON.response.body.items.item;
-const deojeonCityCode = DaeJeonJSON.response.body.items.item;
-const daeguCityCode = DaeGuJSON.response.body.items.item;
-const gwangjuCityCode = GwangJuJSON.response.body.items.item;
-const busanCityCode = BusanJSON.response.body.items.item;
-const ulsanCityCode = UlSanJSON.response.body.items.item;
-const sejongCityCode = SeJongJSON.response.body.items.item;
-const gyeonggiCityCode = GyeongGiJSON.response.body.items.item;
-const gangwonCityCode = GangWonJSON.response.body.items.item;
-const chungcheongbukCityCode = ChungCheongBukJSON.response.body.items.item;
-const chungcheongnamCityCode = ChungCheongNamJSON.response.body.items.item;
-const gyeongsangbukCityCode = GyeongSangBukJSON.response.body.items.item;
-const gyeongsangnamCityCode = GyeongSangNamJSON.response.body.items.item;
-const jeollabukCityCode = JeolLaBukJSON.response.body.items.item;
-const jeollanamCityCode = JeolLaNamJSON.response.body.items.item;
-const jejuCityCode = JeJuJSON.response.body.items.item;
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -135,39 +118,39 @@ export default class Constant {
     static getCityCode(areaCode){
         switch(areaCode){
             case 1:
-                return seoulCityCode;
+                return SeoulJSON.response.body.items.item;
             case 2:
-                return incheonCityCode;
+                return InCheonJSON.response.body.items.item;
             case 3:
-                return deojeonCityCode;
+                return DaeJeonJSON.response.body.items.item;
             case 4:
-                return daeguCityCode;
+                return DaeGuJSON.response.body.items.item;
             case 5:
-                return gwangjuCityCode;
+                return GwangJuJSON.response.body.items.item;
             case 6:
-                return busanCityCode;
+                return BusanJSON.response.body.items.item;
             case 7:
-                return ulsanCityCode;
+                return UlSanJSON.response.body.items.item;
             case 8:
-                return sejongCityCode;
+                return SeJongJSON.response.body.items.item;
             case 31:
-                return gyeonggiCityCode;
+                return GyeongGiJSON.response.body.items.item;
             case 32:
-                return gangwonCityCode;
+                return GangWonJSON.response.body.items.item;
             case 33:
-                return chungcheongbukCityCode;
+                return ChungCheongBukJSON.response.body.items.item;
             case 34:
-                return chungcheongnamCityCode;
+                return ChungCheongNamJSON.response.body.items.item;
             case 35:
-                return gyeongsangbukCityCode;
+                return GyeongSangBukJSON.response.body.items.item;
             case 36:
-                return gyeongsangnamCityCode;
+                return GyeongSangNamJSON.response.body.items.item;
             case 37:
-                return jeollabukCityCode;
+                return JeolLaBukJSON.response.body.items.item;
             case 38:
-                return jeollanamCityCode;
+                return JeolLaNamJSON.response.body.items.item;
             case 39:
-                return jejuCityCode;
+                return JeJuJSON.response.body.items.item;
         }
     }
     static getCityValuebyCode(area,city){

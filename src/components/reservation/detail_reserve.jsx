@@ -117,7 +117,6 @@ const DetailReserve = () => {
             publicinfo: selectedMenu === 'publicinfo',
             introduceinfo: selectedMenu === 'introduceinfo',
             roominfo: selectedMenu === 'roominfo',
-            etcimageinfo: selectedMenu === 'etcimageinfo',
         });
     }
 

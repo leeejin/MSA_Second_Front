@@ -16,10 +16,13 @@ const areas = Constant.getRegionList();
 const ModalReserveCheck = () => {
     const location = useLocation();
     const { code, sigunguCode, cities } = location.state ?? {};
+    const [citiesMenu,setCitiesMenu] = useState(cities);
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
-    const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
-    const [cityCode, setCityCode] = useState(sigunguCode); //기본 지역은 전체 검색
+    const [clicked,setClicked] = useState({
+        areaCode:code,
+        cityCode:sigunguCode
+    });
     const [searchText, setSearchText] = useState(''); //검색어
     const [isLoading, setIsLoading] = useState(false);
     //페이지네이션
@@ -73,16 +76,23 @@ const ModalReserveCheck = () => {
         setSearchText(e.target.value);
     }
     const handleSearch = () => {
-        const value = Constant.getAccommodationValueByCode(areas, areaCode);
+        const value = Constant.getAccommodationValueByCode(areas, clicked.areaCode);
         setRoomContents(dataFiltering(searchText, value));
     }
     const handleOnChangeSelectValue = (e) => {
-        const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
-        setAreaCode(code);
+        setClicked((prev)=>({
+            ...prev,
+            areaCode:e.target.value
+        }))
+        const city = Constant.getCityCode(e.target.value);
+        setCitiesMenu(city);
     };
-    const handleOnChangeSelectValue2 = (e) => {
-        const code = e.target.value;
-        setCityCode(code);
+    const handleOnChangeSelectValue2 = (e,cityCode) => {
+        console.log(e.target.value);
+        setClicked((prev)=>({
+            ...prev,
+            cityCode:cityCode
+        }))
         // /** 데이터 필터링 */
         // setRoomContents(dataFiltering(searchText, e.target.value));
     };
@@ -109,7 +119,7 @@ const ModalReserveCheck = () => {
     /** 숙소 데이터 불러오는 함수 */
     async function getRoomsListAPI() {
         const params = {
-            areaCode: areaCode,
+            areaCode: clicked.areaCode,
             //sigunguCode: cityCode
         }
         try {
@@ -152,14 +162,14 @@ const ModalReserveCheck = () => {
                             style={{ width: '100px' }}
                             onClick={() => show('area', isShowOptions.area)}
                         >
-                            <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
-                            {selectBoxRef.current[1] && isShowOptions.area && (
+                            <label>{Constant.getAccommodationValueByCode(areas,clicked.areaCode)}</label>
+                            {(selectBoxRef.current[1] && isShowOptions.area) && (
                                 <ul className="select-option select-option-email">
                                     {areas.map(area => (
                                         <li
                                             className="option"
                                             key={area.key}
-                                            value={area.value}
+                                            value={area.key}
                                             onClick={(e) => handleOnChangeSelectValue(e)}>
                                             {area.value}
                                         </li>
@@ -174,16 +184,16 @@ const ModalReserveCheck = () => {
                             style={{ width: '100px' }}
                             onClick={() => show('city', isShowOptions.city)}
                         >
-                            <label>{Constant.getCityValuebyCode(cities, cityCode)}</label>
-                            {selectBoxRef.current[2] && isShowOptions.city && (
+                            <label>{Constant.getCityValuebyCode(citiesMenu, clicked.cityCode)}</label>
+                            {(selectBoxRef.current[2] && isShowOptions.city) && (
                                 <ul className="select-option select-option-email">
-                                    {cities.map((cities) => (
+                                    {citiesMenu.map((citiesMenu) => (
                                         <li
                                             className="option"
-                                            key={cities.code}
-                                            value={cities.code}
-                                            onClick={(e) => handleOnChangeSelectValue2(e)}>
-                                            {cities.name}
+                                            key={citiesMenu.rnum}
+                                            value={citiesMenu.code}
+                                            onClick={(e) => handleOnChangeSelectValue2(e,citiesMenu.code)}>
+                                            {citiesMenu.name}
                                         </li>
                                     ))}
                                 </ul>
