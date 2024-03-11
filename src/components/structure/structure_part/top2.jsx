@@ -11,20 +11,27 @@ const Button = styled.button`
         color:var(--hovering-color);
     }
 `;
+const Button2 = styled.button`
+    color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
+    &:hover,
+    &:active {
+        color:var(--hovering-color);
+    }
+`;
 const areas = Constant.getRegionList();
 /** top2 component */
 const Top2Component = () => {
     const navigate = useNavigate();
     const [areaCode, setAreaCode] = useState(-1); //기본 지역코드를 -1로 설정
     const [sigunguCode, setSigunguCode] = useState(-1); //기본 시군구코드를 -1로 설정
-    const [clicked, setClicked] = useState(-1);
-    const [clicked2, setClicked2] = useState(-1);
+    const [cities, setCities] = useState([]);
+    const [clicked, setClicked] = useState({ area: -1, city: "-1" });
     const [loading, setLoading] = useState(false);
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const handleSearch = () => {
-        if (areaCode === -1) {
+        if (clicked.area === -1) {
             handleError('accommodationAreaError', true);
-        } else if(sigunguCode === -1){
+        } else if (clicked.city === "-1") {
             handleError('accommodationSigunguError', true);
         }
         else {
@@ -32,7 +39,8 @@ const Top2Component = () => {
             navigate(`/Reserve`, {
                 state: {
                     code: areaCode,
-                    sigunguCode: sigunguCode
+                    sigunguCode: sigunguCode,
+                    cities:cities,
                 }
             });
             setLoading(false);
@@ -48,12 +56,21 @@ const Top2Component = () => {
     }
     const handleOnChangeSelectValue = (e, key) => {
         const value = Constant.getAccommodationCodeByValue(areas, e.target.value);
+        const cityCode = Constant.getCityCode(value);
         setAreaCode(value);
-        setClicked(key);
+        setCities(cityCode);
+        setClicked((prev) => ({
+            ...prev,
+            area: key
+        }));
+
     };
     const handleOnChangeSelect2Value = (e, key) => {
         setSigunguCode(e.target.value);
-        setClicked2(key);
+        setClicked((prev) => ({
+            ...prev,
+            city: key
+        }));
     };
     return (
         <div className="container container-top" >
@@ -69,10 +86,16 @@ const Top2Component = () => {
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <h2>국내</h2>
-                                                <SelectComponent
-                                                    clicked={clicked}
-                                                    handleOnChangeSelectValue={handleOnChangeSelectValue} />
+                                                {areas.map((area) => (
+                                                    <Button
+                                                        className="btn"
+                                                        clicked={clicked.area === area.key}
+                                                        key={area.key}
+                                                        value={area.value}
+                                                        onClick={(e) => handleOnChangeSelectValue(e, area.key)}>
+                                                        {area.value}
+                                                    </Button>
+                                                ))}
 
                                             </td>
                                         </tr>
@@ -83,9 +106,16 @@ const Top2Component = () => {
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <SelectSiGunGuComponent
-                                                    clicked2={clicked2}
-                                                    handleOnChangeSelect2Value={handleOnChangeSelect2Value} />
+                                                {cities.map((cities) => (
+                                                    <Button2
+                                                        className="btn"
+                                                        clicked={clicked.city === cities.code}
+                                                        key={cities.code}
+                                                        value={cities.code}
+                                                        onClick={(e) => handleOnChangeSelect2Value(e, cities.code)}>
+                                                        {cities.name}
+                                                    </Button2>
+                                                ))}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -102,44 +132,6 @@ const Top2Component = () => {
         </div >
     );
 }
-/** 지역 선택 컴포넌트 */
-const SelectComponent = ({ handleOnChangeSelectValue, clicked }) => {
-
-    return (
-        <>
-            {areas.map(area => (
-                <Button
-                    className="btn"
-                    clicked={clicked === area.key}
-                    key={area.key}
-                    value={area.value}
-                    onClick={(e) => handleOnChangeSelectValue(e, area.key)}>
-                    {area.value}
-                </Button>
-            ))}
-        </>
 
 
-    )
-}
-/** 시군구 선택 컴포넌트 */
-const SelectSiGunGuComponent = ({ handleOnChangeSelect2Value, clicked2 }) => {
-
-    return (
-        <>
-            {areas.map(area => (
-                <Button
-                    className="btn"
-                    clicked={clicked2 === area.key}
-                    key={area.key}
-                    value={area.value}
-                    onClick={(e) => handleOnChangeSelect2Value(e, area.key)}>
-                    {area.value}
-                </Button>
-            ))}
-        </>
-
-
-    )
-}
 export default Top2Component;

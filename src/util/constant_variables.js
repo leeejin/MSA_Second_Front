@@ -14,8 +14,46 @@ import Aerok from '../styles/airline_logo/aerok.png'; // 에어로케이
 import Asiana from '../styles/airline_logo/asiana.png'; // 아시아나
 import A_busan from '../styles/airline_logo/airbusan.png'; // 에어부산
 import A_seoul from '../styles/airline_logo/airseoul.png'; // 에어서울
+
 import AirPort from './json/airport-list.json';
+
+/** 전국 8도 지역코드 */
+import SeoulJSON from './json/서울 시군구.json';
+import InCheonJSON from './json/인천 시군구.json';
+import DaeJeonJSON from './json/대전 시군구.json';
+import DaeGuJSON from './json/대구 시군구.json';
+import GwangJuJSON from './json/광주 시군구.json';
+import BusanJSON from './json/부산 시군구.json';
+import UlSanJSON from './json/울산 시군구.json';
+import SeJongJSON from './json/세종특별자치시 시군구.json';
+import GyeongGiJSON from './json/경기도 시군구.json';
+import GangWonJSON from './json/강원특별자치도 시군구.json';
+import ChungCheongBukJSON from './json/충청북도 시군구.json';
+import ChungCheongNamJSON from './json/충청남도 시군구.json';
+import GyeongSangBukJSON from './json/경상북도 시군구.json';
+import GyeongSangNamJSON from './json/경상남도 시군구.json';
+import JeolLaBukJSON from './json/전북특별자치도 시군구.json';
+import JeolLaNamJSON from './json/전라남도 시군구.json';
+import JeJuJSON from './json/제주도 시군구.json';
 const airport = AirPort.response.body.items.item; // 공항 목록
+
+const seoulCityCode = SeoulJSON.response.body.items.item;
+const incheonCityCode = InCheonJSON.response.body.items.item;
+const deojeonCityCode = DaeJeonJSON.response.body.items.item;
+const daeguCityCode = DaeGuJSON.response.body.items.item;
+const gwangjuCityCode = GwangJuJSON.response.body.items.item;
+const busanCityCode = BusanJSON.response.body.items.item;
+const ulsanCityCode = UlSanJSON.response.body.items.item;
+const sejongCityCode = SeJongJSON.response.body.items.item;
+const gyeonggiCityCode = GyeongGiJSON.response.body.items.item;
+const gangwonCityCode = GangWonJSON.response.body.items.item;
+const chungcheongbukCityCode = ChungCheongBukJSON.response.body.items.item;
+const chungcheongnamCityCode = ChungCheongNamJSON.response.body.items.item;
+const gyeongsangbukCityCode = GyeongSangBukJSON.response.body.items.item;
+const gyeongsangnamCityCode = GyeongSangNamJSON.response.body.items.item;
+const jeollabukCityCode = JeolLaBukJSON.response.body.items.item;
+const jeollanamCityCode = JeolLaNamJSON.response.body.items.item;
+const jejuCityCode = JeJuJSON.response.body.items.item;
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -93,6 +131,48 @@ export default class Constant {
             { key: 1, value: 1, name: "낮은순" },
 
         ];
+    }
+    static getCityCode(areaCode){
+        switch(areaCode){
+            case 1:
+                return seoulCityCode;
+            case 2:
+                return incheonCityCode;
+            case 3:
+                return deojeonCityCode;
+            case 4:
+                return daeguCityCode;
+            case 5:
+                return gwangjuCityCode;
+            case 6:
+                return busanCityCode;
+            case 7:
+                return ulsanCityCode;
+            case 8:
+                return sejongCityCode;
+            case 31:
+                return gyeonggiCityCode;
+            case 32:
+                return gangwonCityCode;
+            case 33:
+                return chungcheongbukCityCode;
+            case 34:
+                return chungcheongnamCityCode;
+            case 35:
+                return gyeongsangbukCityCode;
+            case 36:
+                return gyeongsangnamCityCode;
+            case 37:
+                return jeollabukCityCode;
+            case 38:
+                return jeollanamCityCode;
+            case 39:
+                return jejuCityCode;
+        }
+    }
+    static getCityValuebyCode(area,city){
+        const matchedAirport = area.find((item) => item.code === city);
+        return matchedAirport ? matchedAirport.name : null;
     }
     static parseDate(date) {
         const arrAirportTime = date.toString();

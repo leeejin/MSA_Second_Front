@@ -15,7 +15,7 @@ const areas = Constant.getRegionList();
 /** 예약확인 목록 페이지 */
 const ModalReserveCheck = () => {
     const location = useLocation();
-    const { code, sigunguCode } = location.state ?? {};
+    const { code, sigunguCode, cities } = location.state ?? {};
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [areaCode, setAreaCode] = useState(code); //기본 지역은 전체 검색
@@ -44,6 +44,24 @@ const ModalReserveCheck = () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
+    useEffect(() => {
+        const fetchRoomsData = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getRoomsListAPI();
+                setRooms(response);
+                setRoomContents(response);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("데이터 불러오는 중 에러 발생:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchRoomsData();
+
+    }, []);
     const show = (type, value) => {
         setShowOptions(prev => ({
             ...prev,
@@ -61,11 +79,9 @@ const ModalReserveCheck = () => {
     const handleOnChangeSelectValue = (e) => {
         const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
         setAreaCode(code);
-        // /** 데이터 필터링 */
-         setRoomContents(dataFiltering(searchText, e.target.value));
     };
     const handleOnChangeSelectValue2 = (e) => {
-        const code = Constant.getAccommodationCodeByValue(areas, e.target.value);
+        const code = e.target.value;
         setCityCode(code);
         // /** 데이터 필터링 */
         // setRoomContents(dataFiltering(searchText, e.target.value));
@@ -83,17 +99,6 @@ const ModalReserveCheck = () => {
         return filteredContents;
     }
 
-    const handleAreaSearch = () => {
-        setIsLoading(true);
-        getRoomsListAPI().then((resposne) => {
-            setRooms(resposne);
-            setRoomContents(resposne);
-            setIsLoading(false);
-        }).catch((error) => {
-            console.error("데이터 불러오는 중 에러 발생:", error);
-            setIsLoading(false);
-        })
-    }
     /** 페이지네이션 함수 */
     const setCurrentPageFunc = (page) => {
         let lastOffset = (page - 1) * itemCountPerPage;
@@ -129,7 +134,6 @@ const ModalReserveCheck = () => {
                 <div className="panel panel-top font-color-white" >
                     <div>
                         <h1 className="font-family-bold">숙소 검색</h1>
-                        <h3>{Constant.getAccommodationValueByCode(areas, areaCode)}</h3>
                     </div>
                 </div>
             </div>
@@ -149,9 +153,19 @@ const ModalReserveCheck = () => {
                             onClick={() => show('area', isShowOptions.area)}
                         >
                             <label>{Constant.getAccommodationValueByCode(areas, areaCode)}</label>
-                            <SelectComponent
-                                isShowOptions={selectBoxRef.current[1] && isShowOptions.area}
-                                onClick={(e) => handleOnChangeSelectValue(e)} />
+                            {selectBoxRef.current[1] && isShowOptions.area && (
+                                <ul className="select-option select-option-email">
+                                    {areas.map(area => (
+                                        <li
+                                            className="option"
+                                            key={area.key}
+                                            value={area.value}
+                                            onClick={(e) => handleOnChangeSelectValue(e)}>
+                                            {area.value}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
 
                         </div>
                         <div
@@ -160,14 +174,22 @@ const ModalReserveCheck = () => {
                             style={{ width: '100px' }}
                             onClick={() => show('city', isShowOptions.city)}
                         >
-                            <label>{Constant.getAccommodationValueByCode(areas, cityCode)}</label>
-                            <SelectComponent
-                                isShowOptions={selectBoxRef.current[2] && isShowOptions.city}
-                                onClick={(e) => handleOnChangeSelectValue2(e)} />
+                            <label>{Constant.getCityValuebyCode(cities, cityCode)}</label>
+                            {selectBoxRef.current[2] && isShowOptions.city && (
+                                <ul className="select-option select-option-email">
+                                    {cities.map((cities) => (
+                                        <li
+                                            className="option"
+                                            key={cities.code}
+                                            value={cities.code}
+                                            onClick={(e) => handleOnChangeSelectValue2(e)}>
+                                            {cities.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
 
                         </div>
-                        <button className="btn"
-                            onClick={handleAreaSearch}>검색</button>
                     </div>
                 </div>
 
@@ -217,15 +239,15 @@ const InfoComponent = ({ room }) => {
         });
     }
     return (
-        <div className="list-room">
-            <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
+        <div className="list-room" >
+            <div className="d-flex d-row" style={{ width: '90%', margin: 'auto', justifyContent: 'space-between' }}>
                 <h3>{room.title.length > 12 ? room.title.substring(0, 12) + '...' : room.title}</h3>
                 <button className="btn btn-style-reserve" onClick={handleLocation}>상세보기</button>
             </div>
+            <div className="font-color-darkgrey" style={{ width: '90%', margin: 'auto' }}>
+                <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
-            <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
-            <div className="font-color-darkgrey">
                 <p>{room.addr1.length > 25 ? room.addr1.substring(0, 25) + '...' : room.addr1}</p>
                 <p><IoCall /> {room.tel}</p>
             </div>
@@ -235,25 +257,4 @@ const InfoComponent = ({ room }) => {
 
 }
 
-/** 지역 선택 컴포넌트 */
-const SelectComponent = ({ isShowOptions, onClick }) => {
-
-    return (
-        <>
-            {isShowOptions && (
-                <ul className="select-option select-option-email">
-                    {areas.map(area => (
-                        <li
-                            className="option"
-                            key={area.key}
-                            value={area.value}
-                            onClick={onClick}>
-                            {area.value}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </>
-    )
-}
 export default ModalReserveCheck;

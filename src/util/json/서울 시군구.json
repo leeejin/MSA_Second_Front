@@ -1,0 +1,142 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "0000",
+            "resultMsg": "OK"
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "rnum": 1,
+                        "code": "1",
+                        "name": "강남구"
+                    },
+                    {
+                        "rnum": 2,
+                        "code": "2",
+                        "name": "강동구"
+                    },
+                    {
+                        "rnum": 3,
+                        "code": "3",
+                        "name": "강북구"
+                    },
+                    {
+                        "rnum": 4,
+                        "code": "4",
+                        "name": "강서구"
+                    },
+                    {
+                        "rnum": 5,
+                        "code": "5",
+                        "name": "관악구"
+                    },
+                    {
+                        "rnum": 6,
+                        "code": "6",
+                        "name": "광진구"
+                    },
+                    {
+                        "rnum": 7,
+                        "code": "7",
+                        "name": "구로구"
+                    },
+                    {
+                        "rnum": 8,
+                        "code": "8",
+                        "name": "금천구"
+                    },
+                    {
+                        "rnum": 9,
+                        "code": "9",
+                        "name": "노원구"
+                    },
+                    {
+                        "rnum": 10,
+                        "code": "10",
+                        "name": "도봉구"
+                    },
+                    {
+                        "rnum": 11,
+                        "code": "11",
+                        "name": "동대문구"
+                    },
+                    {
+                        "rnum": 12,
+                        "code": "12",
+                        "name": "동작구"
+                    },
+                    {
+                        "rnum": 13,
+                        "code": "13",
+                        "name": "마포구"
+                    },
+                    {
+                        "rnum": 14,
+                        "code": "14",
+                        "name": "서대문구"
+                    },
+                    {
+                        "rnum": 15,
+                        "code": "15",
+                        "name": "서초구"
+                    },
+                    {
+                        "rnum": 16,
+                        "code": "16",
+                        "name": "성동구"
+                    },
+                    {
+                        "rnum": 17,
+                        "code": "17",
+                        "name": "성북구"
+                    },
+                    {
+                        "rnum": 18,
+                        "code": "18",
+                        "name": "송파구"
+                    },
+                    {
+                        "rnum": 19,
+                        "code": "19",
+                        "name": "양천구"
+                    },
+                    {
+                        "rnum": 20,
+                        "code": "20",
+                        "name": "영등포구"
+                    },
+                    {
+                        "rnum": 21,
+                        "code": "21",
+                        "name": "용산구"
+                    },
+                    {
+                        "rnum": 22,
+                        "code": "22",
+                        "name": "은평구"
+                    },
+                    {
+                        "rnum": 23,
+                        "code": "23",
+                        "name": "종로구"
+                    },
+                    {
+                        "rnum": 24,
+                        "code": "24",
+                        "name": "중구"
+                    },
+                    {
+                        "rnum": 25,
+                        "code": "25",
+                        "name": "중랑구"
+                    }
+                ]
+            },
+            "numOfRows": 25,
+            "pageNo": 1,
+            "totalCount": 25
+        }
+    }
+}

@@ -124,7 +124,7 @@ const ModalBookCheck = () => {
     };
     /** 결제 함수 */
     const handlePay = async () => {
-        const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
+        const merchant_uid = serverData.id + "_"+"F" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         const amount = serverData.charge;
 
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
@@ -255,6 +255,7 @@ const ModalBookCheck = () => {
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
             status: "결제전",
+            category:"F",
             userId: loginInfo.userId, //예약하는 userId
             email: loginInfo.email,
             name: loginInfo.name
