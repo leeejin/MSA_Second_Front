@@ -4,6 +4,8 @@ import styled from "styled-components";
 import Constant from '../../../util/constant_variables';
 import Spinner from '../../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
+import Area from '../../../util/json/지역코드.json';
+
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     &:hover,
@@ -18,20 +20,20 @@ const Button2 = styled.button`
         color:var(--hovering-color);
     }
 `;
-const areas = Constant.getRegionList();
+const areas = Area.response.body.items.item;
 /** top2 component */
 const Top2Component = () => {
     const navigate = useNavigate();
-    const [areaCode, setAreaCode] = useState(-1); //기본 지역코드를 -1로 설정
-    const [sigunguCode, setSigunguCode] = useState(-1); //기본 시군구코드를 -1로 설정
+    const [areaCode, setAreaCode] = useState("선택"); //기본 지역코드를 -1로 설정
+    const [sigunguCode, setSigunguCode] = useState("선택"); //기본 시군구코드를 -1로 설정
     const [cities, setCities] = useState([]);
-    const [clicked, setClicked] = useState({ area: -1, city: "-1" });
+    const [clicked, setClicked] = useState({ area:"선택", city: "선택"});
     const [loading, setLoading] = useState(false);
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const handleSearch = () => {
-        if (clicked.area === -1) {
+        if (clicked.area ==="선택") {
             handleError('accommodationAreaError', true);
-        } else if (clicked.city === "-1") {
+        } else if (clicked.city === "선택") {
             handleError('accommodationSigunguError', true);
         }
         else {
@@ -55,9 +57,8 @@ const Top2Component = () => {
         }, 2000);
     }
     const handleOnChangeSelectValue = (e, key) => {
-        const value = Constant.getAccommodationCodeByValue(areas, e.target.value);
-        const cityCode = Constant.getCityCode(value);
-        setAreaCode(value);
+        const cityCode = Constant.getCityCode(e.target.value);
+        setAreaCode(e.target.value);
         setCities(cityCode);
         setClicked((prev) => ({
             ...prev,
@@ -89,11 +90,11 @@ const Top2Component = () => {
                                                 {areas.map((area) => (
                                                     <Button
                                                         className="btn"
-                                                        clicked={clicked.area === area.key}
-                                                        key={area.key}
-                                                        value={area.value}
-                                                        onClick={(e) => handleOnChangeSelectValue(e, area.key)}>
-                                                        {area.value}
+                                                        clicked={clicked.area === area.code}
+                                                        key={area.code}
+                                                        value={area.code}
+                                                        onClick={(e) => handleOnChangeSelectValue(e, area.code)}>
+                                                        {area.name}
                                                     </Button>
                                                 ))}
 

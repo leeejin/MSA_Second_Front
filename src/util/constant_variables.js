@@ -87,27 +87,6 @@ export default class Constant {
             { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
-    static getRegionList() {
-        return [
-            { key: 1, value: '서울'},
-            { key: 2, value: '인천'},
-            { key: 3, value: '대전'},
-            { key: 4, value: '대구' },
-            { key: 5, value: '광주' },
-            { key: 6, value: '부산' },
-            { key: 7, value: '울산' },
-            { key: 8, value: '세종' },
-            { key: 31, value: '경기도'},
-            { key: 32, value: '강원도' },
-            { key: 33, value: '충청북도' },
-            { key: 34, value: '충청남도'},
-            { key: 35, value: '경상북도'},
-            { key: 36, value: '경상남도' },
-            { key: 37, value: '전라북도'},
-            { key: 38, value: '전라남도' },
-            { key: 39, value: '제주도' },
-        ];
-    }
     static getCostMenus() { //좌석등급
         return [
             { key: 0, value: 0, name: "높은순" },
@@ -117,45 +96,45 @@ export default class Constant {
     }
     static getCityCode(areaCode){
         switch(areaCode){
-            case 1:
+            case "1":
                 return SeoulJSON.response.body.items.item;
-            case 2:
+            case "2":
                 return InCheonJSON.response.body.items.item;
-            case 3:
+            case "3":
                 return DaeJeonJSON.response.body.items.item;
-            case 4:
+            case "4":
                 return DaeGuJSON.response.body.items.item;
-            case 5:
+            case "5":
                 return GwangJuJSON.response.body.items.item;
-            case 6:
+            case "6":
                 return BusanJSON.response.body.items.item;
-            case 7:
+            case "7":
                 return UlSanJSON.response.body.items.item;
-            case 8:
+            case "8":
                 return SeJongJSON.response.body.items.item;
-            case 31:
+            case "31":
                 return GyeongGiJSON.response.body.items.item;
-            case 32:
+            case "32":
                 return GangWonJSON.response.body.items.item;
-            case 33:
+            case "33":
                 return ChungCheongBukJSON.response.body.items.item;
-            case 34:
+            case "34":
                 return ChungCheongNamJSON.response.body.items.item;
-            case 35:
+            case "35":
                 return GyeongSangBukJSON.response.body.items.item;
-            case 36:
+            case "36":
                 return GyeongSangNamJSON.response.body.items.item;
-            case 37:
+            case "37":
                 return JeolLaBukJSON.response.body.items.item;
-            case 38:
+            case "38":
                 return JeolLaNamJSON.response.body.items.item;
-            case 39:
+            case "39":
                 return JeJuJSON.response.body.items.item;
         }
     }
     static getCityValuebyCode(area,city){
         const matchedAirport = area.find((item) => item.code === city);
-        return matchedAirport ? matchedAirport.name : null;
+        return matchedAirport ? matchedAirport.name : "선택";
     }
     static parseDate(date) {
         const arrAirportTime = date.toString();
@@ -241,11 +220,11 @@ export default class Constant {
         return matchingLogo ? matchingLogo.imageUrl : '';
     };
     static getAccommodationCodeByValue = (areas,value) => {
-        const matchingareas = areas.find((areas) => areas.value === value);
-        return matchingareas ? matchingareas.key : "";
+        const matchingareas = areas.find((areas) => areas.name === value);
+        return matchingareas ? matchingareas.code : "";
     };
     static getAccommodationValueByCode = (areas,key) => {
-        const matchingareas = areas.find((areas) => areas.key === key);
-        return matchingareas ? matchingareas.value : "";
+        const matchingareas = areas.find((areas) => areas.code === key);
+        return matchingareas ? matchingareas.name : "선택";
     };
 }

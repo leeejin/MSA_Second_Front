@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
 import Pagination from '../../util/custom/pagenation';
@@ -7,11 +7,12 @@ import { IoCall } from "react-icons/io5";
 import NoImage from '../../styles/image/noImage.png';
 import NoData from '../../styles/image/noData.png';
 import axios from '../../axiosInstance';
-
+import Area from '../../util/json/지역코드.json';
+import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 6; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
-const areas = Constant.getRegionList();
+const areas = Area.response.body.items.item;
 /** 예약확인 목록 페이지 */
 const ModalReserveCheck = () => {
     const location = useLocation();
@@ -31,7 +32,7 @@ const ModalReserveCheck = () => {
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ area: false, city: false });
     const selectBoxRef = useRef([null, null]);
-
+    const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     useEffect(() => {
         const handleOutsideClick = (event) => {
             const isOutsideClick = selectBoxRef.current.every((ref) => {
@@ -52,6 +53,7 @@ const ModalReserveCheck = () => {
             try {
                 setIsLoading(true);
                 await getRoomsListAPI();
+
             } catch (error) {
                 console.error("데이터 불러오는 중 에러 발생:", error);
             }
@@ -60,6 +62,13 @@ const ModalReserveCheck = () => {
         fetchRoomsData();
 
     }, []);
+    const handleError = (errorType, hasError) => {
+        errorDispatch({ type: errorType, [errorType]: hasError });
+
+        setTimeout(() => {
+            errorDispatch({ type: 'error' });
+        }, 2000);
+    }
     const show = (type, value) => {
         setShowOptions(prev => ({
             ...prev,
@@ -71,30 +80,39 @@ const ModalReserveCheck = () => {
         setSearchText(e.target.value);
     }
     const handleSearch = () => {
-        const value = Constant.getAccommodationValueByCode(areas, clicked.areaCode);
-        setRoomContents(dataFiltering(searchText, value));
+        if (searchText === '') {
+            handleError('searchTextError', true);
+        } else {
+            const value = Constant.getAccommodationValueByCode(areas, clicked.areaCode);
+            setRoomContents(dataFiltering(searchText, value));
+        }
+
     }
-    const handleOnChangeSelectValue = (e) => {
+    const handleOnChangeSelectValue = (areaCode) => {
         setClicked((prev) => ({
             ...prev,
-            areaCode: e.target.value,
-            cityCode: "-1",
+            areaCode: areaCode,
+            cityCode: "선택",
         }))
-        const city = Constant.getCityCode(e.target.value);
+        const city = Constant.getCityCode(areaCode);
         setCitiesMenu(city);
     };
-    const handleOnChangeSelectValue2 = async (e, cityCode) => {
-        console.log(e.target.value);
+    const handleOnChangeSelectValue2 = (cityCode) => {
         setClicked((prev) => ({
             ...prev,
             cityCode: cityCode
         }))
-        /** 데이터 필터링 */
-        //setRoomContents(dataFiltering(searchText, clicked.areaCode));
-        setIsLoading(true);
-        await getRoomsListAPI();
-    };
 
+    };
+    const handleSubmit = async () => {
+        if (clicked.cityCode !== "선택") {
+            setIsLoading(true);
+            await getRoomsListAPI();
+        } else {
+            handleError('accommodationSigunguError', true);
+        }
+
+    }
     const dataFiltering = (text, areaCode) => {
         let filteredContents = [...rooms];
         // 가맹점명으로 검색
@@ -136,7 +154,7 @@ const ModalReserveCheck = () => {
     }
     return (
         <div className="container">
-
+            <Alert errorMessage={errorMessage} />
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                 <div className="panel panel-top font-color-white" >
                     <div>
@@ -149,13 +167,13 @@ const ModalReserveCheck = () => {
                     <div>
                         <input
                             placeholder='호텔명으로 검색해주세요'
-                            onChange={(e) => changeSearch(e)} 
-                            onKeyPress={(e)=>{
-                                if(e.key==="Enter"){handleSearch()}
-                            }}/>
-                       
+                            onChange={(e) => changeSearch(e)}
+                            onKeyPress={(e) => {
+                                if (e.key === "Enter") { handleSearch() }
+                            }} />
+                        <button className="btn" onClick={handleSearch}>검색</button>
                     </div>
-                    <div className="d-flex">
+                    <div className="d-flex d-row">
                         <div
                             ref={(el) => selectBoxRef.current[1] = el}
                             className={`select select-email ${isShowOptions.area && 'active'}`}
@@ -165,13 +183,13 @@ const ModalReserveCheck = () => {
                             <label>{Constant.getAccommodationValueByCode(areas, clicked.areaCode)}</label>
                             {(selectBoxRef.current[1] && isShowOptions.area) && (
                                 <ul className="select-option select-option-email">
-                                    {areas.map(area => (
+                                    {areas.map((area) => (
                                         <li
                                             className="option"
-                                            key={area.key}
-                                            value={area.key}
-                                            onClick={(e) => handleOnChangeSelectValue(e)}>
-                                            {area.value}
+                                            key={area.code}
+                                            value={area.code}
+                                            onClick={() => handleOnChangeSelectValue(area.code)}>
+                                            {area.name}
                                         </li>
                                     ))}
                                 </ul>
@@ -192,7 +210,7 @@ const ModalReserveCheck = () => {
                                             className="option"
                                             key={citiesMenu.rnum}
                                             value={citiesMenu.code}
-                                            onClick={(e) => handleOnChangeSelectValue2(e, citiesMenu.code)}>
+                                            onClick={() => handleOnChangeSelectValue2(citiesMenu.code)}>
                                             {citiesMenu.name}
                                         </li>
                                     ))}
@@ -200,6 +218,7 @@ const ModalReserveCheck = () => {
                             )}
 
                         </div>
+                        <button className="btn" onClick={handleSubmit}>검색</button>
                     </div>
                 </div>
 
@@ -207,35 +226,35 @@ const ModalReserveCheck = () => {
                 <hr className="hr" />
                 {
                     isLoading ? <div className="fixed d-flex container-fixed">
-                    <img src={Spinner} alt="로딩" width="100px" />
-                </div> : <>
-                <div style={{ height: '550px' }}>
-                    {roomContents.length > 0 ? (
-                        roomContents.slice(offset, offset + itemCountPerPage).map((room) => (
-                            <InfoComponent key={room.contentid} room={room} />
-                        ))
-                    ) : (
-                        <div className="container-content">
-                            <div className="d-flex d-column" style={{ height: '100%' }}>
-                                <img src={NoData} alt="데이터 없음" />
-                                <h3>해당 내용이 존재하지 않습니다</h3>
-                            </div>
-                        </div>)}
-                </div>
-                <div style={{ clear: 'both' }}>
-                    {roomContents.length > itemCountPerPage && (
-                        <Pagination
-                            itemCount={roomContents.length}
-                            pageCountPerPage={pageCountPerPage}
-                            itemCountPerPage={itemCountPerPage}
-                            currentPage={currentPage}
-                            clickListener={setCurrentPageFunc}
-                        />
-                    )}
-                </div>
-                </>
+                        <img src={Spinner} alt="로딩" width="100px" />
+                    </div> : <>
+                        <div style={{ height: '550px' }}>
+                            {roomContents.length > 0 ? (
+                                roomContents.slice(offset, offset + itemCountPerPage).map((room) => (
+                                    <InfoComponent key={room.contentid} room={room} />
+                                ))
+                            ) : (
+                                <div className="container-content">
+                                    <div className="d-flex d-column" style={{ height: '100%' }}>
+                                        <img src={NoData} alt="데이터 없음" />
+                                        <h3>해당 내용이 존재하지 않습니다</h3>
+                                    </div>
+                                </div>)}
+                        </div>
+                        <div style={{ clear: 'both' }}>
+                            {roomContents.length > itemCountPerPage && (
+                                <Pagination
+                                    itemCount={roomContents.length}
+                                    pageCountPerPage={pageCountPerPage}
+                                    itemCountPerPage={itemCountPerPage}
+                                    currentPage={currentPage}
+                                    clickListener={setCurrentPageFunc}
+                                />
+                            )}
+                        </div>
+                    </>
                 }
-                
+
 
             </div>
 
@@ -265,7 +284,7 @@ const InfoComponent = ({ room }) => {
                 <img src={room.firstimage ? room.firstimage : NoImage} alt={room.title} width={"100%"} />
 
 
-                <p>{room.addr1.length > 25 ? room.addr1.substring(0, 25) + '...' : room.addr1}</p>
+                <p style={{ overflow: "hidden" }}>{room.addr1.length > 23 ? room.addr1.substring(0, 23) + '...' : room.addr1}</p>
                 <p><IoCall /> {room.tel}</p>
             </div>
         </div>
