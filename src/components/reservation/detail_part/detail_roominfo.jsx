@@ -40,11 +40,11 @@ const DetailRoomInfo = ({ contents }) => {
                         <tbody>
                             <tr>
                                 <td>비수기주중최소</td>
-                                <td>{contents.charge}</td>
+                                <td>{contents.charge1.toLocaleString()}원</td>
                             </tr>
                             <tr>
                                 <td>비수기주말최소</td>
-                                <td>{contents.charge}</td>
+                                <td>{contents.charge2.toLocaleString()}원</td>
                             </tr>
                         </tbody>
                     </table>

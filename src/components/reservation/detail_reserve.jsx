@@ -29,32 +29,7 @@ const DetailReserve = () => {
         name: useSelector((state) => state.name),
         email: useSelector((state) => state.username)
     };
-    const contents = {
-        addr1: "서울특별시 용산구 이태원동 131-11",
-        addr2: "",
-        areaCode: "3",
-        contentid: 2594874,
-        contenttypeid: 32,
-        firstimage: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image2_1.jpg",
-        firstimage2: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image3_1.jpg",
-        id: 63,
-        modifiedtime: 20190404023919,
-        sigungucode: "1",
-        tel: "042-932-0005",
-        title: "IBC호텔",
-        checkintime: "14:00",
-        checkouttime: "11:30",
-        parkinglodging: "가능",
-        chkcooking: "가능",
-        refundregulation: "숙박 2일 전까지 취소 시 100%, 당일 70% 환불",
-        mapx:"127.4314778135",
-        mapy:"36.4504883321",
-        mlevel:"3",
-        overview: "호텔더에이치는 대전 신탄지역에 근접한 비즈니스 호텔로, 합리적인 가격과 품격있는 서라운드? 활용하기 좋다. 장애인 화장실을 갖춘 객실도 있다. 1층 카페에서 무료 조식을 제공하고 난토카~~",
-        zipcode: "36760",
-        telname: "오광석",
-        reserveationurl: "http://www.hoteltheh.co.kr",
-    }
+    const [contents,setContents] = useState({});
     const [open, setOpen] = useState({
         reserveopen: false,
         payopen: false,
@@ -64,11 +39,16 @@ const DetailReserve = () => {
     const [serverData, setServerData] = useState({}); //서버로부터 받은 데이터
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 
 
+    useEffect(()=>{
+        getAccommodationReserveAPI().then((response)=>{
+            setContents(response);
+        });
+    },[])
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         IMP.init('imp01307537');
     }, []);
-
+    
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
 
@@ -170,11 +150,7 @@ const DetailReserve = () => {
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
             setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
-            // navigate(`/CompleteBook/${serverData.id} `, {
-            //     state: {
-            //         contents: serverData,
-            //     }
-            // });
+            
         } catch (error) {
             await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청
         }
@@ -283,6 +259,38 @@ const DetailReserve = () => {
             console.error(error);
             handleError('reservecancelError', true);
         }
+    }
+    /** 숙소디테일 데이터 불러오는 함수 페이지 로드 될 때 실행 */
+    async function getAccommodationReserveAPI(){
+        return {
+            addr1: "서울특별시 용산구 이태원동 131-11",
+            addr2: "",
+            areaCode: "3",
+            contentid: 2594874,
+            contenttypeid: 32,
+            firstimage: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image2_1.jpg",
+            firstimage2: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image3_1.jpg",
+            id: 63,
+            modifiedtime: 20190404023919,
+            sigungucode: "1",
+            tel: "042-932-0005",
+            title: "IBC호텔",
+            checkintime: "14:00",
+            checkouttime: "11:30",
+            parkinglodging: "가능",
+            chkcooking: "가능",
+            refundregulation: "숙박 2일 전까지 취소 시 100%, 당일 70% 환불",
+            mapx:"127.4314778135",
+            mapy:"36.4504883321",
+            mlevel:"3",
+            overview: "호텔더에이치는 대전 신탄지역에 근접한 비즈니스 호텔로, 합리적인 가격과 품격있는 서라운드? 활용하기 좋다. 장애인 화장실을 갖춘 객실도 있다. 1층 카페에서 무료 조식을 제공하고 난토카~~",
+            zipcode: "36760",
+            telname: "오광석",
+            reserveationurl: "http://www.hoteltheh.co.kr",
+            charge:20000, //성수기 주중  = 가격
+            charge1:10000, //비수기주중최소
+            charge2:10000, //비수기주말최소
+        };
     }
     return (
         <div className="container">
