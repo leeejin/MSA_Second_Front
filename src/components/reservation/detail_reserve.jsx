@@ -212,22 +212,17 @@ const DetailReserve = () => {
     async function reserveInfoAPI() {
         //백엔드에 보낼 예약정보
         const formData = {
-            flightId: selectedData.id,
-            airLine: selectedData.airlineNm, //항공사
-            arrAirport: Constant.getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
-            depAirport: Constant.getAirportIdByName(selectedData.depAirportNm), // 출발지 공항 ID
-            arrTime: selectedData.arrPlandTime, //도착시간
-            depTime: selectedData.depPlandTime, //출발시간
-            charge: selectedData.charge, //비용
-            vihicleId: selectedData.vihicleId, //항공사 id
-            status: "결제전",
-            category: "L",
-            userId: loginInfo.userId, //예약하는 userId
-            email: loginInfo.email,
-            name: loginInfo.name
+            //이것도무슨 데이터 보낼지
+            /**
+             * reservationdate:, <<<<<<<<<<<<<<<<<<선정님 디자인 부탁드립니다>>>>>>>>>>>>>>>>>>>>>
+             * email:,
+             * charge:,
+             * contentId: ,  그러면 이거 네개만 일단 ㅗㅂ내면 되는거죠 ?????,
+             * 
+             */
         };
         try {
-            const reservationResponse = await axios.post(Constant.serviceURL + `숙소예약URL`, formData);
+            const reservationResponse = await axios.post(Constant.serviceURL + `/lodgingReservation/create`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
             handleError('accommodationReserveSuccess', true);
@@ -249,10 +244,10 @@ const DetailReserve = () => {
     async function reserveCancelAPI() {
         // 취소보낼 데이터
         const formData = {
-            flightReservationDTO: serverData.id, // flightReservationDTO : flightReservationId
+            lodgingreservationId: serverData.id, 
         };
         try {// 결제 취소 알림 요청
-            const response = await axios.post(Constant.serviceURL + `숙소예약취소URL`, formData);
+            const response = await axios.post(Constant.serviceURL + `/lodgingReservation/cancel`, formData);
             console.log("취소완료");
             handleError('reservecancelSuccess', true);
             return response;
@@ -268,7 +263,8 @@ const DetailReserve = () => {
             contentid: contentid
         }
         try {
-            // const response = await axios.get(Constant.serviceURL+`숙소데이터불러오는 URL`,{params:params});
+            // const response = await axios.get(Constant.serviceURL+`/lodgings`,{params:params});
+           
             return {
                 addr1: "서울특별시 용산구 이태원동 131-11",
                 addr2: "",
@@ -350,7 +346,7 @@ const DetailReserve = () => {
                     className={`btn font-family-semibold ${subBoxVisible.roominfo && "selected"}`}
                     style={{ width: '33.3%', padding: '10px' }}
                     onClick={() => handleLocation('roominfo')}
-                >숙소이미지
+                >객실정보
                 </div>
 
             </Menubar>

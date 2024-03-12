@@ -254,9 +254,7 @@ const ModalBookCheck = () => {
             depTime: selectedData.depPlandTime, //출발시간
             charge: selectedData.charge, //비용
             vihicleId: selectedData.vihicleId, //항공사 id
-            status: "결제전",
-            category:"F",
-            userId: loginInfo.userId, //예약하는 userId
+            userId: loginInfo.userId, //예약하는 userId 
             email: loginInfo.email,
             name: loginInfo.name
         };
@@ -264,7 +262,7 @@ const ModalBookCheck = () => {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations/create`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
-            setOpen(prev => ({
+            setOpen(prev => ({ 
                 ...prev,
                 payopen: true
             }));
@@ -281,8 +279,7 @@ const ModalBookCheck = () => {
     async function reserveCancelAPI() {
         // 취소보낼 데이터
         const formData = {
-            flightReservationDTO: serverData.id, // flightReservationDTO : flightReservationId
-
+            flightReservationId: serverData.id, // 취소id
         };
         try {// 결제 취소 알림 요청
             const response = await axios.post(Constant.serviceURL + `/flightReservations/cancel`, formData);
