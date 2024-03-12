@@ -17,7 +17,7 @@ export default function Menubar() {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-    const userId = useSelector(state => state.userId);
+    const userId = useSelector((state) => state.userId);
     const handleOpenClose = (e) => {
         e.preventDefault();
         setOpen(prev=>!prev);
@@ -69,7 +69,6 @@ export default function Menubar() {
                             <NavLink
                                 className="btn btn-nav-item btn-style-item font-family-semibold"
                                 onClick={(e) => handleOpenClose(e)}
-                                to="/"
                             >로그아웃</NavLink>
                         </>
                             : <>

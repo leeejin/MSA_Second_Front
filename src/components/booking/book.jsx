@@ -181,7 +181,7 @@ const ModalBookCheck = () => {
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
+            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             navigate(`/CompleteBook/${serverData.id} `, {
                 state: {
                     contents: serverData,
