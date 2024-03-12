@@ -70,7 +70,7 @@ const PaidList=()=> {
     async function callGetBookedListAPI() { //항공편 불러오는 url : reservationInfos/flights, 
                                             //숙소 불러오는 url : reservationInfos/lodgings
         try {
-            const response = await axios.get(Constant.serviceURL + `/flightInfos/${userId}`);
+            const response = await axios.get(Constant.serviceURL + `reservationInfos/flight/${userId}`);
             return response.data;
         } catch (error) {
             console.error(error);

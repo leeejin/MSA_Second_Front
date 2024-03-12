@@ -132,8 +132,10 @@ const ModalBookCheck = () => {
             await checkPaymentAPI(merchant_uid);
             await preparePaymentAPI(merchant_uid, amount);
             console.log('Payment has been prepared successfully.');
+            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
         } catch (error) {
             handleError('payError', true);
+            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             return;
         }
 
@@ -148,9 +150,11 @@ const ModalBookCheck = () => {
             if (rsp.success) { // 결제가 성공되면
                 console.log('Payment succeeded');
                 await validatePaymentAPI(rsp);
+                setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             } else {
                 console.error(`Payment failed.Error: ${rsp.error_msg} `);
                 await cancelPaymentAPI(rsp.merchant_uid); // 결제 실패되었음을 알리는 요청
+                setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             }
         });
     }
@@ -181,7 +185,7 @@ const ModalBookCheck = () => {
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
+            
             navigate(`/CompleteBook/${serverData.id} `, {
                 state: {
                     contents: serverData,
@@ -232,11 +236,7 @@ const ModalBookCheck = () => {
                 }
             });
             console.log('결제취소 처리가 성공적으로 되었습니다');
-            setOpen(prev => ({
-                ...prev,
-                payopen: !prev.payopen,
-                reserveopen: !prev.reserveopen
-            }));
+           
         } catch (error) {
 
             console.error('결제취소 처리가 실패했습니다.\n오류내용 : ', error.reponse.data);
