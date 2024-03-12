@@ -270,7 +270,7 @@ const InfoComponent = ({ room }) => {
     const handleLocation = () => {
         navigate(`/Rooms/searchDetail/${room.contentid}`, {
             state: {
-                contents: room,
+                contentid: room.contentid,
             }
         });
     }
