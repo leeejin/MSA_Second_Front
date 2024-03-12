@@ -24,13 +24,37 @@ const Menubar = styled.div`
 const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const DetailReserve = () => {
-    const location = useLocation();
     const loginInfo = {
         userId: useSelector((state) => state.userId),
         name: useSelector((state) => state.name),
         email: useSelector((state) => state.username)
     };
-    const { contents } = location.state ?? {};
+    const contents = {
+        addr1: "서울특별시 용산구 이태원동 131-11",
+        addr2: "",
+        areaCode: "3",
+        contentid: 2594874,
+        contenttypeid: 32,
+        firstimage: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image2_1.jpg",
+        firstimage2: "http://tong.visitkorea.or.kr/cms/resource/33/2947233_image3_1.jpg",
+        id: 63,
+        modifiedtime: 20190404023919,
+        sigungucode: "1",
+        tel: "042-932-0005",
+        title: "IBC호텔",
+        checkintime: "14:00",
+        checkouttime: "11:30",
+        parkinglodging: "가능",
+        chkcooking: "가능",
+        refundregulation: "숙박 2일 전까지 취소 시 100%, 당일 70% 환불",
+        mapx:"127.4314778135",
+        mapy:"36.4504883321",
+        mlevel:"3",
+        overview: "호텔더에이치는 대전 신탄지역에 근접한 비즈니스 호텔로, 합리적인 가격과 품격있는 서라운드? 활용하기 좋다. 장애인 화장실을 갖춘 객실도 있다. 1층 카페에서 무료 조식을 제공하고 난토카~~",
+        zipcode: "36760",
+        telname: "오광석",
+        reserveationurl: "http://www.hoteltheh.co.kr",
+    }
     const [open, setOpen] = useState({
         reserveopen: false,
         payopen: false,
@@ -76,7 +100,7 @@ const DetailReserve = () => {
     };
     /** 결제 함수 */
     const handlePay = async () => {
-        const merchant_uid = serverData.id + "_"+"L" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
+        const merchant_uid = serverData.id + "_" + "L" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         const amount = serverData.charge;
 
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
@@ -109,7 +133,7 @@ const DetailReserve = () => {
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
         await reserveInfoAPI();
-       
+
     };
     /** 메뉴 선택 */
     const handleLocation = (selectedMenu) => {
@@ -260,77 +284,70 @@ const DetailReserve = () => {
             handleError('reservecancelError', true);
         }
     }
-    if (!location.state) {
-        return (<Navigate to="*" />)
-    }
-    else {
-        return (
-            <div className="container">
-                <Alert errorMessage={errorMessage} />
-                {
-                    open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"숙소예약하시겠습니까?"} />
-                }
-                {
-                    open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
-                }
-                <div className="container-top" style={{ height: '220px', marginTop: '60px' }}>
-                    <div className="panel panel-top font-color-white" >
-                        <h2 className="font-family-bold">{contents.title}</h2>
-                        <p>{contents.addr1}</p>
-                        <p>{contents.overview}</p>
-                        <p><IoCall /> {contents.tel}</p>
-                        <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
-                            <div className="d-flex" style={{ gap: '10px' }}>
-                                <p>성수기 주중</p>
-                                <h3 style={{ margin: '0 0 0 10px' }}>{contents.charge} 원</h3>
-                            </div>
-                            <div>
-                                <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
-                                    예약하러 가기
-                                </button>
-                            </div>
+    return (
+        <div className="container">
+            <Alert errorMessage={errorMessage} />
+            {
+                open.reserveopen && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"숙소예약하시겠습니까?"} />
+            }
+            {
+                open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
+            }
+            <div className="container-top" style={{ height: '220px', marginTop: '60px' }}>
+                <div className="panel panel-top font-color-white" >
+                    <h2 className="font-family-bold">{contents.title}</h2>
+                    <p>{contents.addr1}</p>
+                    <p><IoCall /> {contents.tel}</p>
+                    <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
+                        <div className="d-flex" style={{ gap: '10px' }}>
+                            <p>성수기 주중</p>
+                            <h3 style={{ margin: '0 0 0 10px' }}>{contents.charge} 원</h3>
                         </div>
-
+                        <div>
+                            <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
+                                예약하러 가기
+                            </button>
+                        </div>
                     </div>
+
                 </div>
-                <Menubar>
-                    <div
-                        className={`btn font-family-semibold ${subBoxVisible.publicinfo && "selected"}`}
-                        style={{ width: '33.3%', padding: '10px' }}
-                        onClick={() => handleLocation('publicinfo')}
-                    >
-                        공통정보
-                    </div>
-                    <div
-                        className={`btn font-family-semibold ${subBoxVisible.introduceinfo && "selected"}`}
-                        style={{ width: '33.3%', padding: '10px' }}
-                        onClick={() => handleLocation('introduceinfo')}
-                    >
-                        소개정보
-                    </div>
-                    <div
-                        className={`btn font-family-semibold ${subBoxVisible.roominfo && "selected"}`}
-                        style={{ width: '33.3%', padding: '10px' }}
-                        onClick={() => handleLocation('roominfo')}
-                    >숙소이미지
-                    </div>
-
-                </Menubar>
-
-                {
-                    subBoxVisible.publicinfo && <PublicInfo contents={contents} />
-                }
-                {
-                    subBoxVisible.introduceinfo && <IntroduceInfo contents={contents} />
-                }
-                {
-                    subBoxVisible.roominfo && <RoomInfo contents={contents} />
-                }
-
             </div>
-        )
-    }
+            <Menubar>
+                <div
+                    className={`btn font-family-semibold ${subBoxVisible.publicinfo && "selected"}`}
+                    style={{ width: '33.3%', padding: '10px' }}
+                    onClick={() => handleLocation('publicinfo')}
+                >
+                    공통정보
+                </div>
+                <div
+                    className={`btn font-family-semibold ${subBoxVisible.introduceinfo && "selected"}`}
+                    style={{ width: '33.3%', padding: '10px' }}
+                    onClick={() => handleLocation('introduceinfo')}
+                >
+                    소개정보
+                </div>
+                <div
+                    className={`btn font-family-semibold ${subBoxVisible.roominfo && "selected"}`}
+                    style={{ width: '33.3%', padding: '10px' }}
+                    onClick={() => handleLocation('roominfo')}
+                >숙소이미지
+                </div>
 
+            </Menubar>
+
+            {
+                subBoxVisible.publicinfo && <PublicInfo contents={contents} />
+            }
+            {
+                subBoxVisible.introduceinfo && <IntroduceInfo contents={contents} />
+            }
+            {
+                subBoxVisible.roominfo && <RoomInfo contents={contents} />
+            }
+
+        </div>
+    )
 };
 
 

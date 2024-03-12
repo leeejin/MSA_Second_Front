@@ -13,17 +13,17 @@ const { kakao } = window;
 
 /** 공통정보 */
 const DetailPublicInfo = ({ contents }) => {
-
+    console.log(contents);
     /** 지도 api */
     useEffect(() => {
         var container = document.getElementById('map');
         var options = {
-            center: new kakao.maps.LatLng(contents.mapx, contents.mapy),
+            center: new kakao.maps.LatLng(contents.mapy, contents.mapx),
             level: contents.mlevel ? contents.mlevel : 3
         };
 
         var map = new kakao.maps.Map(container, options);
-        var markerPosition = new kakao.maps.LatLng(contents.mapx, contents.mapy);
+        var markerPosition = new kakao.maps.LatLng(contents.mapy, contents.mapx);
         var marker = new kakao.maps.Marker({
             position: markerPosition
         });
@@ -45,7 +45,7 @@ const InfoComponent = ({ contents }) => {
     return (
         <>
             <div className="w-50">
-                <h2>{contents.overview}</h2>
+                <p>{contents.overview}</p>
                 <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
                     <img
                         src={contents.firstimage ? contents.firstimage : NoImage}
@@ -70,7 +70,7 @@ const InfoComponent = ({ contents }) => {
                     </tr>
                     <tr>
                         <td>홈페이지</td>
-                        <td><a href={contents.homepage}>{contents.homepage}</a></td>
+                        <td><a href={contents.reserveationurl}>{contents.reserveationurl}</a></td>
                     </tr>
                     <tr>
                         <td>주소</td>
