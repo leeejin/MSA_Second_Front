@@ -25,7 +25,7 @@ const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const DetailReserve = () => {
     const location = useLocation();
-    const { contentid } = location.state; //페이지 로드될때 백으로 보낼 데이터
+    const { roomCode } = location.state; //페이지 로드될때 백으로 보낼 데이터
     const loginInfo = {
         userId: useSelector((state) => state.userId),
         name: useSelector((state) => state.name),
@@ -41,11 +41,13 @@ const DetailReserve = () => {
     const [serverData, setServerData] = useState({}); //서버로부터 받은 데이터
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 
 
+    const [depTime, setDepTime] = useState(new Date());
     useEffect(() => {
         getAccommodationReserveAPI().then((response) => {
             setContents(response);
         });
     }, [])
+
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         IMP.init('imp01307537');
@@ -114,7 +116,11 @@ const DetailReserve = () => {
     }
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
-        await reserveInfoAPI();
+        if (depTime <= new Date()) { //당일 예약 불가
+            handleError('dateError', true);
+        } else {
+            await reserveInfoAPI();
+        }
 
     };
     /** 메뉴 선택 */
@@ -212,14 +218,11 @@ const DetailReserve = () => {
     async function reserveInfoAPI() {
         //백엔드에 보낼 예약정보
         const formData = {
-            //이것도무슨 데이터 보낼지
-            /**
-             * reservationdate:, <<<<<<<<<<<<<<<<<<선정님 디자인 부탁드립니다>>>>>>>>>>>>>>>>>>>>>
-             * email:,
-             * charge:,
-             * contentId: ,  그러면 이거 네개만 일단 ㅗㅂ내면 되는거죠 ?????,
-             * 
-             */
+            reservationdate: Constant.handleDateFormatISOChange(depTime),
+            email: loginInfo.email,
+            charge: selectedData.charge,
+            roomCode: selectedData.roomCode,
+
         };
         try {
             const reservationResponse = await axios.post(Constant.serviceURL + `/lodgingReservation/create`, formData);
@@ -244,7 +247,7 @@ const DetailReserve = () => {
     async function reserveCancelAPI() {
         // 취소보낼 데이터
         const formData = {
-            lodgingreservationId: serverData.id, 
+            lodgingreservationId: serverData.id,
         };
         try {// 결제 취소 알림 요청
             const response = await axios.post(Constant.serviceURL + `/lodgingReservation/cancel`, formData);
@@ -260,11 +263,11 @@ const DetailReserve = () => {
     /** 숙소디테일 데이터 불러오는 함수 페이지 로드 될 때 실행 */
     async function getAccommodationReserveAPI() {
         const params = {
-            contentid: contentid
+            roomCode: roomCode
         }
         try {
-            // const response = await axios.get(Constant.serviceURL+`/lodgings`,{params:params});
-           
+            const response = await axios.get(Constant.serviceURL + `/lodgings`, { params: params });
+
             return {
                 addr1: "서울특별시 용산구 이태원동 131-11",
                 addr2: "",
@@ -293,6 +296,11 @@ const DetailReserve = () => {
                 charge: 20000, //성수기 주중  = 가격
                 charge1: 10000, //비수기주중최소
                 charge2: 10000, //비수기주말최소
+                //객실크기
+                //기준인원
+                //TV
+                //인터넷
+                //냉장고
             };
         } catch (error) {
             console.error(error);

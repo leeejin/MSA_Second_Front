@@ -1,10 +1,6 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
 import styled from "styled-components";
-import { IoCall } from "react-icons/io5";
 import NoImage from '../../../styles/image/noImage.png';
-import ModalComponent from '../../../util/custom/modal';
-import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 const Hr = styled.hr`
     width:49px;
     border:1px solid var(--grey-color);
@@ -37,17 +33,37 @@ const DetailRoomInfo = ({ contents }) => {
                         onClick={handleViewLarger} />
                 </div>
                 <table className="w-50 table-list" style={{ marginTop: '40px' }}>
-                        <tbody>
-                            <tr>
-                                <td>비수기주중최소</td>
-                                <td>{contents.charge1.toLocaleString()}원</td>
-                            </tr>
-                            <tr>
-                                <td>비수기주말최소</td>
-                                <td>{contents.charge2.toLocaleString()}원</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <tbody>
+                        <tr>
+                            <td>객실크기</td>
+                            <td>와우!</td>
+                        </tr>
+                        <tr>
+                            <td>기준인원</td>
+                            <td>와우!!</td>
+                        </tr>
+                        <tr>
+                            <td>비수기주중최소</td>
+                            <td>{contents.charge1.toLocaleString()}원</td>
+                        </tr>
+                        <tr>
+                            <td>비수기주말최소</td>
+                            <td>{contents.charge2.toLocaleString()}원</td>
+                        </tr>
+                        <tr>
+                            <td>TV</td>
+                            <td>와우!!!</td>
+                        </tr>
+                        <tr>
+                            <td>인터넷</td>
+                            <td>와우!!!!</td>
+                        </tr>
+                        <tr>
+                            <td>냉장고</td>
+                            <td>와우!!!!!</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     )

@@ -8,6 +8,11 @@ import Area from '../../../util/json/지역코드.json';
 
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
+    border:1px solid var(--grey-color);
+    border-radius:15px;
+    padding:0px 10px 0px 10px;
+    margin:5px;
+    font-size:1.0rem;
     &:hover,
     &:active {
         color:var(--hovering-color);
@@ -15,6 +20,11 @@ const Button = styled.button`
 `;
 const Button2 = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
+    border:1px solid var(--grey-color);
+    border-radius:15px;
+    padding:0px 10px 0px 10px;
+    margin:5px;
+    font-size:1.0rem;
     &:hover,
     &:active {
         color:var(--hovering-color);
@@ -27,11 +37,11 @@ const Top2Component = () => {
     const [areaCode, setAreaCode] = useState("선택"); //기본 지역코드를 -1로 설정
     const [sigunguCode, setSigunguCode] = useState("선택"); //기본 시군구코드를 -1로 설정
     const [cities, setCities] = useState([]);
-    const [clicked, setClicked] = useState({ area:"선택", city: "선택"});
+    const [clicked, setClicked] = useState({ area: "선택", city: "선택" });
     const [loading, setLoading] = useState(false);
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const handleSearch = () => {
-        if (clicked.area ==="선택") {
+        if (clicked.area === "선택") {
             handleError('accommodationAreaError', true);
         } else if (clicked.city === "선택") {
             handleError('accommodationSigunguError', true);
@@ -42,7 +52,7 @@ const Top2Component = () => {
                 state: {
                     code: areaCode,
                     sigunguCode: sigunguCode,
-                    cities:cities,
+                    cities: cities,
                 }
             });
             setLoading(false);
@@ -84,6 +94,12 @@ const Top2Component = () => {
                                 <img src={Spinner} alt="로딩" width="100px" />
                             </div> : <>
                                 <table>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                <h3>대분류</h3>
+                                            </td></tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td>
@@ -104,6 +120,12 @@ const Top2Component = () => {
 
                                 </table>
                                 <table>
+                                    <thead>
+                                        <tr>
+                                            <td>
+                                                <h3>소분류</h3>
+                                            </td></tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td>

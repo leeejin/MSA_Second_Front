@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();
 
 /** 결제한 목록을 보여주는 함수 */
-const AccommodationList=()=> {
+const AccommodationList = () => {
     const queryClient = useQueryClient();
     const userId = useSelector((state) => state.userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
@@ -67,12 +67,14 @@ const AccommodationList=()=> {
     }
 
     /** 예약 목록 불러오는 API */
-    async function callGetBookedListAPI() {
+    async function callGetBookedListAPI() { //항공편 불러오는 url : reservationInfos/flights, 
+        //숙소 불러오는 url : reservationInfos/lodgings
         try {
-            const response = await axios.post(Constant.serviceURL + `/flightInfos`, { userId });
+            const response = await axios.get(Constant.serviceURL + `/flightInfos/${userId}`);
             return response.data;
         } catch (error) {
             console.error(error);
+            //예약목록을 못불러옴
         }
 
     }
@@ -127,30 +129,28 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
         <table className="table-list-card">
             <thead>
                 <tr>
-                    <th>편명 <span className="font-color-darkgrey">Flight</span></th>
-                    <th >출발 <span className="font-color-darkgrey">From</span></th>
-                    <th />
-                    <th>도착 <span className="font-color-darkgrey">To</span></th>
+                    <th><span className="shape-square">예약자</span></th>
+                    <th ><span className="shape-square">숙소명</span></th>
+                    <th><span className="shape-square">숙박 날짜</span></th>
+                    <th><span className="shape-square">예약 상태</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <img src={Constant.getAirlineLogo(logos, paidlist.airLine)} width={"130px"} alt={paidlist.airlineNm} />
-                        <h3>{paidlist.airLine}</h3>
-                        <p>{paidlist.vihicleId}</p>
+                    <td rowSpan={2}>
+                        <img src={paidlist.firstimage} width={"100%"} height={"100%"}/>
                     </td>
                     <td>
-                        <h1 className="font-color-special">{Constant.getAirportNmById(paidlist.depAirport)}</h1>
-                        <p>{Constant.handleDateFormatChange(paidlist.depTime)}</p>
-
+                        <h3>{paidlist.name}</h3>
                     </td>
                     <td>
-                        <img src={Plane} width={'40px'} alt="비행기" />
+                        <h3>{paidlist.title}</h3>
                     </td>
                     <td>
-                        <h1 className="font-color-special">{Constant.getAirportNmById(paidlist.arrAirport)}</h1>
-                        <p>{Constant.handleDateFormatChange(paidlist.arrTime)}</p>
+                        <h3>{Constant.handleDateFormatChange(paidlist.depTime)}</h3>
+                    </td>
+                    <td>
+                        <h3>{paidlist.status}</h3>
                     </td>
                 </tr>
                 <tr>
