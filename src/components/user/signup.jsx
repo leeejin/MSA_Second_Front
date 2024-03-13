@@ -97,25 +97,26 @@ const Signup = () => {
     }
     //API가기 전에 체크
     const handleSubmit = () => {
-        setSubOpen(true);
+        mutation.mutate({ info, select });
+        setOpen(false);
     }
     const show = () => {
         setShowOptions((prev) => !prev);
     };
     // 회원가입가기전에 체크 
-    const handleSignup = () => {
-        mutation.mutate({ info, select });
+    const handleLocation = () => {
+        navigate('/Login');
     };
     const mutation = useMutation(callAddUserAPI, {
         onSuccess: (data) => {
             console.log('addUser', data);
-            setSubOpen(!subOpen); //회원가입성공하면 로그인페이지로 가게함 modal.js에 
-            navigate('/Login');
+           
+            setSubOpen(true);
         },
         onError: (error) => {
             console.log(error);
             handleError('duplicateError', true);
-            setOpen(false);
+           
         }
     });
     //회원가입 하는 API
@@ -143,7 +144,7 @@ const Signup = () => {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
             {
-                subOpen && <ConfirmComponent handleSubmit={handleSignup} handleOpenClose={handleOpenClose} message={"회원가입이 성공적으로 완료되었습니다! 로그인 페이지로 가시겠습니까?"} />
+                subOpen && <ConfirmComponent handleSubmit={handleLocation} handleOpenClose={handleOpenClose} message={"회원가입이 성공적으로 완료되었습니다! 로그인 페이지로 가시겠습니까?"} />
             }
             <Alert errorMessage={errorMessage} />
             <div className="fixed container-fixed background-color" />
