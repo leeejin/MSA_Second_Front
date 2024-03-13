@@ -18,6 +18,7 @@ const ModalReserveCheck = () => {
     const location = useLocation();
     const { code, sigunguCode, cities } = location.state ?? {};
     const [citiesMenu, setCitiesMenu] = useState(cities);
+    const [open,setOpen] = useState(false);
     const [rooms, setRooms] = useState([]); //백엔드로부터 오는 데이터를 담을 변수
     const [roomContents, setRoomContents] = useState([]); //데이터필터링 해서 실제 사용할 데이터 변수
     const [clicked, setClicked] = useState({
@@ -62,6 +63,9 @@ const ModalReserveCheck = () => {
         fetchRoomsData();
 
     }, []);
+    const handleModalOnOff = ()=>{
+        setOpen(prev=>!prev);
+    }
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
 
@@ -158,12 +162,16 @@ const ModalReserveCheck = () => {
             <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                 <div className="panel panel-top font-color-white" >
                     <div>
-                        <h1 className="font-family-bold">숙소 검색</h1>
+                        <h1 className="font-family-bold">숙소 검색 <button className="btn btn-style-border" onClick={handleModalOnOff}>분류</button></h1>
+                       
                     </div>
                 </div>
             </div>
             <div className="container-content middlepanel">
-                <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
+               
+                {
+                    open && <>
+                 <div className="d-flex d-row" style={{ justifyContent: 'space-between' }}>
                     <div>
                         <input
                             placeholder='호텔명으로 검색해주세요'
@@ -220,10 +228,14 @@ const ModalReserveCheck = () => {
                         </div>
                         <button className="btn" onClick={handleSubmit}>검색</button>
                     </div>
+                    
                 </div>
+                 <hr className="hr" />
+                 </>
+                }
 
 
-                <hr className="hr" />
+               
                 {
                     isLoading ? <div className="fixed d-flex container-fixed">
                         <img src={Spinner} alt="로딩" width="100px" />
