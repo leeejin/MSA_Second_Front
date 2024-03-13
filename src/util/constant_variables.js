@@ -167,7 +167,7 @@ export default class Constant {
 
     };
     static handleDateFormatISOChange = (date) => {
-        date.setHours(date.getHours() + 9); // KST는 UTC보다 9시간 빠르므로
+        //date.setHours(date.getHours() + 9); // KST는 UTC보다 9시간 빠르므로
         const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
     
         return formattedDate;

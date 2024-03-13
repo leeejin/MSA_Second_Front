@@ -39,7 +39,7 @@ const Datepicker = ({ depTime, handleDateChange }) => {
             dateFormat="yyyy년MM월dd일" //데이터 타입 ex) 2024년02월09일
             minDate={minDate} //선택할 수 있는 최소 날짜
             maxDate={maxDate} //선택할 수 있는 최대 날짜
-            onChange={(depTime) => depTime && handleDateChange(depTime)} //선택하는 날짜가 바뀌면
+            onChange={(depTime) => handleDateChange(depTime)} //선택하는 날짜가 바뀌면
             dayClassName={(d) => (d.getDate() === depTime.getDate() ? 'selected' : 'unselected')} //선택한 날짜에 대한 style class 바꾸는 건데 해결 못함 => 해결함
             renderCustomHeader={({ //헤더 스타일 바꿈
                 date,

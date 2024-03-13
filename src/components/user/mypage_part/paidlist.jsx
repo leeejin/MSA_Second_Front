@@ -1,7 +1,7 @@
 import React, { useState, useReducer } from 'react';
 import axios from '../../../axiosInstance';
 import Constant from '../../../util/constant_variables';
-import ModalComponent from '../../../util/custom/modal';
+import { ModalComponent } from '../../../util/custom/modal';
 import Plane from '../../../styles/image/plane.png'
 import Spinner from '../../../styles/image/loading.gif';
 import NoData from '../../../styles/image/noData.png';
@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const logos = Constant.getLogos();
 
 /** 결제한 목록을 보여주는 함수 */
-const PaidList=()=> {
+const PaidList = () => {
     const queryClient = useQueryClient();
     const userId = useSelector((state) => state.userId); //리덕스에 있는 userId를 가져옴
     const [open, setOpen] = useState(false); // 취소모달창
@@ -25,7 +25,7 @@ const PaidList=()=> {
         },
         onSuccess: (data) => {
             setContents(data);
-        }
+        },
     });
     /** 경고 메시지 */
     const handleError = (errorType, hasError) => {
@@ -55,42 +55,48 @@ const PaidList=()=> {
             handleError('cancelSuccess', true);
             window.location.reload();
         },
-        onSettled: (data) => {
-            setContents(data);
-        }
+
     });
 
     /** 결제취소 함수 */
     const handleSubmit = () => {
-        console.log("선택한 데이터 : ", selectedData);
-        mutation.mutate(selectedData.reservationId); // 결제 취소 요청
+        mutation.mutate(); // 결제 취소 요청
     }
 
     /** 예약 목록 불러오는 API */
-    async function callGetBookedListAPI() { //항공편 불러오는 url : reservationInfos/flights, 
-                                            //숙소 불러오는 url : reservationInfos/lodgings
+    async function callGetBookedListAPI() {
         try {
-            const response = await axios.get(Constant.serviceURL + `reservationInfos/flight/${userId}`);
+            const response = await axios.get(Constant.serviceURL + `/reservationInfos/flight/${userId}`); // TODO URL 변경
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error(error);
-            //예약목록을 못불러옴
         }
 
     }
-    /**결제 취소 요청 함수  */
-    async function cancelPayment(merchant_uid) {
+    /**결제 환불 요청 함수  */
+    async function cancelPayment() {
+        const formData = {
+            merchant_uid: selectedData.reservationId,
+            category: selectedData.category
+        }
         try {
-            await axios.post(Constant.serviceURL + `/payments/cancel`, { merchant_uid }, {
+            await axios.post(Constant.serviceURL + `/payments/refund`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            console.log("환불됨")
         } catch (error) {
             console.error('Failed to notify payment cancellation', error);
+            handleError('refundError', true);
         }
     };
-
+    if (isLoading) {
+        return (<div className="fixed d-flex container-fixed">
+            <img src={Spinner} alt="로딩" width="100px" />
+        </div>)
+    }
     return (
         <div className="container">
             <Alert errorMessage={errorMessage} />
@@ -99,24 +105,19 @@ const PaidList=()=> {
             }
             <div className="w-50">
                 {
-                    isLoading ? <div className="fixed d-flex container-fixed">
-                        <img src={Spinner} alt="로딩" width="100px" />
-                    </div> : <>
-                        {contents.length > 0 ? (
-                            contents.map((paidlist) => (
-                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenCloseData={() => handleOpenCloseData(paidlist)} />
-                            ))
-                        ) : (
-                            <div className="container-content">
-                                <div className=" d-flex d-column" style={{ height: '100%' }}>
-                                    <img src={NoData} alt="데이터없음" />
-                                    <h3>최근 결제된 내역이 없어요!</h3>
-                                </div>
+                    contents?.length > 0 ? (
+                        contents.map((paidlist) => (
+                            <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenCloseData={() => handleOpenCloseData(paidlist)} />
+                        ))
+                    ) : (
+                        <div className="container-content">
+                            <div className="d-flex d-column" style={{ height: '100%' }}>
+                                <img src={NoData} alt="데이터없음" />
+                                <h3>최근 결제된 내역이 없어요!</h3>
                             </div>
-                        )}</>
+                        </div>
+                    )
                 }
-
-
             </div>
         </div>
     )
@@ -164,7 +165,7 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
                     </td>
                     <td colSpan={2}>
                         {
-                            paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenCloseData(paidlist)}>취소</button>
+                            paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenCloseData(paidlist)}>환불</button>
                         }
 
                     </td>

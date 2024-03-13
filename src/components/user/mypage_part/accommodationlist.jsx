@@ -1,14 +1,13 @@
 import React, { useState, useReducer } from 'react';
 import axios from '../../../axiosInstance';
 import Constant from '../../../util/constant_variables';
-import ModalComponent from '../../../util/custom/modal';
+import {ModalComponent} from '../../../util/custom/modal';
 import Plane from '../../../styles/image/plane.png'
 import Spinner from '../../../styles/image/loading.gif';
 import NoData from '../../../styles/image/noData.png';
 import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useSelector } from 'react-redux';
-const logos = Constant.getLogos();
 
 /** 결제한 목록을 보여주는 함수 */
 const AccommodationList = () => {
@@ -19,7 +18,7 @@ const AccommodationList = () => {
     const [selectedData, setSelectedData] = useState({}); //선택한 컴포넌트 객체
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
-    const { isLoading } = useQuery('bookedList', callGetBookedListAPI, {
+    const { isLoading } = useQuery('ReservedList', callGetReservedListAPI, {
         onError: () => {
             handleError('listError', true);
         },
@@ -50,7 +49,7 @@ const AccommodationList = () => {
         },
         onSuccess: async () => {
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
-            await queryClient.invalidateQueries('bookedList');
+            await queryClient.invalidateQueries('ReservedListt');
             setOpen(prev => !prev);
             handleError('cancelSuccess', true);
             window.location.reload();
@@ -67,21 +66,20 @@ const AccommodationList = () => {
     }
 
     /** 예약 목록 불러오는 API */
-    async function callGetBookedListAPI() { //항공편 불러오는 url : reservationInfos/flights, 
-        //숙소 불러오는 url : reservationInfos/lodgings
+    async function callGetReservedListAPI() {
         try {
-            const response = await axios.get(Constant.serviceURL + `/flightInfos/${userId}`);
+            const response = await axios.get(Constant.serviceURL + `/reservationInfos/lodgings/${userId}`); // TODO URL 변경
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error(error);
-            //예약목록을 못불러옴
         }
 
     }
-    /**결제 취소 요청 함수  */
+    /**결제 환불 요청 함수  */
     async function cancelPayment(merchant_uid) {
         try {
-            await axios.post(Constant.serviceURL + `/payments/cancel`, { merchant_uid }, {
+            await axios.post(Constant.serviceURL + `/payments/refund`, { merchant_uid }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -90,7 +88,6 @@ const AccommodationList = () => {
             console.error('Failed to notify payment cancellation', error);
         }
     };
-
     return (
         <div className="container">
             <Alert errorMessage={errorMessage} />

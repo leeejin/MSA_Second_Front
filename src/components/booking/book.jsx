@@ -3,8 +3,8 @@ import axios from '../../axiosInstance';
 import styled from "styled-components";
 import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import Constant from '../../util/constant_variables';
-import ModalComponent from '../../util/custom/modal';
-//import store from '../../util/redux_storage';
+import {ModalComponent} from '../../util/custom/modal';
+
 import book_arrow from '../../styles/image/book_arrow.png';
 import Pagination from '../../util/custom/pagenation';
 import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
@@ -31,11 +31,7 @@ const Button = styled.button`
 //페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
 const itemCountPerPage = 4; //한페이지당 보여줄 아이템 갯수
 const pageCountPerPage = 10; //보여줄 페이지 갯수
-// const loginInfo = {
-//     userId: store.getState().userId,
-//     name: store.getState().name,
-//     email: store.getState().username,
-// };
+
 const { IMP } = window;
 /** 예약확인 목록 페이지 */
 const logos = Constant.getLogos();
@@ -126,16 +122,15 @@ const ModalBookCheck = () => {
     const handlePay = async () => {
         const merchant_uid = serverData.id + "_"+"F" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         const amount = serverData.charge;
+        const category = serverData.category; // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
 
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
         try {
-            await checkPaymentAPI(merchant_uid);
-            await preparePaymentAPI(merchant_uid, amount);
+            await checkPaymentAPI(merchant_uid, category); // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
+            await preparePaymentAPI(merchant_uid, amount, category); // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             console.log('Payment has been prepared successfully.');
-            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
         } catch (error) {
             handleError('payError', true);
-            setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             return;
         }
 
@@ -150,21 +145,25 @@ const ModalBookCheck = () => {
             if (rsp.success) { // 결제가 성공되면
                 console.log('Payment succeeded');
                 await validatePaymentAPI(rsp);
-                setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
             } else {
                 console.error(`Payment failed.Error: ${rsp.error_msg} `);
-                await cancelPaymentAPI(rsp.merchant_uid); // 결제 실패되었음을 알리는 요청
-                setOpen(prev => ({ ...prev, reserveopen: false, payopen: false }));
+                await cancelPaymentAPI(rsp.merchant_uid, category); // 결제 실패되었음을 알리는 요청 // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
+                setOpen(prev => ({ 
+                    ...prev,
+                    reserveopen:false,
+                    payopen: false
+                }));
             }
         });
     }
 
 
     /**  결제가 진행되기전 예약 요청을 토대로 결제 정보가 제대로 저장되었는지 확인하는 메서드 */
-    async function checkPaymentAPI(merchant_uid) {
+    async function checkPaymentAPI(merchant_uid, category) { // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
         try {
             await axios.post(Constant.serviceURL + `/payments/check`, { // 결제 정보 존재 확인을 요청
-                merchant_uid
+                merchant_uid,
+                category // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             });
             console.log('성공적으로 예약 요청을 수신했습니다');
         } catch (error) {
@@ -179,28 +178,30 @@ const ModalBookCheck = () => {
             const response = await axios.post(Constant.serviceURL + `/payments/validate`, { // 결제 사후 검증을 요청
                 imp_uid: rsp.imp_uid,
                 merchant_uid: rsp.merchant_uid,
+                category : "F", // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            
+            setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
             navigate(`/CompleteBook/${serverData.id} `, {
                 state: {
                     contents: serverData,
                 }
             });
         } catch (error) {
-            await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청
+            await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid, "F"); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청 // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
         }
     }
     /* 실제 결제가 진행되기 전, 포트원 서버에 예약 요청을 토대로 결제될 정보를 미리 등록하는 메서드 -> 결제 사전 검증 */
-    async function preparePaymentAPI(merchant_uid, amount) {
+    async function preparePaymentAPI(merchant_uid, amount, category) { // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
         try {
             await axios.post(Constant.serviceURL + `/payments/prepare`, { // 결제 사전 검증 요청
                 merchant_uid,
-                amount
+                amount,
+                category // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             });
             console.log('결제가 실제로 진행되기전 사전 검증에 성공했습니다');
         } catch (error) {
@@ -209,12 +210,13 @@ const ModalBookCheck = () => {
         }
     }
     /**  해당 예약번호를 가진 결제건수에 대해 환불요청 하는 메서드 */
-    async function refundPaymentAPI(merchant_uid, imp_uid) {
+    async function refundPaymentAPI(merchant_uid, imp_uid, category) { // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
         console.log(merchant_uid);
         try {
             await axios.post(Constant.serviceURL + `/payments/refund`, { // 환불 요청
                 merchant_uid,
-                imp_uid
+                imp_uid,
+                category // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -226,17 +228,22 @@ const ModalBookCheck = () => {
         }
     };
     /* 사용자가 단순 변심으로 도중에 결제를 취소하거나 결제 URL이 만료 되었을 때를 처리하는 메서드 */
-    async function cancelPaymentAPI(merchant_uid) {
+    async function cancelPaymentAPI(merchant_uid, category) { // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
         try {
             await axios.post(Constant.serviceURL + `/payments/cancel`, { // 결제취소 요청
-                merchant_uid
+                merchant_uid,
+                category // TODO 카테고리 추가 (결제 서비스에서 항공편인지 숙소 결제인지 구분하기 위함)
             }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             console.log('결제취소 처리가 성공적으로 되었습니다');
-           
+            setOpen(prev => ({
+                ...prev,
+                payopen: !prev.payopen,
+                reserveopen: !prev.reserveopen
+            }));
         } catch (error) {
 
             console.error('결제취소 처리가 실패했습니다.\n오류내용 : ', error.reponse.data);
@@ -270,7 +277,7 @@ const ModalBookCheck = () => {
             //안되면 에러뜨게 함
             setOpen(prev => ({
                 ...prev,
-                reserveopen: !prev.reserveopen
+                reserveopen: false
             }));
             handleError('reserveError', true);
         }

@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom';
 import Constant from '../util/constant_variables';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
-import ModalComponent from '../util/custom/modal';
+import {ModalComponent} from '../util/custom/modal';
 import axios from '../axiosInstance';
 import logo from '../styles/image/main_logo.png';
 /** 메뉴선택하면 스타일 변함 */
@@ -18,6 +18,7 @@ export default function Menubar() {
 
     const [open, setOpen] = useState(false);
     const userId = useSelector((state) => state.userId);
+    console.log(userId);
     const handleOpenClose = (e) => {
         e.preventDefault();
         setOpen(prev=>!prev);
@@ -28,7 +29,7 @@ export default function Menubar() {
             dispatch({ type: "Logout" });
             sessionStorage.removeItem('authToken');
             setOpen(prev=>!prev);
-            navigate("/");
+            window.location.href="/";
         },
         onError :(error)=>{
             console.error(error);

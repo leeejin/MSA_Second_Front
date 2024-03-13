@@ -18,7 +18,7 @@ const MyPage = React.lazy(() => import('./pages/mypage_page'));
 /** 로그인/로그아웃 여부 */
 const LoginRoute = ({ userId, element }) => {
 
-  if (userId && userId > 0) { //로그인한 상태라면
+  if (userId > 0) { //로그인한 상태라면
     return element;
   } else { //아니면 로그인창으로 날려버림
     return <Navigate to="*" />;

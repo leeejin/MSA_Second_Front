@@ -30,6 +30,7 @@ export const ERROR_STATE = {
     'accommodationSigunguError': { active: false, message: '시군구를 선택해주세요' },
     'accommodationReserveSuccess': { active: false, message: '숙소예약완료되었습니다!' },
     'searchTextError':{ active: false, message: '검색어를 입력해주세요' },
+    'refundError':{ active: false, message: '이미 환불된 건입니다' },
 };
 
 export function reducer(state, action) {

@@ -4,10 +4,11 @@ const loginState = {
     userId: parseInt(sessionStorage.getItem("userId")) || 0,
     name: sessionStorage.getItem("name") || "",
     username: localStorage.getItem("username") || "",
-    isRemember: localStorage.getItem("isRemember")||false,
+    isRemember: localStorage.getItem("isRemember") || false,
 };
 
 function reducer(state = loginState, action) {
+    console.log(loginState);
     switch (action.type) {
         case "Login":
             sessionStorage.setItem("userId", action.data.userId);
@@ -18,8 +19,8 @@ function reducer(state = loginState, action) {
         case "Logout":
             sessionStorage.setItem("userId", 0);
             sessionStorage.setItem("name", "");
-            if (state.isRemember===false) {
-                localStorage.setItem("username", "");
+            if (state.isRemember === "false") {
+                localStorage.removeItem("username");
                 return { ...state, userId: 0, name: "", username: "" };
             } else {
                 return { ...state, userId: 0, name: "" };
@@ -29,7 +30,5 @@ function reducer(state = loginState, action) {
     }
 }
 
-const persistedState = loginState;
-const store = createStore(reducer, persistedState);
 
-export default store;
+export default createStore(reducer, loginState);

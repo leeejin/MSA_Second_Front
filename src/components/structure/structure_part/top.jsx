@@ -11,6 +11,12 @@ import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 import AirPort from '../../../util/json/airport-list';
 import { useSelector } from 'react-redux';
 
+const MarkTd = styled.span`
+    border:1px solid var(--grey-color);
+    border-radius:15px;
+    padding:0px 10px 0px 10px;
+    font-size:1.0rem;
+`;
 
 const LocationLabel = styled.label`
     font-size:1.8rem;
@@ -134,7 +140,8 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
             depTime: Constant.handleDateFormatISOChange(airports.depTime), //날짜
         };
         try {
-            const response = axios.get(Constant.serviceURL +  `/flights/search`, { params: formData });
+            //const response = axios.post(Constant.serviceURL + `/flights/search`, formData, { withCredentials: true })
+            const response = axios.get(Constant.serviceURL + `/flights/search`, { params: formData }); // TODO URL 변
             return response;
         }
         catch (error) {
@@ -154,9 +161,9 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td><span className="shape-square">출발지</span></td>
+                                            <td><MarkTd>출발지</MarkTd></td>
                                             <td />
-                                            <td><span className="shape-square">도착지</span></td>
+                                            <td><MarkTd>도착지</MarkTd></td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -197,8 +204,8 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
                                 <table>
                                     <thead>
                                         <tr>
-                                            <td><span className="shape-square">좌석등급</span></td>
-                                            <td><span className="shape-square">가는날</span></td>
+                                            <td><MarkTd>좌석등급</MarkTd></td>
+                                            <td><MarkTd>가는날</MarkTd></td>
                                         </tr>
                                     </thead>
                                     <tbody>

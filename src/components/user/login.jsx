@@ -56,7 +56,7 @@ const Login=()=> {
             window.sessionStorage.setItem('authToken', token);
             axios.defaults.headers.common['Authorization'] = token;
 
-            navigate('/');
+            window.location.href="/";
         },
         onError: (error) => {
             handleError('successError', true);

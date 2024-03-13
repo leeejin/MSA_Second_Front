@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useReducer } from 'react';
 import styled from "styled-components";
-import ModalComponent from '../../util/custom/modal';
+import { ModalComponent, ConfirmComponent } from '../../util/custom/modal';
 import Constant from '../../util/constant_variables';
 import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ const Flex = styled.div`
   display: inline-flex;
   width: 100%;
 `;
-const Signup=()=> {
+const Signup = () => {
     const navigate = useNavigate();
     const emailMenus = Constant.getEmailMenus();
 
@@ -63,7 +63,7 @@ const Signup=()=> {
             [infoType]: e.target.value
         }));
     }
-   
+
     /** 모달 창 뜨기전에 검사 */
     const handleOpenClose = () => {
         //에러 모음 + 유효성 검사
@@ -82,15 +82,15 @@ const Signup=()=> {
         } else {
             //안되면 에러뜨게 함
             if (errors.nameError) {
-                handleError('nameError',errors.nameError);
+                handleError('nameError', errors.nameError);
             } else if (errors.nicknameError) {
-                handleError('nicknameError',errors.nicknameError);
+                handleError('nicknameError', errors.nicknameError);
             } else if (errors.emailError) {
-                handleError('emailError',errors.emailError);
+                handleError('emailError', errors.emailError);
             } else if (errors.passwordError) {
-                handleError('passwordError',errors.passwordError);
+                handleError('passwordError', errors.passwordError);
             } else if (errors.confirmPasswordError) {
-                handleError('confirmPasswordError',errors.confirmPasswordError);
+                handleError('confirmPasswordError', errors.confirmPasswordError);
             }
         }
 
@@ -104,7 +104,7 @@ const Signup=()=> {
     };
     // 회원가입가기전에 체크 
     const handleSignup = () => {
-        mutation.mutate({info, select});
+        mutation.mutate({ info, select });
     };
     const mutation = useMutation(callAddUserAPI, {
         onSuccess: (data) => {
@@ -133,16 +133,19 @@ const Signup=()=> {
             return response.data;
         } catch (error) {
             console.error('오류 발생:', error);
-            handleError('duplicateError',true);
+            handleError('duplicateError', true);
             setOpen(false);
         }
     }
     return (
         <div className="container">
             {
-                open && <ModalComponent subOpen={subOpen} handleSignup={handleSignup} handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
+                open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"회원가입 하시겠습니까?"} />
             }
-           <Alert errorMessage={errorMessage} />
+            {
+                subOpen && <ConfirmComponent handleSubmit={handleSignup} handleOpenClose={handleOpenClose} message={"회원가입이 성공적으로 완료되었습니다! 로그인 페이지로 가시겠습니까?"} />
+            }
+            <Alert errorMessage={errorMessage} />
             <div className="fixed container-fixed background-color" />
             <div className="container-backbox-450 background-color-white">
                 <div className="background-color-white">

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import PublicInfo from './detail_part/detail_publicinfo';
 import IntroduceInfo from './detail_part/detail_introduceinfo';
 import RoomInfo from './detail_part/detail_roominfo';
-import ModalComponent from '../../util/custom/modal';
+import {ModalComponent} from '../../util/custom/modal';
 import { IoCall } from "react-icons/io5";
 import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 import axios from '../../axiosInstance';

@@ -136,7 +136,7 @@ const ModalReserveCheck = () => {
     async function getRoomsListAPI() {
         const params = {
             areaCode: clicked.areaCode,
-            //sigunguCode: clicked.cityCode
+            sigunguCode: clicked.cityCode
         }
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/search`, { params: params });
