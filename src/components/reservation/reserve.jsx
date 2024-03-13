@@ -268,9 +268,9 @@ const InfoComponent = ({ room }) => {
     const navigate = useNavigate();
 
     const handleLocation = () => {
-        navigate(`/Rooms/searchDetail/${room.roomCode}`, {
+        navigate(`/Rooms/searchDetail/${room.contentid}`, {
             state: {
-                roomCode: room.roomCode,
+                contents: room,
             }
         });
     }

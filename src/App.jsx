@@ -30,7 +30,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = MyStorage.subscribe(onStorageChange);
-    console.log('리덕스에서 값들 : '+storedUserId);
+    console.log('리덕스에서 값들 : ' + storedUserId);
     return () => {
       unsubscribe();
     };
@@ -50,8 +50,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route exact path="/Login" element={<Login />} />
           <Route exact path="/Signup" element={<Signup />} />
-          <Route exact path="/Reserve" element={<Reserve />} />
-          <Route exact path="/Rooms/searchDetail/:Id" element={<RoomsReserve />} />
+          <Route exact path="/Reserve" element={<LoginRoute userId={userId} element={<Reserve />} />} />
+          <Route exact path="/Rooms/searchDetail/:Id" element={<LoginRoute userId={userId} element={<RoomsReserve />} />} />
           <Route exact path="/MyPage/:userId" element={<LoginRoute userId={userId} element={<MyPage />} />} />
           <Route exact path="/Book" element={<LoginRoute userId={userId} element={<Book />} />} />
           <Route exact path="/CompleteBook/:Id" element={<LoginRoute userId={userId} element={<CompleteBook />} />} />

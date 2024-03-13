@@ -1,8 +1,7 @@
 import React, { useState, useReducer } from 'react';
 import axios from '../../../axiosInstance';
 import Constant from '../../../util/constant_variables';
-import {ModalComponent} from '../../../util/custom/modal';
-import Plane from '../../../styles/image/plane.png'
+import { ModalComponent } from '../../../util/custom/modal';
 import Spinner from '../../../styles/image/loading.gif';
 import NoData from '../../../styles/image/noData.png';
 import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
@@ -54,15 +53,11 @@ const AccommodationList = () => {
             handleError('cancelSuccess', true);
             window.location.reload();
         },
-        onSettled: (data) => {
-            setContents(data);
-        }
     });
 
     /** 결제취소 함수 */
     const handleSubmit = () => {
-        console.log("선택한 데이터 : ", selectedData);
-        mutation.mutate(selectedData.reservationId); // 결제 취소 요청
+        mutation.mutate(); // 결제 취소 요청
     }
 
     /** 예약 목록 불러오는 API */
@@ -77,17 +72,27 @@ const AccommodationList = () => {
 
     }
     /**결제 환불 요청 함수  */
-    async function cancelPayment(merchant_uid) {
+    async function cancelPayment() {
+        const formData = {
+            merchant_uid: selectedData.reservationId,
+            category: selectedData.category
+        };
         try {
-            await axios.post(Constant.serviceURL + `/payments/refund`, { merchant_uid }, {
+            await axios.post(Constant.serviceURL + `/payments/refund`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
         } catch (error) {
             console.error('Failed to notify payment cancellation', error);
+            handleError('refundError', true);
         }
     };
+    if (isLoading) {
+        return (<div className="fixed d-flex container-fixed">
+            <img src={Spinner} alt="로딩" width="100px" />
+        </div>)
+    }
     return (
         <div className="container">
             <Alert errorMessage={errorMessage} />
@@ -96,24 +101,19 @@ const AccommodationList = () => {
             }
             <div className="w-50">
                 {
-                    isLoading ? <div className="fixed d-flex container-fixed">
-                        <img src={Spinner} alt="로딩" width="100px" />
-                    </div> : <>
-                        {contents.length > 0 ? (
-                            contents.map((paidlist) => (
-                                <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenCloseData={() => handleOpenCloseData(paidlist)} />
-                            ))
-                        ) : (
-                            <div className="container-content">
-                                <div className=" d-flex d-column" style={{ height: '100%' }}>
-                                    <img src={NoData} alt="데이터없음" />
-                                    <h3>최근 결제된 내역이 없어요!</h3>
-                                </div>
+                    contents?.length > 0 ? (
+                        contents.map((paidlist) => (
+                            <PaidListItem key={paidlist.reservationId} paidlist={paidlist} handleOpenCloseData={() => handleOpenCloseData(paidlist)} />
+                        ))
+                    ) : (
+                        <div className="container-content">
+                            <div className="d-flex d-column" style={{ height: '100%' }}>
+                                <img src={NoData} alt="데이터없음" />
+                                <h3>최근 결제된 내역이 없어요!</h3>
                             </div>
-                        )}</>
+                        </div>
+                    )
                 }
-
-
             </div>
         </div>
     )
@@ -135,7 +135,7 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
             <tbody>
                 <tr>
                     <td rowSpan={2}>
-                        <img src={paidlist.firstimage} width={"100%"} height={"100%"}/>
+                        <img src={paidlist.firstimage} width={"100%"} height={"100%"} />
                     </td>
                     <td>
                         <h3>{paidlist.name}</h3>

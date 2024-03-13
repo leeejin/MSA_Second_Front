@@ -86,7 +86,6 @@ const PaidList = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log("환불됨")
         } catch (error) {
             console.error('Failed to notify payment cancellation', error);
             handleError('refundError', true);

@@ -5,7 +5,7 @@ import Constant from '../../../util/constant_variables';
 import Spinner from '../../../styles/image/loading.gif';
 import { reducer, ERROR_STATE, Alert } from '../../../util/custom/alert';
 import Area from '../../../util/json/지역코드.json';
-
+import { useSelector } from 'react-redux';
 const Button = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
     border:1px solid var(--grey-color);
@@ -40,23 +40,30 @@ const Top2Component = () => {
     const [clicked, setClicked] = useState({ area: "선택", city: "선택" });
     const [loading, setLoading] = useState(false);
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const userId = useSelector((state) => state.userId);
     const handleSearch = () => {
-        if (clicked.area === "선택") {
-            handleError('accommodationAreaError', true);
-        } else if (clicked.city === "선택") {
-            handleError('accommodationSigunguError', true);
+        setLoading(true);
+        if (userId <= 0) {
+            handleError('loginError', true);
+        } else {
+            if (clicked.area === "선택") {
+                handleError('accommodationAreaError', true);
+            } else if (clicked.city === "선택") {
+                handleError('accommodationSigunguError', true);
+            }
+            else {
+               
+                navigate(`/Reserve`, {
+                    state: {
+                        code: areaCode,
+                        sigunguCode: sigunguCode,
+                        cities: cities,
+                    }
+                });
+               
+            }
         }
-        else {
-            setLoading(true);
-            navigate(`/Reserve`, {
-                state: {
-                    code: areaCode,
-                    sigunguCode: sigunguCode,
-                    cities: cities,
-                }
-            });
-            setLoading(false);
-        }
+        setLoading(false);
 
     };
     const handleError = (errorType, hasError) => {
