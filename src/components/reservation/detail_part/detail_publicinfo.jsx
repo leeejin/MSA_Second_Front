@@ -54,14 +54,14 @@ const DetailPublicInfo = ({ contentid }) => {
 
     /** 로드뷰 켜는 함수 */
     const handleRoadView=()=>{
-        window.open(`https://map.kakao.com/link/roadview/${contents.mapy},${contents.mapx}`, '_blank');
+        window.open(`https://map.kakao.com/link/roadview/${contents?.mapy},${contents?.mapx}`, '_blank');
     }
     /** 숙소디테일 데이터 불러오는 함수 페이지 로드 될 때 실행 */
     async function getAccommodationPublicReserveAPI() {
         
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/searchDetail/${contentid}`);
-           
+            console.log(response);
             return {
                 id: response.data.id,
                 contentid: response.data.contentid,

@@ -185,7 +185,7 @@ const ModalReserveCheck = () => {
                         <div
                             ref={(el) => selectBoxRef.current[1] = el}
                             className={`select select-email ${isShowOptions.area && 'active'}`}
-                            style={{ width: '100px' }}
+                            style={{ width: '100px',marginRight:'5px' }}
                             onClick={() => show('area', isShowOptions.area)}
                         >
                             <label>{Constant.getAccommodationValueByCode(areas, clicked.areaCode)}</label>
