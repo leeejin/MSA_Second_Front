@@ -12,7 +12,7 @@ const Hr = styled.hr`
     border:1px solid var(--grey-color);
 `;
 
-const Login=()=> {
+const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -60,7 +60,7 @@ const Login=()=> {
             window.sessionStorage.setItem('authToken', token);
             axios.defaults.headers.common['Authorization'] = token;
 
-            window.location.href="/";
+            window.location.href = "/";
         },
         onError: (error) => {
             handleError('successError', true);
@@ -127,6 +127,7 @@ const Login=()=> {
                                 </div>
                             </div>
                         </div>
+
                         <div style={{ width: '70%', margin: 'auto' }}>
                             <input
                                 type="checkbox"
@@ -134,7 +135,8 @@ const Login=()=> {
                                 name="saveId"
                                 onChange={(e) => { handleOnChange(e) }}
                                 checked={isRemember}
-                            /><label htmlFor="saveId">아이디 저장</label>
+                            />
+                            <label htmlFor="saveId">아이디 저장</label>
 
                             <span className="btn-span-style-grey" onClick={handleLocation}>
                                 회원가입 하기
