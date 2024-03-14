@@ -566,6 +566,9 @@
 }
 
 @media screen and (max-width : 980px) {
+    .container-top{
+        height: 700px;
+    }
     .panel {
         width: 90%;
         height: 60%;

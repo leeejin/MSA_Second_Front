@@ -60,14 +60,7 @@ const DetailRoomInfo = ({ contentid }) => {
             setCost(result);
         });
     }, []);
-    useEffect(() => {
-        
-        //costs.sort((a, b) => a - b);
-        // const highestCost = costs[costs.length - 1];
-         
-        // 임시 배열을 사용하여 cost state 업데이트
-        
-    }, [])
+
     console.log(cost);
     /** 출발 날짜 핸들러 */
     const handleDateChange = (date) => {
@@ -371,7 +364,7 @@ const DetailRoomInfo = ({ contentid }) => {
                                     </tr>
                                     <tr>
                                         <td>객실크기</td>
-                                        <td>{contents.roomsize}평 ({contents.roomsize2}㎡)</td>
+                                        <td>{contents.roomsize2}㎡</td>
                                     </tr>
                                     <tr>
                                         <td>기준인원</td>

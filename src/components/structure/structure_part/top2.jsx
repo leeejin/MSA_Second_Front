@@ -17,6 +17,11 @@ const Button = styled.button`
     &:active {
         color:var(--hovering-color);
     }
+
+    @media screen and (max-width: 768px) { // 조절할 화면 크기에 맞춰 수정
+        font-size: 0.8rem; // 화면이 작아질 때 버튼의 글꼴 크기를 줄입니다.
+        padding: 0px 4px 0px 4px; // 화면이 작아질 때 버튼의 padding을 줄입니다.
+    }
 `;
 const Button2 = styled.button`
     color: ${props => props.clicked ? 'var(--hovering-color)' : 'initial'};
@@ -29,7 +34,13 @@ const Button2 = styled.button`
     &:active {
         color:var(--hovering-color);
     }
+
+    @media screen and (max-width: 768px) { // 조절할 화면 크기에 맞춰 수정
+        font-size: 0.8rem; // 화면이 작아질 때 버튼의 글꼴 크기를 줄입니다.
+        padding: 0px 4px 0px 4px; // 화면이 작아질 때 버튼의 padding을 줄입니다.
+    }
 `;
+
 const areas = Area.response.body.items.item;
 /** top2 component */
 const Top2Component = () => {
@@ -52,7 +63,7 @@ const Top2Component = () => {
                 handleError('accommodationSigunguError', true);
             }
             else {
-               
+
                 navigate(`/Reserve`, {
                     state: {
                         code: areaCode,
@@ -60,7 +71,7 @@ const Top2Component = () => {
                         cities: cities,
                     }
                 });
-               
+
             }
         }
         setLoading(false);
@@ -124,8 +135,8 @@ const Top2Component = () => {
                                             </td>
                                         </tr>
                                     </tbody>
-
                                 </table>
+
                                 <table>
                                     <thead>
                                         <tr>

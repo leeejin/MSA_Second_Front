@@ -103,7 +103,7 @@ const DetailPublicInfo = ({ contentid }) => {
                         </tr>
                         <tr>
                             <td>홈페이지</td>
-                            <td><a href={contents.reserveationurl}>{contents.reserveationurl}</a></td>
+                            <td><a href={contents.homepage}>{contents.homepage}</a></td>
                         </tr>
                         <tr>
                             <td>주소</td>
