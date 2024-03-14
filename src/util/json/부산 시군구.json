@@ -1,0 +1,97 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "0000",
+            "resultMsg": "OK"
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "rnum": 1,
+                        "code": "1",
+                        "name": "강서구"
+                    },
+                    {
+                        "rnum": 2,
+                        "code": "2",
+                        "name": "금정구"
+                    },
+                    {
+                        "rnum": 3,
+                        "code": "3",
+                        "name": "기장군"
+                    },
+                    {
+                        "rnum": 4,
+                        "code": "4",
+                        "name": "남구"
+                    },
+                    {
+                        "rnum": 5,
+                        "code": "5",
+                        "name": "동구"
+                    },
+                    {
+                        "rnum": 6,
+                        "code": "6",
+                        "name": "동래구"
+                    },
+                    {
+                        "rnum": 7,
+                        "code": "7",
+                        "name": "부산진구"
+                    },
+                    {
+                        "rnum": 8,
+                        "code": "8",
+                        "name": "북구"
+                    },
+                    {
+                        "rnum": 9,
+                        "code": "9",
+                        "name": "사상구"
+                    },
+                    {
+                        "rnum": 10,
+                        "code": "10",
+                        "name": "사하구"
+                    },
+                    {
+                        "rnum": 11,
+                        "code": "11",
+                        "name": "서구"
+                    },
+                    {
+                        "rnum": 12,
+                        "code": "12",
+                        "name": "수영구"
+                    },
+                    {
+                        "rnum": 13,
+                        "code": "13",
+                        "name": "연제구"
+                    },
+                    {
+                        "rnum": 14,
+                        "code": "14",
+                        "name": "영도구"
+                    },
+                    {
+                        "rnum": 15,
+                        "code": "15",
+                        "name": "중구"
+                    },
+                    {
+                        "rnum": 16,
+                        "code": "16",
+                        "name": "해운대구"
+                    }
+                ]
+            },
+            "numOfRows": 16,
+            "pageNo": 1,
+            "totalCount": 16
+        }
+    }
+}

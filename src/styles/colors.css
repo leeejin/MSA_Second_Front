@@ -15,9 +15,11 @@
 }
 
 .font-color-grey {
-    color: var(--black-color);
+    color: var(--grey-color);
 }
-
+.font-color-darkgrey{
+    color: var(--darkgrey-color);
+}
 .font-color-danger {
     color: var(--danger-color);
 }
@@ -40,16 +42,16 @@
     background-color: var(--background-hovering);
 }
 .selected {
+    border-radius: 25px;
     background-color: var(--hovering-color);
     color: var(--white-color);
-    border-radius: 50%;
     font-family: 'Pretendard-semibold';
 
 }
 .unselected {
     background-color: var(--white-color);
     font-family: 'Pretendard-semibold';
-    border-radius: 50%;
+   
 
 }
 @font-face {

@@ -1,0 +1,42 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "0000",
+            "resultMsg": "OK"
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "rnum": 1,
+                        "code": "1",
+                        "name": "중구"
+                    },
+                    {
+                        "rnum": 2,
+                        "code": "2",
+                        "name": "남구"
+                    },
+                    {
+                        "rnum": 3,
+                        "code": "3",
+                        "name": "동구"
+                    },
+                    {
+                        "rnum": 4,
+                        "code": "4",
+                        "name": "북구"
+                    },
+                    {
+                        "rnum": 5,
+                        "code": "5",
+                        "name": "울주군"
+                    }
+                ]
+            },
+            "numOfRows": 5,
+            "pageNo": 1,
+            "totalCount": 5
+        }
+    }
+}

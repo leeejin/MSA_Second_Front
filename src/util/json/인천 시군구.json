@@ -1,0 +1,67 @@
+{
+    "response": {
+        "header": {
+            "resultCode": "0000",
+            "resultMsg": "OK"
+        },
+        "body": {
+            "items": {
+                "item": [
+                    {
+                        "rnum": 1,
+                        "code": "1",
+                        "name": "강화군"
+                    },
+                    {
+                        "rnum": 2,
+                        "code": "2",
+                        "name": "계양구"
+                    },
+                    {
+                        "rnum": 3,
+                        "code": "3",
+                        "name": "미추홀구"
+                    },
+                    {
+                        "rnum": 4,
+                        "code": "4",
+                        "name": "남동구"
+                    },
+                    {
+                        "rnum": 5,
+                        "code": "5",
+                        "name": "동구"
+                    },
+                    {
+                        "rnum": 6,
+                        "code": "6",
+                        "name": "부평구"
+                    },
+                    {
+                        "rnum": 7,
+                        "code": "7",
+                        "name": "서구"
+                    },
+                    {
+                        "rnum": 8,
+                        "code": "8",
+                        "name": "연수구"
+                    },
+                    {
+                        "rnum": 9,
+                        "code": "9",
+                        "name": "옹진군"
+                    },
+                    {
+                        "rnum": 10,
+                        "code": "10",
+                        "name": "중구"
+                    }
+                ]
+            },
+            "numOfRows": 10,
+            "pageNo": 1,
+            "totalCount": 10
+        }
+    }
+}

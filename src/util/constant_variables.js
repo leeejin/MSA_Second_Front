@@ -1,21 +1,41 @@
-import React from "react";
-
 /*지역 이미지*/
 import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
-import Busan from '../styles/image/busan.jpg'; //부산 이미지
-import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
+import Daegu from '../styles/image/daegu.jpg'; // 대구 이미지
 import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
 
 /*항공사 로고 이미지*/
-import Jin from '../styles/image_logo/jinair.png'; // 진에어
-import Tway from '../styles/image_logo/tway.png'; // 대한항공
-import A_jeju from '../styles/image_logo/jejuair.png'; // 제주항공
-import Estar from '../styles/image_logo/estarjet.png'; // 이스타
-import Korean from '../styles/image_logo/koreanair.png'; // 대한항공
-import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
-import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
-import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
-import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
+import Jin from '../styles/airline_logo/jinair.png'; // 진에어
+import Tway from '../styles/airline_logo/tway.png'; // 대한항공
+import A_jeju from '../styles/airline_logo/jejuair.png'; // 제주항공
+import Estar from '../styles/airline_logo/estarjet.png'; // 이스타
+import Korean from '../styles/airline_logo/koreanair.png'; // 대한항공
+import Aerok from '../styles/airline_logo/aerok.png'; // 에어로케이
+import Asiana from '../styles/airline_logo/asiana.png'; // 아시아나
+import A_busan from '../styles/airline_logo/airbusan.png'; // 에어부산
+import A_seoul from '../styles/airline_logo/airseoul.png'; // 에어서울
+
+import AirPort from './json/airport-list.json';
+
+/** 전국 8도 지역코드 */
+import SeoulJSON from './json/서울 시군구.json';
+import InCheonJSON from './json/인천 시군구.json';
+import DaeJeonJSON from './json/대전 시군구.json';
+import DaeGuJSON from './json/대구 시군구.json';
+import GwangJuJSON from './json/광주 시군구.json';
+import BusanJSON from './json/부산 시군구.json';
+import UlSanJSON from './json/울산 시군구.json';
+import SeJongJSON from './json/세종특별자치시 시군구.json';
+import GyeongGiJSON from './json/경기도 시군구.json';
+import GangWonJSON from './json/강원특별자치도 시군구.json';
+import ChungCheongBukJSON from './json/충청북도 시군구.json';
+import ChungCheongNamJSON from './json/충청남도 시군구.json';
+import GyeongSangBukJSON from './json/경상북도 시군구.json';
+import GyeongSangNamJSON from './json/경상남도 시군구.json';
+import JeolLaBukJSON from './json/전북특별자치도 시군구.json';
+import JeolLaNamJSON from './json/전라남도 시군구.json';
+import JeJuJSON from './json/제주도 시군구.json';
+const airport = AirPort.response.body.items.item; // 공항 목록
+
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -41,8 +61,14 @@ export default class Constant {
         return [
             { key: 0, value: "제주", title: "이번 겨울", subTitle: "제주 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: Jeju },
             { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
-            { key: 2, value: "부산", title: "이번 겨울", subTitle: "부산 여행을 감행하다 ", content: "다시 태어나도 살고 싶은 그린 스마트 도시 '부산'", imageUrl: Busan },
-            { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
+            { key: 2, value: "대구", title: "이번 겨울", subTitle: "대구 여행을 감행하다 ", content: "대한민국의 중심 도시 '대구'", imageUrl: Daegu },
+        ];
+    }
+    static getSwiperMenus() {
+        return [
+            { key: 0, value: "제주", title: "이번 겨울", subTitle: "제주 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: Jeju },
+            { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
+            { key: 2, value: "대구", title: "이번 겨울", subTitle: "대구 여행을 감행하다 ", content: "대한민국의 중심 도시 '대구'", imageUrl: Daegu },
         ];
     }
     static getLogos() {
@@ -58,34 +84,54 @@ export default class Constant {
             { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
-    static getRegionList(){
-       return[
-        { key: 0, value: '전체', name: '전체', code: 0 },
-        { key: 1, value: '서울', name: '서울', code: 1 },
-        { key: 2, value: '인천', name: '인천', code: 2 },
-        { key: 3, value: '대전', name: '대전', code: 3 },
-        { key: 4, value: '대구', name: '대구', code: 4 },
-        { key: 5, value: '광주', name: '광주', code: 5 },
-        { key: 6, value: '부산', name: '부산', code: 6 },
-        { key: 7, value: '울산', name: '울산', code: 7 },
-        { key: 8, value: '세종', name: '세종', code: 8 },
-        { key: 31, value: '경기도', name: '경기도', code: 31 },
-        { key: 32, value: '강원도', name: '강원도', code: 32 },
-        { key: 33, value: '충청북도', name: '충청북도', code: 33 },
-        { key: 34, value: '충청남도', name: '충청남도', code: 34 },
-        { key: 35, value: '경상북도', name: '경상북도', code: 35 },
-        { key: 36, value: '경상남도', name: '경상남도', code: 36 },
-        { key: 37, value: '전라북도', name: '전라북도', code: 37 },
-        { key: 38, value: '전라남도', name: '전라남도', code: 38 },
-        { key: 39, value: '제주도', name: '제주도', code: 39 },
-       ];
-    }
     static getCostMenus() { //좌석등급
         return [
             { key: 0, value: 0, name: "높은순" },
             { key: 1, value: 1, name: "낮은순" },
 
         ];
+    }
+    static getCityCode(areaCode){
+        switch(areaCode){
+            case "1":
+                return SeoulJSON.response.body.items.item;
+            case "2":
+                return InCheonJSON.response.body.items.item;
+            case "3":
+                return DaeJeonJSON.response.body.items.item;
+            case "4":
+                return DaeGuJSON.response.body.items.item;
+            case "5":
+                return GwangJuJSON.response.body.items.item;
+            case "6":
+                return BusanJSON.response.body.items.item;
+            case "7":
+                return UlSanJSON.response.body.items.item;
+            case "8":
+                return SeJongJSON.response.body.items.item;
+            case "31":
+                return GyeongGiJSON.response.body.items.item;
+            case "32":
+                return GangWonJSON.response.body.items.item;
+            case "33":
+                return ChungCheongBukJSON.response.body.items.item;
+            case "34":
+                return ChungCheongNamJSON.response.body.items.item;
+            case "35":
+                return GyeongSangBukJSON.response.body.items.item;
+            case "36":
+                return GyeongSangNamJSON.response.body.items.item;
+            case "37":
+                return JeolLaBukJSON.response.body.items.item;
+            case "38":
+                return JeolLaNamJSON.response.body.items.item;
+            case "39":
+                return JeJuJSON.response.body.items.item;
+        }
+    }
+    static getCityValuebyCode(area,city){
+        const matchedAirport = area.find((item) => item.code === city);
+        return matchedAirport ? matchedAirport.name : "선택";
     }
     static parseDate(date) {
         const arrAirportTime = date.toString();
@@ -96,17 +142,17 @@ export default class Constant {
         const minute = arrAirportTime.substr(10, 2);
         return { year, month, day, hour, minute };
     }
-    
+
     static handleDateFormatChange(date) {
         const { year, month, day, hour, minute } = this.parseDate(date);
         return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
     }
-    
+
     static handleDayFormatChange(date) {
         const { year, month, day } = this.parseDate(date);
         return `${year}년 ${month}월 ${day}일`;
     }
-    
+
     static handleTimeFormatChange(date) {
         const { hour, minute } = this.parseDate(date);
         return `${hour}:${minute}`;
@@ -117,7 +163,14 @@ export default class Constant {
         return Number(formattedTime);
 
     };
-    static handleDateCalculate (arrPlandTime, depPlandTime) {
+    static handleDateFormatISOChange = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}${month}${day}`;
+        return Number(formattedDate);
+    };
+    static handleDateCalculate(arrPlandTime, depPlandTime) {
         // 숫자를 문자열로 변환하고 연, 월, 일, 시, 분을 추출
         const depStr = String(depPlandTime);
         const arrStr = String(arrPlandTime);
@@ -139,5 +192,37 @@ export default class Constant {
 
         return result.trim();
 
+    };
+    /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
+    static getSelectedAirport = (selectedAirportNm) => {
+        const selectedAirport = airport.find(
+            (airport) => airport.airportNm === selectedAirportNm
+        );
+        if (selectedAirport) {
+            return selectedAirport.airportId;
+        }
+    }
+    /** 출발지, 도착지 Nm -> Id로 변경 */
+    static getAirportIdByName = (airportNm) => {
+        const matchedAirport = airport.find((item) => item.airportNm === airportNm);
+        return matchedAirport ? matchedAirport.airportId : null;
+    };
+     /** 출발지, 도착지 Id -> Nm로 변경 */
+    static getAirportNmById = (airportId) => {
+        const matchedAirport = airport.find((item) => item.airportId === airportId);
+        return matchedAirport ? matchedAirport.airportNm : null;
+    };
+    /**로고 이미지 찾기 */
+    static getAirlineLogo = (logos,airLine) => {
+        const matchingLogo = logos.find((logo) => logo.value === airLine);
+        return matchingLogo ? matchingLogo.imageUrl : '';
+    };
+    static getAccommodationCodeByValue = (areas,value) => {
+        const matchingareas = areas.find((areas) => areas.name === value);
+        return matchingareas ? matchingareas.code : "";
+    };
+    static getAccommodationValueByCode = (areas,key) => {
+        const matchingareas = areas.find((areas) => areas.code === key);
+        return matchingareas ? matchingareas.name : "선택";
     };
 }
