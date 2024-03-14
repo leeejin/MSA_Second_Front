@@ -8,7 +8,7 @@ instance.interceptors.response.use(
   function (response) {
     if (response.headers.authorization) { // 응답 헤더에서 토큰 추출
       const token = response.headers.authorization.split(' ')[1]; // Bearer 토큰형식을 가정
-      localStorage.setItem('authToken', `Bearer ${token}`);
+      sessionStorage.setItem('authToken', `Bearer ${token}`);
       instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       console.log('토큰 저장 완료:', token); // 토큰 저장 확인
@@ -31,7 +31,7 @@ instance.interceptors.response.use(
 
 instance.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken');
     if (token) {
       config.headers['Authorization'] = token;
     }

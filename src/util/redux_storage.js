@@ -1,49 +1,36 @@
-import { createStore } from "redux";
-
-const loadState = () => {
-    try {
-        const serializedState = sessionStorage.getItem("reduxState");
-        if (serializedState === null) {
-            return undefined;
-        }
-        return JSON.parse(serializedState);
-    } catch (err) {
-        return undefined;
-    }
-};
-
-const saveState = (state) => {
-    try {
-        const serializedState = JSON.stringify(state);
-        sessionStorage.setItem("reduxState", serializedState);
-    } catch (err) {
-        // Handle errors here
-    }
-};
+import { legacy_createStore as createStore } from "redux";
 
 const loginState = {
-    userId: 0,
-    name:"",
+    userId: parseInt(sessionStorage.getItem("userId")) || 0,
+    name: sessionStorage.getItem("name") || "",
+    username: localStorage.getItem("username") || "",
+    isRemember: localStorage.getItem("isRemember")||false,
 };
 
 function reducer(state = loginState, action) {
+    console.log("리덕스에서의 값들 = ", loginState);
     switch (action.type) {
         case "Login":
-            return saveState({
-                ...state,
-                userId: action.data.userId,
-                name:action.data.name,
-            });;
+            sessionStorage.setItem("userId", action.data.userId);
+            sessionStorage.setItem("name", action.data.name);
+            localStorage.setItem("username", action.data.username);
+            localStorage.setItem("isRemember", action.data.isRemember);
+            return { ...state, userId: action.data.userId, name: action.data.name, username: action.data.username, isRemember: action.data.isRemember };
         case "Logout":
-            return  saveState({
-                userId: 0,
-                name:"",
-            });;
+            sessionStorage.setItem("userId", 0);
+            sessionStorage.setItem("name", "");
+            if (state.isRemember===false) {
+                localStorage.setItem("username", "");
+                return { ...state, userId: 0, name: "", username: "" };
+            } else {
+                return { ...state, userId: 0, name: "" };
+            }
         default:
-            return state;
+            return { ...state };
     }
 }
 
-const persistedState = loadState();
+const persistedState = loginState;
+const store = createStore(reducer, persistedState);
 
-export default createStore(reducer, persistedState);
+export default store;

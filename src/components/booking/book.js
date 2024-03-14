@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer, useMemo } from 'react';
 import axios from '../../axiosInstance';
+import styled from "styled-components";
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
@@ -7,12 +8,37 @@ import ModalComponent from '../../util/modal';
 import AirPort from '../../util/json/airport-list';
 import store from '../../util/redux_storage';
 import book_arrow from '../../styles/image/book_arrow.png';
-import { useDispatch } from 'react-redux';
+import Pagination from '../../util/pagenation';
+import { BsExclamationCircle } from "react-icons/bs";
+const SubButton = styled.p`
+    float:right;
+    color:var(--darkgrey-color);
+    &:nth-child(1),
+    &:nth-child(3){
+        cursor:pointer;
+    }
+`;
+const Hr = styled.hr`
+    margin-top:30px;
+    clear:both;
+    border:1px solid var(--grey-color);
+`;
+const H2 = styled.h2`
+    @media (max-width: 980px) {
+        font-size: 1.0rem;
+    }
+`;
+const Button = styled.button`
+    @media (max-width: 980px) {
+        width:50px;
+    }
+`;
 /** 에러메시지 (출발지-도착지, 날짜) */
 const ERROR_STATE = {
     paySuccess: false, //결제 성공
     payError: false, //결제 에러
     cancelSuccess: false, //취소 성공
+    cancelErorr: false, //취소 에러
     reserveError: false, // 예약 에러
 }
 const reducer = (state, action) => {
@@ -23,6 +49,8 @@ const reducer = (state, action) => {
             return { ...state, payError: true }
         case 'cancelError':
             return { ...state, cancelError: true }
+        case 'cancelSuccess':
+            return { ...state, cancelSuccess: true }
         case 'reserveError':
             return { ...state, reserveError: true }
         default:
@@ -30,26 +58,43 @@ const reducer = (state, action) => {
 
     }
 }
+//페이지네이션 ** 상태를 바꾸지 않으면 아예 외부로 내보낸다. 
+const itemCountPerPage = 5; //한페이지당 보여줄 아이템 갯수
+const pageCountPerPage = 5; //보여줄 페이지 갯수
+const logos = Constant.getLogos(); //보여줄 항공사 로고이미지
 /** 예약확인 목록 페이지 */
 const airport = AirPort.response.body.items.item; // 공항 목록
 export default function ModalBookCheck() {
     const navigate = useNavigate();
     const location = useLocation(); //main.js에서 보낸 경로와 state를 받기 위함
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const errorMapping = {
+        reserveError: '예약실패하였습니다',
+        paySuccess: '결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다',
+        payError: '결제실패하였습니다',
+        cancelError: '예약취소 실패하였습니다',
+        cancelSuccess: '예약취소 성공하였습니다',
+    };
     const { seatLevel, dep, arr, depTime, contents } = location.state ?? {}; // 다른 컴포넌트로부터 받아들인 데이터 정보
 
+    const [listContents, setListContents] = useState(contents);
     const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴 
     const [name, setName] = useState(store.getState().name); //리덕스에 있는 name를 가져옴 
     const [open, setOpen] = useState(false); // 예약모달창
     const [payopen, setPayOpen] = useState(false); //결제모달창
-    const [selectedData, setSelectedData] = useState({}) //선택한 컴포넌트 객체
+    const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
+    const [serverData, setServerData] = useState([]); //서버에서 받은 데이터
+
+    //페이지네이션
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 (setCurrentPage()에서 변경됨)
+    const [offset, setOffset] = useState(0); //현재페이지에서 시작할 item index
 
     /**포트원 카카오페이를 api를 이용하기 위한 전역 변수를 초기화하는 과정 이게 렌더링 될때 초기화 (requestPay가 실행되기전에 이게 초기화되어야함) */
     useEffect(() => {
         const { IMP } = window;
-        if (IMP) IMP.init('imp01307537');
-        else console.log("IMP 제대로 활성화안됨")
+        IMP.init('imp01307537');
     }, []);
+
     /** 예약확인 함수 */
     const handleOpenClose = useCallback((data) => {
         setSelectedData(data);
@@ -59,18 +104,27 @@ export default function ModalBookCheck() {
             charge: seatLevel === "일반석" ? data.economyCharge : data.prestigeCharge
         }));
     }, []);
-    const handleOpenCloseReserve = (e) => {
-        e.preventDefault();
-        setPayOpen(!payopen);
-        setOpen(false);
-    };
 
+    const handleOpenCloseReserve = async (e) => {
+        e.preventDefault();
+        setOpen(false);
+        const newPayOpen = !payopen;
+        setPayOpen(newPayOpen);
+
+        if (!newPayOpen) {
+            await reserveCancelAPI(serverData.id);
+        }
+    };
+    /** 페이지네이션 함수 */
+    const setCurrentPageFunc = (page) => {
+        let lastOffset = (page - 1) * itemCountPerPage;
+        setCurrentPage(page);
+        setOffset(lastOffset);
+    };
     /** 예약 보내는 핸들러 함수 */
     const handleSubmit = async () => {
-        const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
         //백엔드에 보낼 예약정보
         const formData = {
-            id: selectedData.id,
             flightId: selectedData.id,
             airLine: selectedData.airlineNm, //항공사
             arrAirport: getAirportIdByName(selectedData.arrAirportNm), // 도착지 공항 ID
@@ -84,25 +138,46 @@ export default function ModalBookCheck() {
             name: name
         };
 
-        console.log("예약번호 : " + merchant_uid);
         console.log("선택한 컴포넌트 객체 : " + selectedData);
         console.log("폼데이터 : ", formData);
         // 예약 요청하는 부분 -> 이부분은 예약 요청할때의 옵션들을 하드코딩으로 채워넣음 사용자가 선택한 옵션으로 수정해야함 
 
-        reserveInfoAPI(formData).then((response) => {
-            // 예약 요청이 성공적으로 이루어졌을 때
-            if (response === 201) {
-                setPayOpen(!payopen);
-            }
-        });
-
+        await reserveInfoAPI(formData);
 
     };
 
+    /** 데이터 필터링 */
+    const handleSort = (value) => {
+        let filteredContents = [...contents];
+
+        if (value === "price") {
+            if (seatLevel === "일반석") filteredContents = filteredContents.sort((a, b) => a.economyCharge - b.economyCharge);
+            else if (seatLevel === "프리스티지석") filteredContents = filteredContents.sort((a, b) => a.prestigeCharge - b.prestigeCharge);
+        } else if (value === "depTime") {
+            filteredContents = filteredContents.sort((a, b) => a.depTime - b.depTime);
+        }
+
+        setListContents(filteredContents);
+    };
+
+
+    const errorElements = useMemo(() => {
+        return Object.keys(errorMapping).map((key) => {
+            if (errorMessage[key]) {
+                return (
+                    <h3 className="white-wrap message" key={key}>
+                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
+                    </h3>
+                );
+            }
+            return null;
+        });
+    }, [errorMessage, errorMapping]);
+
     const handlePay = async () => {
         const { IMP } = window;
-        const merchant_uid = selectedData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
-        const amount = selectedData.charge;
+        const merchant_uid = serverData.id + "_" + new Date().getTime(); // 이부분 예약에서 받아야함 이때 1 부분만 reservationId로 변경하면됨   
+        const amount = serverData.charge;
 
         // 결제 체크 및 결제 사전검증 도중 둘 중 하나라도 실패하면 결제 함수 자체를 종료
         try {
@@ -136,9 +211,9 @@ export default function ModalBookCheck() {
                     console.log('Payment information saved successfully' + response);
                     console.log(merchant_uid);
                     setOpen(false);
-                    navigate(`/CompleteReserve/${selectedData.id}`, {   //로그인 하면 가야함 근데 아직 서버 연결안되서 App.js 임시적으로 풀어놓음
+                    navigate(`/CompleteBook/${serverData.id} `, {
                         state: {
-                            contents: selectedData,
+                            contents: serverData,
                         }
                     });
                 } catch (error) {
@@ -149,7 +224,7 @@ export default function ModalBookCheck() {
                     await cancelPaymentAPI(rsp.merchant_uid, rsp.imp_uid); // 결제 사후 검증 실패 시 결제 취소 요청
                 }
             } else {
-                console.error(`Payment failed. Error: ${rsp.error_msg}`);
+                console.error(`Payment failed.Error: ${rsp.error_msg} `);
                 await cancelPaymentNotifyAPI(rsp.merchant_uid); // 결제 실패되었음을 알리는 요청
             }
         });
@@ -169,6 +244,10 @@ export default function ModalBookCheck() {
             console.log('Payment Check successfully');
         } catch (error) {
             console.error('Failed to check payment', error);
+            errorDispatch({ type: 'payError', payError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
             throw new Error("결제되어야할 정보가 존재하지 않습니다");
         }
     };
@@ -183,6 +262,10 @@ export default function ModalBookCheck() {
             console.log('Payment Prepare successfully');
         } catch (error) {
             console.error('Failed to prepare payment', error);
+            errorDispatch({ type: 'payError', payError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
             throw new Error("결제되어야할 정보가 일치하지 않습니다");
         }
     }
@@ -214,7 +297,10 @@ export default function ModalBookCheck() {
                 }
             });
             console.log('Payment cancellation notified successfully');
+            setPayOpen(false);
+            setOpen(false);
         } catch (error) {
+
             console.error('Failed to notify payment cancellation', error);
         }
     };
@@ -222,7 +308,9 @@ export default function ModalBookCheck() {
     async function reserveInfoAPI(formData) {
         try {
             const reservationResponse = await axios.post(Constant.serviceURL + `/flightReservations`, formData);
-            return reservationResponse.status;
+            console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
+            setServerData(reservationResponse.data);
+            setPayOpen(!payopen);
         } catch (error) {
             //안되면 에러뜨게 함
             setOpen(!open);
@@ -232,98 +320,142 @@ export default function ModalBookCheck() {
             }, [1000])
         }
     }
+    /**예약 취소 함수 */
+    async function reserveCancelAPI(reservedId) {
+        try {
+            await axios.post(Constant.serviceURL + `/flightReservations/cancel`, { // 결제 취소 알림 요청
+                reservedId
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("취소완료");
+            errorDispatch({ type: 'cancelSuccess', cancelSuccess: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
+        } catch (error) {
+            console.error(error);
+            errorDispatch({ type: 'cancelError', cancelError: true });
+            setTimeout(() => {
+                errorDispatch({ type: 'error' });
+            }, [1000]);
+        }
+    }
+
     if (!location.state) {
         return (<Navigate to="*" />)
     } else {
         return (
-            <div>
+            <div className="container">
+
+                <div>
+                    {errorElements}
+                </div>
                 {
-                    errorMessage.reserveError && <h3 className="white-wrap message">이미 예약하였습니다</h3>
-                }
-                {
-                    errorMessage.paySuccess && <h3 className="white-wrap message">결제가 완료되었습니다! 결제목록 카테고리로 가면 확인할 수 있습니다</h3>
-                }
-                {
-                    errorMessage.payError && <h3 className="white-wrap message">결제실패하였습니다</h3>
-                }
-                {
-                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={"예약하시겠습니까?"} />
+                    open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={handleOpenClose} message={`예약하시겠습니까?`} />
                 }
                 {
                     payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
                 }
-                <div className="container container-top" style={{ height: '300px' }}>
+                <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
                     <div className="panel panel-top font-color-white" >
-                        <div className="container-flex" style={{ height: '160px', textAlign: 'center', position: 'relative' }}>
-
+                        <div className="container-flex">
                             <h1 className="font-family-bold">{dep} </h1>
                             <img src={book_arrow} width={'30px'} style={{ margin: '15px' }} />
                             <h1 className="font-family-bold"> {arr}</h1>
                         </div>
-                        <p style={{ marginTop: '-30px' }}>{Constant.handleDayFormatChange(depTime)}</p>
+                        <p>{Constant.handleDayFormatChange(depTime)}</p>
+                    </div>
+                </div>
+                <div className="middlepanel">
+                    <div style={{ paddingTop: '15px' }}>
+                        <SubButton onClick={() => handleSort("depTime")}>출발시간 빠른순</SubButton>
+                        <SubButton>  | </SubButton>
+                        <SubButton onClick={() => handleSort("price")}>낮은 가격순</SubButton>
+                        <Hr />
                     </div>
 
-                </div>
-                <div className="container container-content background-color-white">
-
                     {
-                        contents.map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
+                        listContents.slice(offset, offset + itemCountPerPage).map((info) => <InfoComponent key={info.id} info={info} handleOpenClose={handleOpenClose} seatLevel={seatLevel} />)
                     }
-
                 </div>
+                {listContents.length > 0 && (
+                    <div style={{
+                        display: 'flex', justifyContent: 'center', alignItems: 'flex-end', minHeight: '100vh', // 최소 높이를 뷰포트의 100%로 설정
+                        position: 'absolute', left: 0, right: 0, bottom: '20px'
+                    }}>
+                        <Pagination
+                            itemCount={listContents.length}
+                            pageCountPerPage={pageCountPerPage}
+                            itemCountPerPage={itemCountPerPage}
+                            currentPage={currentPage}
+                            clickListener={setCurrentPageFunc}
+                        />
+                    </div>
+                )}
             </div>
-
         )
     }
-
-
-};
-
-const getAirlineLogo = (airlineName) => {
-    const logos = Constant.getLogos();
-    const matchingLogo = logos.find(logo => logo.value === airlineName);
-    return matchingLogo ? matchingLogo.imageUrl : '';
 };
 
 const InfoComponent = ({ info, handleOpenClose, seatLevel }) => {
+    const getAirlineLogo = (airLine) => {
+        const matchingLogo = logos.find(logo => logo.value === airLine);
+        return matchingLogo ? matchingLogo.imageUrl : '';
+    };
 
     // economyCharge 또는 prestigeCharge가 0인 경우, 컴포넌트 렌더링 안함
     if ((seatLevel === "일반석" && info.economyCharge === 0) || (seatLevel === "프리스티지석" && info.prestigeCharge === 0)) {
         return null;
     } else {
         return (
-            <table className="table-list-card" style={{ position: 'relative', transform: 'translate(0%, 8%)' }}>
-                <tr>
-                    <td>
-                        <img src={getAirlineLogo(info.airlineNm)} width="130px" alt={info.airlineNm} style={{ marginLeft: '12px', marginTop: '10px' }} />
-                        <h3 className="font-family-light" style={{ fontSize: '12px', marginLeft: '12px', marginTop: '6px' }}>{info.airlineNm}</h3>
-                    </td>
+            <table className="table-list-card">
+                <tbody>
+                    <tr>
+                        <td className="td-vihicleId">
+                            <img src={getAirlineLogo(info.airlineNm)} width={"100%"} alt={info.airlineNm} />
+                            <p className="font-family-bold">{info.airlineNm}</p>
+                        </td>
+                        <td className="td-vihicleId">
+                            <p>{info.vihicleId}</p>
+                        </td>
+                        <td>
+                            <H2>{Constant.handleTimeFormatChange(info.depPlandTime)}</H2>
+                            <h4 className="font-family-bold">{info.depAirportNm}</h4>
+                        </td>
+                        <td className="td-vihicleId">
+                            <p>
+                                {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
+                            </p>
 
-                    <td>
-                        <span>{info.vihicleId}</span>
-                    </td>
-                    <td>
-                        <h2>{Constant.handleTimeFormatChange(info.depPlandTime)}</h2>
-                        <h4 className="font-family-light">{info.depAirportNm}</h4>
-                    </td>
-                    <td >
-                        {Constant.handleDateCalculate(info.arrPlandTime, info.depPlandTime)}
-                    </td>
+                        </td>
 
-                    <td>
-                        <h2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</h2>
-                        <h4 className="font-family-light">{info.arrAirportNm}</h4>
-                    </td>
-                    <td>
-                        <span>잔여 {info.seatCapacity}석</span>
-                    </td>
-                    <td>{
-                        seatLevel === "일반석" ? <h2 className="font-family-bold">{info.economyCharge.toLocaleString()}원</h2> : <h2>{info.prestigeCharge.toLocaleString()}원</h2>
-                    }</td>
-                    <td>
-                        <button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</button>
-                    </td>
-                </tr>
+                        <td>
+                            <H2>{Constant.handleTimeFormatChange(info.arrPlandTime)}</H2>
+                            <h4 className="font-family-bold">{info.arrAirportNm}</h4>
+                        </td>
+                        <td className="td-vihicleId">
+                            <p>잔여 {info.seatCapacity}석</p>
+                        </td>
+                        <td className="td-vihicleId">
+                            <H2 className="font-family-bold">
+                                {
+                                    seatLevel === "일반석" ? <>
+                                        {info.economyCharge.toLocaleString()}
+                                    </>
+                                        : <>
+                                            {info.prestigeCharge.toLocaleString()}원
+                                        </>
+
+                                }</H2>
+                        </td>
+                        <td>
+                            <Button className="btn btn-style-grey" onClick={() => handleOpenClose(info)}>선택</Button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         )
     }

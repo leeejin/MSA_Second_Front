@@ -88,7 +88,7 @@ class Numbering extends Component {
     render() {
         return (
             <button onClick={() => this.props.clickListener(this.props.page)} className={this.props.page == this.props.currentPage ? 'pagination selected' : 'pagination unselected'}>
-                <span style={{ fontSize: '18px' }}>{this.props.page}</span>
+                <span className="font-family-semibold">{this.props.page}</span>
             </button>
         );
     }

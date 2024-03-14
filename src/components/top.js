@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
+import React, { useState, useEffect, useRef, useReducer, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosInstance';
+import axios from '../axiosInstance';
 import styled from "styled-components";
 import { TbArmchair2 } from "react-icons/tb";
-import Datepicker from '../../util/datepicker';
-import reverse from '../../styles/image/revert.png';
-import Constant from '../../util/constant_variables';
-import AirPort from '../../util/json/airport-list';
-import store from '../../util/redux_storage';
+import Datepicker from '../util/datepicker';
+import reverse from '../styles/image/revert.png';
+import Constant from '../util/constant_variables';
+import AirPort from '../util/json/airport-list';
+import store from '../util/redux_storage';
+import { BsExclamationCircle } from "react-icons/bs";
 const MarkTd = styled.span`
-    border:1px solid var(—grey-color);
+    border:1px solid var(--grey-color);
     border-radius:15px;
-    padding:2px 10px 2px 10px;
+    padding:0px 10px 0px 10px;
     font-size:1.0rem;
 `;
 
@@ -42,6 +43,7 @@ const ERROR_STATE = {
     loginError: false,
     seatError: false,
 }
+
 const reducer = (state, action) => {
     switch (action.type) {
         case 'depError':
@@ -62,17 +64,24 @@ const reducer = (state, action) => {
             return { ...state, seatError: true }
         default:
             return ERROR_STATE
-
-
     }
 }
-
 /** top component */
 export default function TopComponent({ airports, setAirPorts }) {
     const navigate = useNavigate();
     const [userId, setUserId] = useState(store.getState().userId);
     const [depTime, setDepTime] = useState(new Date()); // 출발날짜는 항상 오늘날짜의 다음날부터
     const [errorMessage, dispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
+    const errorMapping = {
+        depError: '출발지를 입력해주세요',
+        arrError: '도착지를 입력해주세요',
+        levelError: '좌석을 선택해주세요',
+        locationError: '출발지와 도착지가 같습니다',
+        dateError: '날짜를 선택해주세요',
+        searchError: '조회 실패하였습니다',
+        loginError: '로그인이 필요한 서비스입니다',
+        seatError: '해당 항공편이 존재하지 않습니다',
+    };
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState({ dep: false, arr: false, level: false });
     const selectBoxRef = useRef([null, null, null]);
@@ -99,7 +108,18 @@ export default function TopComponent({ airports, setAirPorts }) {
             [locationType]: e.target.getAttribute("value")
         }));
     };
-
+    const errorElements = useMemo(() => {
+        return Object.keys(errorMapping).map((key) => {
+            if (errorMessage[key]) {
+                return (
+                    <h3 className="white-wrap message" key={key}>
+                        <BsExclamationCircle className="exclamation-mark" /> {errorMapping[key]}
+                    </h3>
+                );
+            }
+            return null;
+        });
+    }, [errorMessage, errorMapping]);
     /** 해당 Nm를 가진 공항 객체를 찾아 id로 변환 */
     const getSelectedAirport = (selectedAirportNm) => {
         const selectedAirport = airport.find(
@@ -139,7 +159,7 @@ export default function TopComponent({ airports, setAirPorts }) {
         if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
             dispatch({ type: 'error' }); //에러 모두 false로 바꿈
             //callPostAirInfoAPI().then((response) => {
-                //if (response.data.length > 0) {
+            //    if (response.data.length > 0) {
                     navigate(`/Book`, {
                         state: {
                             dep: airports.dep,
@@ -155,23 +175,23 @@ export default function TopComponent({ airports, setAirPorts }) {
                                     airlineNm: "에어로케이",
                                     arrAirportNm: "제주",
                                     depAirportNm: "광주",
-                                    arrPlandTime: 202403021210,
-                                    depPlandTime: 202403021100,
+                                    arrPlandTime: 202403041210,
+                                    depPlandTime: 202403041100,
+                                    seatLevel: airports.level
                                 }
                             ],
-                            seatLevel: airports.level
                         }
                     });
 
-                /*} else {
+            /*    } else {
                     dispatch({ type: 'seatError', seatError: true });
                     setTimeout(() => {
                         dispatch({ type: 'error' }); //에러 모두 false로 바꿈
                     }, 1000);
-                }*/
+                }
 
 
-            /*}).catch((error) => {
+            }).catch((error) => {
                 if (error.response.status === 401) {
                     dispatch({ type: 'loginError', loginError: true });
                     setTimeout(() => {
@@ -185,6 +205,7 @@ export default function TopComponent({ airports, setAirPorts }) {
                 }
 
             })*/
+
 
         } else {
             if (errors.depError) {
@@ -203,7 +224,6 @@ export default function TopComponent({ airports, setAirPorts }) {
             }, 1000);
         }
     }
-
     /**date 형식 바꾸는 함수 */
     const handleDateFormatChange = (date) => {
         const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
@@ -239,30 +259,9 @@ export default function TopComponent({ airports, setAirPorts }) {
     }
     return (
         <>
-            {
-                errorMessage.depError && <h3 className="white-wrap message">출발지를 입력해주세요</h3>
-            }
-            {
-                errorMessage.arrError && <h3 className="white-wrap message">도착지를 입력해주세요</h3>
-            }
-            {
-                errorMessage.levelError && <h3 className="white-wrap message">좌석을 선택해주세요</h3>
-            }
-            {
-                errorMessage.locationError && <h3 className="white-wrap message">출발지와 도착지가 같습니다</h3>
-            }
-            {
-                errorMessage.dateError && <h3 className="white-wrap message">날짜를 선택해주세요</h3>
-            }
-            {
-                errorMessage.searchError && <h3 className="white-wrap message">조회 실패하였습니다</h3>
-            }
-            {
-                errorMessage.loginError && <h3 className="white-wrap message">로그인이 필요한 서비스입니다</h3>
-            }
-            {
-                errorMessage.seatError && <h3 className="white-wrap message">해당 항공편이 존재하지 않습니다</h3>
-            }
+            <div>
+                {errorElements}
+            </div>
             <div className="container container-top" >
                 <div className="panel panel-top background-color-white">
                     <div className='parent-container'>
@@ -308,9 +307,9 @@ export default function TopComponent({ airports, setAirPorts }) {
                         <table>
                             <thead>
                                 <tr>
+                                    <td><MarkTd>가는날</MarkTd></td>
+
                                     <td><MarkTd>좌석등급</MarkTd></td>
-                                    <td />
-                                    <td><MarkTd>가는 날</MarkTd></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -345,7 +344,6 @@ export default function TopComponent({ airports, setAirPorts }) {
 
     );
 }
-
 /** 출발지,도착지,좌석 컴포넌트 */
 const SelectComponent = ({ selectBoxRef, number, isShowOptions, show, airportsName, airport, level, handleChange }) => {
     if (number === 3) {

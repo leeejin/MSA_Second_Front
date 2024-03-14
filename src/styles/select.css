@@ -41,6 +41,7 @@
 .select-option {
     position: absolute;
     list-style: none;
+    text-align: center;
     top: 30px;
     left: 0;
     z-index: 10;

@@ -39,7 +39,7 @@ export default function MyPage() {
                 <h3 className="container-title">마이페이지</h3>
                 <div>
                     {
-                        subBoxVisible.payList === true ? <PayList /> : <AccommodationList />
+                        subBoxVisible.payList === true ? <PayList userId={userId}/> : <AccommodationList userId={userId}/>
                     }
                 </div>
             </div>

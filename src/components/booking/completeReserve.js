@@ -1,95 +1,88 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import Constant from '../../util/constant_variables';
+import store from '../../util/redux_storage';
+import AirPort from '../../util/json/airport-list.json';
+
+const airport = AirPort.response.body.items.item; // 공항 목록
+const logos = Constant.getLogos();
 
 export default function PayCheck() {
     const navigate = useNavigate();
-    const [open, setOpen] = useState(false); // 취소모달창
-    const [subBoxVisible, setSubBoxVisible] = useState({ accommodationList: false, payList: true });
-    const [selectedData, setSelectedData] = useState([]) //선택한 컴포넌트 객체
+    const location = useLocation();
+    const { contents } = location.state;
+    const [userId, setUserId] = useState(store.getState().userId); //리덕스에 있는 userId를 가져옴
 
-    const contents = {
-        id: 13,
-        airlineNm: "티웨이항공",
-        vihicleId: "TW902",
-        arrAirportNm: "제주",
-        arrPlandTime: 202402291210,
-        depAirportNm: "광주",
-        depPlandTime: 202402291100,
-        seatCapacity: 80,
-        cost: 93000
-    };
-
-    const [cost, setCost] = useState(contents.cost);
-
-    const handleReservedList = () => {
-        navigate(`/CompleteReserve/${contents.id}`);
-    }
-
-    const getAirlineLogo = (airlineName) => {
-        const logos = Constant.getLogos();
-        const matchingLogo = logos.find(logo => logo.value === airlineName);
+    const getAirlineLogo = (airLine) => {
+        const matchingLogo = logos.find(logo => logo.value === airLine);
         return matchingLogo ? matchingLogo.imageUrl : '';
     };
 
-
-    /** 결제확인 함수 */
-    const handleOpenClose = useCallback((data) => {
-        setOpen(prev => !prev); //결재취소 확인 모달창 띄움
-        setSelectedData(data); //선택한 데이터의 객체 저장
-
-    }, []);
-
+    const handleReservedList = () => {
+        navigate(`/MyPage/${userId}`); //수정해야함
+    }
+    /** 출발지, 도착지 Nm -> Id로 변경 */
+    const getAirportIdByName = (airportId) => {
+        const matchedAirport = airport.find((item) => item.airportId === airportId);
+        return matchedAirport ? matchedAirport.airportNm : null;
+    };
     return (
-        <div className="container container-top" style={{ height: '300px', textAlign: 'center', position: 'relative' }}>
-            <div style={{ paddingTop: '150px', color: 'white', }}>
-                <h2>예약이 완료되었습니다!</h2>
+        <div className="container">
+            <div className="container-top" style={{ height: '200px', marginTop: '60px' }}>
+                <div className="panel panel-top font-color-white" >
+                    <div className="container-flex">
+                        <h1 className="font-family-semibold">예약완료되었습니다!</h1>
+                    </div>
+                </div>
             </div>
+            <div style={{ marginTop: '140px' }}>
+                <table className="table-list-card" key={contents.id}>
+                    <tbody>
+                        <tr>
+                            <td colSpan={4}>
+                                <img src={getAirlineLogo(contents.airLine)} width={"130px"} alt={contents.airlineNm} />
+                                <p>{contents.airLine}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>{contents.vihicleId}</p>
+                            </td>
+                            <td>
+                                <h1>{Constant.handleTimeFormatChange(contents.depTime)}</h1>
+                                <p>{getAirportIdByName(contents.depAirport)}</p>
+                            </td>
+                            <td>
+                                {Constant.handleDateCalculate(contents.arrTime, contents.depTime)}
+                            </td>
+                            <td>
+                                <h1>{Constant.handleTimeFormatChange(contents.arrTime)}</h1>
+                                <p>{getAirportIdByName(contents.arrAirport)}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan={2}>
+                                <h2>인원   1명</h2>
+                            </td>
 
-            <table className="table-list-card2" style={{ position: 'relative', transform: 'translate(0%, -57.5%)' }}>
-                <thead>
-                    <tr>
-                        <th style={{ display: 'flex', marginRight: '20px', marginTop: '27px', alignItems: 'center', justifyContent: 'center', gap: '100px' }}>
-                        <img src={getAirlineLogo(contents.airlineNm)} width="130px" alt={contents.airlineNm} />
-                            <h3>{contents.airlineNm}</h3>
-                        </th>
-                    </tr>
-                </thead>
+                            <td colSpan={2}>
+                                <h2>
+                                    총  {contents.charge.toLocaleString()}원
+                                </h2>
+                            </td>
 
-                <tbody>
-                    <tr style={{ marginRight: '38px', marginTop: '45px', display: 'flex', gap: '20px' }}>
-                        <td style={{ flex: 1, padding: '40px', textAlign: 'center' }}>
-                            <p>{contents.vihicleId}</p>
-                        </td>
-                        <td style={{ flex: 2, padding: '0px', textAlign: 'center' }}>
-                            <h1>{Constant.handleTimeFormatChange(contents.depPlandTime)}</h1>
-                            <p>{contents.depAirportNm}</p>
-                        </td>
-                        <td style={{ flex: 1, padding: '40px', textAlign: 'center' }}>
-                            {Constant.handleDateCalculate(contents.arrPlandTime, contents.depPlandTime)}
-                        </td>
-                        <td style={{ flex: 2, padding: '0px', textAlign: 'center' }}>
-                            <h1>{Constant.handleTimeFormatChange(contents.arrPlandTime)}</h1>
-                            <p>{contents.arrAirportNm}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan="4" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                            <h2 style={{ marginBottom: '32px', marginTop: '30px', fontWeight: 'extrabold' }}>
-                                총 {contents.cost.toLocaleString()}원
-                            </h2>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <div className="container-flex" style={{ fontSize: '16px', marginTop: '-175px', display: 'flex', flexDirection: 'column', }}>
-                <p>예약이 완료되었습니다!</p>
-                <p>예약 목록으로 가시겠습니까?</p>
             </div>
-            <div className="container-flex" style={{ marginTop: '10px' }}>
-                <button className="btn btn-style-confirm" onClick={handleReservedList}>예</button>
-                <button className="btn btn-style-grey" onClick={() => { navigate(-1) }}>아니요</button>
+            <div className="container-column">
+                <h3>예약이 완료되었습니다 ! 예약목록으로 가시겠습니까 ?</h3>
+                <div className="container-flex" >
+                    <button className="btn btn-style-confirm" onClick={handleReservedList}>예</button>
+                    <button className="btn btn-style-grey" onClick={() => { navigate(-1) }}>아니오</button>
+                </div>
             </div>
         </div>
     )

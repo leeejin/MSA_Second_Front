@@ -196,8 +196,8 @@ export default function ReservedList() {
                 airlineNm: "티웨이항공",
                 arrAirportNm: "제주",
                 depAirportNm: "광주",
-                arrPlandTime: 202402151005,
-                depPlandTime: 202402150915,
+                arrPlandTime: 202403011005,
+                depPlandTime: 202403010915,
                 status: '결제 전'
             }];
         } catch (error) {

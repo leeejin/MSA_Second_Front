@@ -1,10 +1,10 @@
 import React from "react";
 
 /*지역 이미지*/
-import Jeju from '../styles/image/jeju.jpg'; // 제주
-import Busan from '../styles/image/busan.jpg'; // 부산
-import Daejeon from '../styles/image/daejeon.jpg'; // 대전
-import Gwangju from '../styles/image/gwangju.jpg'; // 광주
+import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
+import Busan from '../styles/image/busan.jpg'; //부산 이미지
+import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
+import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
 
 /*항공사 로고 이미지*/
 import Jin from '../styles/image_logo/jinair.png'; // 진에어
@@ -16,7 +16,6 @@ import Aerok from '../styles/image_logo/aerok.png'; // 에어로케이
 import Asiana from '../styles/image_logo/asiana.png'; // 아시아나
 import A_busan from '../styles/image_logo/airbusan.png'; // 에어부산
 import A_seoul from '../styles/image_logo/airseoul.png'; // 에어서울
-
 export default class Constant {
     static serviceURL = "http://localhost:8088"; //서비스 주소
 
@@ -46,7 +45,6 @@ export default class Constant {
             { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
         ];
     }
-
     static getLogos() {
         return [
             { key: 0, value: "진에어", imageUrl: Jin },
@@ -60,40 +58,61 @@ export default class Constant {
             { key: 8, value: "에어서울", imageUrl: A_seoul },
         ];
     }
+    static getRegionList(){
+       return[
+        { key: 0, value: '전체', name: '전체', code: 0 },
+        { key: 1, value: '서울', name: '서울', code: 1 },
+        { key: 2, value: '인천', name: '인천', code: 2 },
+        { key: 3, value: '대전', name: '대전', code: 3 },
+        { key: 4, value: '대구', name: '대구', code: 4 },
+        { key: 5, value: '광주', name: '광주', code: 5 },
+        { key: 6, value: '부산', name: '부산', code: 6 },
+        { key: 7, value: '울산', name: '울산', code: 7 },
+        { key: 8, value: '세종', name: '세종', code: 8 },
+        { key: 31, value: '경기도', name: '경기도', code: 31 },
+        { key: 32, value: '강원도', name: '강원도', code: 32 },
+        { key: 33, value: '충청북도', name: '충청북도', code: 33 },
+        { key: 34, value: '충청남도', name: '충청남도', code: 34 },
+        { key: 35, value: '경상북도', name: '경상북도', code: 35 },
+        { key: 36, value: '경상남도', name: '경상남도', code: 36 },
+        { key: 37, value: '전라북도', name: '전라북도', code: 37 },
+        { key: 38, value: '전라남도', name: '전라남도', code: 38 },
+        { key: 39, value: '제주도', name: '제주도', code: 39 },
+       ];
+    }
+    static getCostMenus() { //좌석등급
+        return [
+            { key: 0, value: 0, name: "높은순" },
+            { key: 1, value: 1, name: "낮은순" },
 
+        ];
+    }
+    static parseDate(date) {
+        const arrAirportTime = date.toString();
+        const year = arrAirportTime.substr(0, 4);
+        const month = arrAirportTime.substr(4, 2);
+        const day = arrAirportTime.substr(6, 2);
+        const hour = arrAirportTime.substr(8, 2);
+        const minute = arrAirportTime.substr(10, 2);
+        return { year, month, day, hour, minute };
+    }
+    
     static handleDateFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
-        return formattedTime;
+        const { year, month, day, hour, minute } = this.parseDate(date);
+        return `${year}년 ${month}월 ${day}일 ${hour}:${minute}`;
     }
+    
     static handleDayFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const formattedTime = `${year}년 ${month}월 ${day}일`;
-        return formattedTime;
+        const { year, month, day } = this.parseDate(date);
+        return `${year}년 ${month}월 ${day}일`;
     }
+    
     static handleTimeFormatChange(date) {
-        const arrAirportTime = date.toString();
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
-        const formattedTime = `${hour}:${minute}`;
-        return formattedTime;
+        const { hour, minute } = this.parseDate(date);
+        return `${hour}:${minute}`;
     }
     static getDateTypeChange = (date) => {
-
-        const arrAirportTime = date.toString();
-        const year = arrAirportTime.substr(0, 4);
-        const month = arrAirportTime.substr(4, 2);
-        const day = arrAirportTime.substr(6, 2);
-        const hour = arrAirportTime.substr(8, 2);
-        const minute = arrAirportTime.substr(10, 2);
+        const { year, month, day, hour, minute } = this.parseDate(date);
         const formattedTime = `${year}${month}${day}${hour}${minute}`;
         return Number(formattedTime);
 

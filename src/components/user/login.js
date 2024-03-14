@@ -1,21 +1,16 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import Constant from '../../util/constant_variables';
 import styled from "styled-components";
-import axios from 'axios';
+import axios from '../../axiosInstance';
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // 눈 모양 아이콘 가져오기
+
 const Hr = styled.hr`
     margin-top:50px;
     border:1px solid var(--grey-color);
 `;
-/* 회색 버튼 스타일*/
-const SubButton = styled.span`
-    float:right;
-    color: darkgrey;
-    &:hover {
-        cursor: pointer;
-    }
-`;
+
 /** 에러메시지 (이메일,비밀번호, 로그인성공여부) */
 const ERROR_STATE = {
     emailError: false,
@@ -38,13 +33,26 @@ const reducer = (state, action) => {
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-   
+
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [info, setInfo] = useState({ //회원가입 정보 저장
-        email: '',
+        email: localStorage.getItem("username"),
         password: '',
     });
+    const [showPassword, setShowPassword] = useState(false); // 비밀번호 보이기/숨기기 상태 변수 추가
 
+    const [isRemember, setIsRemember] = useState(false); //기억할지 안할지
+    useEffect(() => {
+        // 컴포넌트가 마운트될 때 로컬 스토리지에서 값을 가져와서 상태를 설정합니다.
+        const savedIsRemember = localStorage.getItem("isRemember");
+        if (savedIsRemember !== null) {
+            setIsRemember(JSON.parse(savedIsRemember));
+        }
+    }, [])
+    const handleOnChange = (e) => {
+        setIsRemember(e.target.checked);
+
+    }
     /** Info 변화 */
     const handleChangeInfo = (infoType, e) => {
         setInfo((prev) => ({
@@ -61,18 +69,19 @@ export default function Login() {
         if (!errors.emailError && !errors.passwordError) {
             callLoginAPI().then((response) => {
                 console.log("로그인 성공 Id=", response);
-                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId) ,name:response.data.name} }); //리덕스에 로그인 정보 업데이트
+                dispatch({ type: "Login", data: { userId: parseInt(response.data.userId), name: response.data.name, username: response.data.username, isRemember: isRemember } }); //리덕스에 로그인 정보 업데이트
                 const token = response.headers['authorization'];
-                window.localStorage.setItem('authToken', token);
+                window.sessionStorage.setItem('authToken', token);
                 axios.defaults.headers.common['Authorization'] = token;
-                window.location.href = '/';
+
+                navigate('/');
             }).catch(() => {
-                errorDispatch({ type: 'successError', successError: errors.successError }); // 로그인 실패 시 loginError 상태를 true로 설정
+                errorDispatch({ type: 'successError', successError: true }); // 로그인 실패 시 loginError 상태를 true로 설정
                 setTimeout(() => {
                     // 로그인 실패 시 loginError 상태를 true로 설정
                     errorDispatch({ type: 'error' });
                 }, 1000);
-            });
+            })
         } else {
             if (errors.emailError) {
                 errorDispatch({ type: 'emailError', emailError: errors.emailError });
@@ -84,15 +93,23 @@ export default function Login() {
             }, 1000);
         }
     }
+
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     async function callLoginAPI() {
         //백엔드로 보낼 로그인 데이터
         const formData = {
             username: info.email,
             password: info.password
-        }
+        };
+
         const response = await axios.post(Constant.serviceURL + `/users/login`, formData, { withCredentials: true });
         return response;
+
     }
+
     return (
         <>
             {
@@ -105,31 +122,60 @@ export default function Login() {
                 errorMessage.successError && <h3 className="white-wrap message">로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.</h3>
             }
             <div className="background background-color" />
+
+
             <div className="container container-backbox-450 background-color-white">
                 <div className="background-color-white">
-                    <h3 className="container-title">로그인</h3>
-                    <div className="container-innerBox">
-                        <p>아이디</p>
-                        <input
-                            type="email"
-                            onChange={(e) => handleChangeInfo('email', e)}
-                            autoFocus
-                        />
+                    <form onSubmit={(e) => submit(e)}>
+                        <div className="container-innerBox">
+                            <h3 className="container-title">로그인</h3>
 
-                        <p>비밀번호</p>
-                        <input
-                            type="password"
-                            onChange={(e) => handleChangeInfo('password', e)}
-                        />
+                            <p>아이디</p>
+                            <input
+                                type="email"
+                                defaultValue={info.email}
+                                onChange={(e) => handleChangeInfo('email', e)}
+                                autoFocus
+                            />
 
-                        <SubButton onClick={() => { navigate('/Signup') }}>
-                            회원가입 하기
-                        </SubButton>
-                        <button className="btn btn-style-execute " onClick={(e) => submit(e)}>로그인</button>
-                        <Hr />
-                    </div>
+                            <p>비밀번호</p>
+                            <div className="password-input">
+                                <input
+                                    placeholder="비밀번호"
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={(e) => handleChangeInfo('password', e)}
+                                />
+                                <div className="password-toggle-icon-container">
+                                    {showPassword ? (
+                                        <FaEyeSlash onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                    ) : (
+                                        <FaEye onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ width: '70%', margin: 'auto' }}>
+                            <input
+                                type="checkbox"
+                                id="saveId"
+                                name="saveId"
+                                onChange={(e) => { handleOnChange(e) }}
+                                checked={isRemember}
+                            />
+                            <label htmlFor="saveId">아이디 저장</label>
+
+                            <span className="btn-span-style-grey" style={{ fontFamily: "font-family-bold", marginLeft: "130px", cursor: "pointer" }} onClick={() => { navigate('/Signup') }}>
+                                회원가입 하기
+                            </span>
+
+                            <button className="btn btn-style-execute" type="submit">로그인</button>
+                            <Hr />
+                        </div>
+                    </form>
                 </div>
             </div>
+
         </>
     );
 }
