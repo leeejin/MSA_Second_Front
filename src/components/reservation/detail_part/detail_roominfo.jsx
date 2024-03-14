@@ -189,7 +189,7 @@ const DetailRoomInfo = ({ contentid }) => {
             const response = await axios.post(Constant.serviceURL + `/payments/validate`, { // 결제 사후 검증을 요청
                 imp_uid: rsp.imp_uid,
                 merchant_uid: rsp.merchant_uid,
-                category: "F",
+                category: "L",
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +199,7 @@ const DetailRoomInfo = ({ contentid }) => {
             setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
             //항공에선 여기서 CompleteBook으로 가서 결제내역 보여줬음
         } catch (error) {
-            await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid,"F"); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청
+            await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid,"L"); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청
         }
     }
     /* 실제 결제가 진행되기 전, 포트원 서버에 예약 요청을 토대로 결제될 정보를 미리 등록하는 메서드 -> 결제 사전 검증 */
@@ -277,13 +277,13 @@ const DetailRoomInfo = ({ contentid }) => {
             setOpen(prev => ({
                 ...prev,
                 reserveopen: false,
-                payopen: !prev.payopen
+                payopen: true
             }));
         } catch (error) {
             //안되면 에러뜨게 함
             setOpen(prev => ({
                 ...prev,
-                reserveopen: !prev.reserveopen
+                reserveopen:false
             }));
             handleError('accommodationReserveError', true);
         }
