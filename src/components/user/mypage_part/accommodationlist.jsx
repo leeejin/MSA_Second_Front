@@ -134,21 +134,13 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
             </thead>
             <tbody>
                 <tr>
-                    <td rowSpan={2}>
-                        <img src={paidlist.firstimage} width={"100%"} height={"100%"} />
-                    </td>
                     <td>
                         <h3>{paidlist.name}</h3>
                     </td>
-                    <td>
-                        <h3>{paidlist.title}</h3>
+                    <td colSpan={2}>
+                        <h3>{paidlist.reservationDate}</h3>
                     </td>
-                    <td>
-                        <h3>{Constant.handleDateFormatChange(paidlist.depTime)}</h3>
-                    </td>
-                    <td>
-                        <h3>{paidlist.status}</h3>
-                    </td>
+                   
                 </tr>
                 <tr>
                     <td >
@@ -157,7 +149,7 @@ const PaidListItem = ({ paidlist, handleOpenCloseData }) => {
                     <td>
                         <p>{paidlist.status}</p>
                     </td>
-                    <td colSpan={2}>
+                    <td>
                         {
                             paidlist.status === "예약취소" ? null : <button className="btn btn-style-grey" onClick={() => handleOpenCloseData(paidlist)}>취소</button>
                         }
