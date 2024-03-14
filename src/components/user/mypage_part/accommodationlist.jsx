@@ -17,7 +17,7 @@ const AccommodationList = () => {
     const [selectedData, setSelectedData] = useState({}); //선택한 컴포넌트 객체
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
-    const { isLoading } = useQuery('ReservedList', callGetReservedListAPI, {
+    const { isLoading } = useQuery('reservedList', callGetReservedListAPI, {
         onError: () => {
             handleError('listError', true);
         },
@@ -48,7 +48,7 @@ const AccommodationList = () => {
         },
         onSuccess: async () => {
             // 결제 취소 후 새로운 결제 목록을 불러옵니다.
-            await queryClient.invalidateQueries('ReservedListt');
+            await queryClient.invalidateQueries('reservedList');
             setOpen(prev => !prev);
             handleError('cancelSuccess', true);
             window.location.reload();
