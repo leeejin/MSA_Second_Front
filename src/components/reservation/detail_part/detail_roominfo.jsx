@@ -261,7 +261,7 @@ const DetailRoomInfo = ({ contentid }) => {
         //백엔드에 보낼 예약정보
 
         const formData = {
-            reservationdate: Constant.handleDateFormatISOChange(depTime),
+            reservationDate: Constant.handleDateFormatISOChange(depTime),
             email: loginInfo.email,
             name: loginInfo.name,
             userId: loginInfo.userId,
