@@ -6,6 +6,7 @@ import Constant from '../../util/constant_variables';
 import styled from "styled-components";
 import axios from '../../axiosInstance';
 import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // 눈 모양 아이콘 가져오기
 const Hr = styled.hr`
     margin-top:50px;
     border:1px solid var(--grey-color);
@@ -20,7 +21,7 @@ const Login=()=> {
         email: localStorage.getItem("username"),
         password: '',
     });
-
+    const [showPassword, setShowPassword] = useState(false); // 비밀번호 보이기/숨기기 상태 변수 추가
     const [isRemember, setIsRemember] = useState(false); //기억할지 안할지
     useEffect(() => {
         // 컴포넌트가 마운트될 때 로컬 스토리지에서 값을 가져와서 상태를 설정합니다.
@@ -29,6 +30,9 @@ const Login=()=> {
             setIsRemember(JSON.parse(savedIsRemember));
         }
     }, [])
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     const handleOnChange = (e) => {
         setIsRemember(e.target.checked);
     }
@@ -108,10 +112,20 @@ const Login=()=> {
                             />
 
                             <p>비밀번호</p>
-                            <input
-                                type="password"
-                                onChange={(e) => handleChangeInfo('password', e)}
-                            />
+                            <div className="password-input">
+                                <input
+                                    placeholder="비밀번호"
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={(e) => handleChangeInfo('password', e)}
+                                />
+                                <div className="password-toggle-icon-container">
+                                    {showPassword ? (
+                                        <FaEyeSlash onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                    ) : (
+                                        <FaEye onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         <div style={{ width: '70%', margin: 'auto' }}>
                             <input

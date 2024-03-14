@@ -83,7 +83,18 @@
     }
 
 }
+.password-input {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
 
+.password-toggle-icon-container {
+    position: absolute;
+    right: 10px;
+    top: 40%;
+    transform: translateY(-50%); 
+}
 /** 버튼 */
 /** 공통 버튼 스타일 */
 .btn {

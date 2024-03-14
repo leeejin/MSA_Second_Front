@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react';
-
+import axios from '../../../axiosInstance';
+import Constant from '../../../util/constant_variables';
 /** 소개정보 */
 const DetailIntroduceInfo = ({ contentid }) => {
     const [contents, setContents] = useState({});
@@ -12,19 +13,19 @@ const DetailIntroduceInfo = ({ contentid }) => {
     async function getAccommodationIntroduceReserveAPI() {
 
         try {
-            //const response = await axios.get(Constant.serviceURL + `/lodgings/searchIntro/${contentid}`);
-
+             const response = await axios.get(Constant.serviceURL + `/lodgings/searchIntro/${contentid}`);
+           
             return {
-                id: 1,
-                contentid: 2465071,
-                contenttypeid: 32,
-                roomcount: "2",
-                roomtype: "한실",
-                refundregulation: "7일전 100%, 3일전 50%, 2일전~당일 환불 불가",
-                checkintime: "16:00",
-                checkouttime: "10:00",
-                chkcooking: "불가",
-                parkinglodging: "가능"
+                id: response.data.id,
+                contentid: response.data.contentid,
+                contenttypeid: response.data.contenttypeid,
+                roomcount: response.data.roomcount,
+                roomtype: response.data.roomtype,
+                refundregulation:response.data.refundregulation,
+                checkintime: response.data.checkintime,
+                checkouttime: response.data.checkouttime,
+                chkcooking: response.data.chkcooking,
+                parkinglodging: response.data.parkinglodging
             };
         } catch (error) {
             console.error(error);

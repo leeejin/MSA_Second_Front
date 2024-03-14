@@ -6,6 +6,9 @@ import axios from '../../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { reducer, ERROR_STATE, Alert } from '../../util/custom/alert';
 import { useMutation } from 'react-query';
+
+import { BsExclamationCircle } from "react-icons/bs";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // 눈 모양 아이콘 가져오기
 /**이메일 스타일 */
 const Flex = styled.div`
   display: inline-flex;
@@ -28,6 +31,8 @@ const Signup = () => {
     const [select, setSelect] = useState(emailMenus[0].value); // 선택된 이메일 드롭리스트
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
 
+    const [showPassword, setShowPassword] = useState(false); // 비밀번호 보이기/숨기기 상태 변수 추가
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 비밀번호 확인 필드용 상태 변수 추가
 
     /** 셀렉트 전용 */
     const [isShowOptions, setShowOptions] = useState(false);
@@ -46,6 +51,14 @@ const Signup = () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
+    const handleTogglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleToggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
     const handleError = (errorType, hasError) => {
         errorDispatch({ type: errorType, [errorType]: hasError });
 
@@ -196,11 +209,20 @@ const Signup = () => {
                         </Flex>
 
                         <p>비밀번호</p>
-                        <input
-                            placeholder="비밀번호"
-                            type="password"
-                            onChange={(e) => handleChangeInfo('password', e)}
-                        />
+                        <div className="password-input">
+                            <input
+                                placeholder="비밀번호"
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={(e) => handleChangeInfo('password', e)}
+                            />
+                            <div className="password-toggle-icon-container"> {/* 눈 아이콘을 감싸는 컨테이너 */}
+                                {showPassword ? (
+                                    <FaEyeSlash onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                ) : (
+                                    <FaEye onClick={handleTogglePasswordVisibility} className="password-toggle-icon" />
+                                )}
+                            </div>
+                        </div>
 
                         <p>비밀번호 확인</p>
                         <input

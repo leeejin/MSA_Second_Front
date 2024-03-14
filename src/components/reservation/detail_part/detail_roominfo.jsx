@@ -43,20 +43,19 @@ const DetailRoomInfo = ({ contentid }) => {
                 ...prev,
                 img: response.roomImg1,
                 imgAlt: response.roomImg1Alt
-            }))
+            }));
+            const costs = [
+                response.roompeakseasonminfee2 ?? 0,
+                response.roompeakSeasonMinfee1 ?? 0,
+                response.roomoffseasonminfee2 ?? 0,
+                response.roomoffseasonminfee1 ?? 0,
+            ];
+            costs.sort((a, b) => a - b);
+            const highestCost = costs[costs.length - 1];
+            setCost(highestCost);
         });
     }, []);
-    useEffect(() => {
-        const costs = [
-            contents.roompeakseasonminfee2 ?? 0,
-            contents.roompeakSeasonMinfee1 ?? 0,
-            contents.roomoffseasonminfee2 ?? 0,
-            contents.roomoffseasonminfee1 ?? 0,
-        ];
-        costs.sort((a, b) => a - b);
-        const highestCost = costs[costs.length - 1];
-        setCost(highestCost);
-    }, [])
+
     /** 출발 날짜 핸들러 */
     const handleDateChange = (date) => {
         console.log(date);
@@ -69,6 +68,7 @@ const DetailRoomInfo = ({ contentid }) => {
     /** 모달창 on/off */
     const handleOpenClose = () => {
         setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
+
     };
     const handleOpenCloseReserve = async () => {
         await reserveCancelAPI(serverData);
@@ -104,8 +104,11 @@ const DetailRoomInfo = ({ contentid }) => {
                 ...prev,
                 reserveopen: false,
             }));
+        } else if (cost === 0) {
+            console.log("가격이 0이라서 결제 못함");
         } else {
             await reserveInfoAPI();
+
         }
 
     };
@@ -249,14 +252,16 @@ const DetailRoomInfo = ({ contentid }) => {
     /** 예약 함수  */
     async function reserveInfoAPI() {
         //백엔드에 보낼 예약정보
+
         const formData = {
             reservationdate: Constant.handleDateFormatISOChange(depTime),
             email: loginInfo.email,
+            name: loginInfo.name,
             charge: cost,
-            roomCode: selectedData.roomCode,
+            roomcode: selectedData.roomcode,
         };
         try {
-            const reservationResponse = await axios.post(Constant.serviceURL + `/lodgingReservation/create`, formData);
+            const reservationResponse = await axios.post(Constant.serviceURL + `/lodgingReservations/create`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
             setServerData(reservationResponse.data);
             handleError('accommodationReserveSuccess', true);
@@ -295,49 +300,48 @@ const DetailRoomInfo = ({ contentid }) => {
     async function getAccommodationRoomReserveAPI() {
 
         try {
-            const response = await axios.get(Constant.serviceURL + `/lodgings/searchDetail/${contentid}`);
-
+            const response = await axios.get(Constant.serviceURL + `/lodgings/searchRoom/${contentid}`);
             return {
-                id: 36,
-                contentid: 2531399,
-                contenttypeid: 32,
-                roomcode: 48188,
-                roomtitle: "double 룸(독채형)",
-                roomsize: null,
-                roomcount: "0",
-                roombasecount: 10,
-                roommaxcount: 20,
-                roomoffseasonminfee1: 250000,
-                roomoffseasonminfee2: 350000,
-                roompeakSeasonMinfee1: null,
-                roompeakseasonminfee2: 450000,
-                roomintro: "",
-                roombathfadility: null,
-                roombath: "",
-                roomhometheater: "",
-                roomaircondition: "Y",
-                roomtv: "Y",
-                roompc: "",
-                roomcable: "",
-                roominternet: "Y",
-                roomrefrigerator: "Y",
-                roomtoiletries: "Y",
-                roomsofa: "",
-                roomcook: "Y",
-                roomtable: "Y",
-                roomhairdryer: "Y",
-                roomsize2: "100",
-                roomImg1: "http://tong.visitkorea.or.kr/cms/resource/28/2573328_image2_1.jpg",
-                roomImg1Alt: "사진1 설명",
-                roomImg2: null,
-                roomImg2Alt: null,
-                roomImg3: null,
-                roomImg3Alt: null,
-                roomImg4: null,
-                roomImg4Alt: null,
-                originImgurl: null,
-                imgname: null,
-                smallimageurl: null,
+                id: response.data.id,
+                contentid: response.data.contentid,
+                contenttypeid: response.data.contenttypeid,
+                roomcode: response.data.roomcode,
+                roomtitle: response.data.roomtitle,
+                roomsize: response.data.roomsize,
+                roomcount: response.data.roomcount,
+                roombasecount: response.data.roombasecount,
+                roommaxcount: response.data.roommaxcount,
+                roomoffseasonminfee1: response.data.roomoffseasonminfee1,
+                roomoffseasonminfee2: response.data.roomoffseasonminfee2,
+                roompeakSeasonMinfee1: response.data.roompeakSeasonMinfee1,
+                roompeakseasonminfee2: response.data.roompeakseasonminfee2,
+                roomintro: response.data.roomintro,
+                roombathfadility: response.data.roombathfadility,
+                roombath: response.data.roombath,
+                roomhometheater: response.data.roomhometheater,
+                roomaircondition: response.data.roomaircondition,
+                roomtv: response.data.roomtv,
+                roompc: response.data.roompc,
+                roomcable: response.data.roomcable,
+                roominternet: response.data.roominternet,
+                roomrefrigerator: response.data.roomrefrigerator,
+                roomtoiletries: response.data.roomtoiletries,
+                roomsofa: response.data.roomsofa,
+                roomcook: response.data.roomcook,
+                roomtable: response.data.roomtable,
+                roomhairdryer: response.data.roomhairdryer,
+                roomsize2: response.data.roomsize2,
+                roomImg1: response.data.roomImg1,
+                roomImg1Alt: response.data.roomImg1Alt,
+                roomImg2: response.data.roomImg2,
+                roomImg2Alt: response.data.roomImg2Alt,
+                roomImg3: response.data.roomImg3,
+                roomImg3Alt: response.data.roomImg3Alt,
+                roomImg4: response.data.roomImg4Alt,
+                roomImg4Alt: response.data.roomImg4Alt,
+                originImgurl: response.data.originImgurl,
+                imgname: response.data.imgname,
+                smallimageurl: response.data.smallimageurl,
 
                 /**이 부분은 수정 될 수 있습니다.       
                  roomCapacity: {
@@ -384,21 +388,27 @@ const DetailRoomInfo = ({ contentid }) => {
                         alt={contents.roomImg4Alt}
                         width={"10%"} height={"50px"}
                         onClick={() => handleViewLarger(contents.roomImg4, contents.roomImg4Alt)} />
+
                 </div>
-                <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
-                    <div className="d-flex" style={{ gap: '10px' }}>
-                        <p>성수기 주중</p>
-                        <h3 style={{ margin: '0 0 0 10px' }}>
-                            {
-                                cost === 0 ? <span>{contents.roomintro}</span> :
-                                    <span>{cost.toLocaleString()}원</span>
-                            }</h3>
-                    </div>
-                    <div>
-                        <Datepicker depTime={depTime} handleDateChange={handleDateChange} />
-                        <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
-                            예약하러 가기
-                        </button>
+                <div className="w-50">
+                    <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
+                        <div className="d-flex" style={{ gap: '10px' }}>
+                            <p>성수기 주중</p>
+                            <h3 style={{ margin: '0 0 0 10px' }}>
+                                {
+                                    cost === 0 ? <span>{contents.roomintro}</span> :
+                                        <span>{cost.toLocaleString()}원</span>
+                                }</h3>
+                        </div>
+                        {
+                            cost !== 0 && <div>
+                                <Datepicker depTime={depTime} handleDateChange={handleDateChange} />
+                                <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
+                                    예약하러 가기
+                                </button>
+                            </div>
+                        }
+
                     </div>
                 </div>
                 <table className="w-50 table-list" style={{ marginTop: '40px' }}>
@@ -417,11 +427,11 @@ const DetailRoomInfo = ({ contentid }) => {
                         </tr>
                         <tr>
                             <td>비수기 금액</td>
-                            <td>{contents.roomoffseasonminfee1?? 0} ~ {contents.roomoffseasonminfee2?? 0} 원</td>
+                            <td>{contents.roomoffseasonminfee1 ?? 0} ~ {contents.roomoffseasonminfee2 ?? 0} 원</td>
                         </tr>
                         <tr>
                             <td>성수기 금액</td>
-                            <td>{contents.roompeakSeasonMinfee1?? 0} ~ {contents.roompeakseasonminfee2?? 0} 원</td>
+                            <td>{contents.roompeakSeasonMinfee1 ?? 0} ~ {contents.roompeakseasonminfee2 ?? 0} 원</td>
                         </tr>
                         <tr>
                             <td>TV</td>
