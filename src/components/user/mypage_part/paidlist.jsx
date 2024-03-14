@@ -103,6 +103,7 @@ const PaidList = () => {
                 open && <ModalComponent handleSubmit={handleSubmit} handleOpenClose={() => handleOpenClose(selectedData)} message={"결제취소 하시겠습니까?"} />
             }
             <div className="w-50">
+                
                 {
                     contents?.length > 0 ? (
                         contents.map((paidlist) => (

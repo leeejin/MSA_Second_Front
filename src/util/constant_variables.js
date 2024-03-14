@@ -1,7 +1,6 @@
 /*지역 이미지*/
 import Jeju from '../styles/image/jeju.jpg'; //제주 이미지
-import Busan from '../styles/image/busan.jpg'; //부산 이미지
-import Daejeon from '../styles/image/daejeon.jpg'; //대전 이미지
+import Daegu from '../styles/image/daegu.jpg'; // 대구 이미지
 import Gwangju from '../styles/image/gwangju.jpg'; //광주 이미지
 
 /*항공사 로고 이미지*/
@@ -62,16 +61,14 @@ export default class Constant {
         return [
             { key: 0, value: "제주", title: "이번 겨울", subTitle: "제주 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: Jeju },
             { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
-            { key: 2, value: "부산", title: "이번 겨울", subTitle: "부산 여행을 감행하다 ", content: "다시 태어나도 살고 싶은 그린 스마트 도시 '부산'", imageUrl: Busan },
-            { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
+            { key: 2, value: "대구", title: "이번 겨울", subTitle: "대구 여행을 감행하다 ", content: "대한민국의 중심 도시 '대구'", imageUrl: Daegu },
         ];
     }
     static getSwiperMenus() {
         return [
             { key: 0, value: "제주", title: "이번 겨울", subTitle: "제주 여행을 감행하다 ", content: "사방으로 펼쳐진 바다, 산과 들, 하늘까지 푸르름으로 가득찬 성 '제주'", imageUrl: Jeju },
             { key: 1, value: "광주", title: "이번 겨울", subTitle: "광주 여행을 감행하다 ", content: "내일이 빛나는 기회의 도시 빛고을 '광주'", imageUrl: Gwangju },
-            { key: 2, value: "부산", title: "이번 겨울", subTitle: "부산 여행을 감행하다 ", content: "다시 태어나도 살고 싶은 그린 스마트 도시 '부산'", imageUrl: Busan },
-            { key: 3, value: "대전", title: "이번 겨울", subTitle: "대전 여행을 감행하다 ", content: "대한민국의 중심축 성심당의 도시 '대전'", imageUrl: Daejeon },
+            { key: 2, value: "대구", title: "이번 겨울", subTitle: "대구 여행을 감행하다 ", content: "대한민국의 중심 도시 '대구'", imageUrl: Daegu },
         ];
     }
     static getLogos() {
@@ -167,10 +164,11 @@ export default class Constant {
 
     };
     static handleDateFormatISOChange = (date) => {
-        //date.setHours(date.getHours() + 9); // KST는 UTC보다 9시간 빠르므로
-        const formattedDate = date.toISOString().slice(0, 10).replace(/-/g, '');
-    
-        return formattedDate;
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}${month}${day}`;
+        return Number(formattedDate);
     };
     static handleDateCalculate(arrPlandTime, depPlandTime) {
         // 숫자를 문자열로 변환하고 연, 월, 일, 시, 분을 추출

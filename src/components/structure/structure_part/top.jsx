@@ -36,7 +36,7 @@ const level = Constant.getSeatLevel(); // 좌석등급
 const airport = AirPort.response.body.items.item; // 공항 목록
 
 /** top component */
-const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateChange })=> {
+const TopComponent = ({ airports, handleChange, handleAirPortReverse, handleDateChange }) => {
     const navigate = useNavigate();
     const [errorMessage, errorDispatch] = useReducer(reducer, ERROR_STATE); //모든 에러메시지
     const [isLoading, setIsLoading] = useState(false);
@@ -72,20 +72,20 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
     }
     /** 검색 핸들러 */
     const handleSearch = () => {
-        setIsLoading(prev => !prev);
+        /** 에러모음 */
+        let errors = {
+            depError: airports.dep === '출발',
+            arrError: airports.arr === '도착',
+            levelError: airports.level === '좌석을 선택해주세요',
+            locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
+            dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
+        };
+        console.log(errors.levelError)
         if (userId <= 0) { //먼저 로그인 했는지 안했는지 검사
             handleError('loginError', true);
         } else {
-            /** 에러모음 */
-            let errors = {
-                depError: airports.dep === '출발',
-                arrError: airports.arr === '도착',
-                levelError: airports.level === '좌석을 선택해주세요',
-                locationError: airports.dep === airports.arr, //출발지와 도착지가 똑같을 때
-                dateError: airports.depTime <= new Date() //선택한날짜가 지금시간대보다 이전일 때
-            };
-            if (!errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
-
+            if (!errors.levelError && !errors.locationError && !errors.dateError && !errors.depError && !errors.arrError) { //둘다 에러 아닐시
+                setIsLoading(true);
                 callPostAirInfoAPI().then((response) => {
                     if (response.data.length > 0) {
 
@@ -101,7 +101,10 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
                     } else {
                         handleError('seatError', true);
                     }
-                });
+                }).catch(() => {
+                    handleError('searchError', true);
+                })
+                setIsLoading(false);
             } else {
                 if (errors.depError) {
                     handleError('depError', errors.depError);
@@ -116,7 +119,7 @@ const TopComponent=({ airports, handleChange, handleAirPortReverse, handleDateCh
                 }
             }
         }
-        setIsLoading(prev => !prev);
+
     }
 
     const show = (type, value) => {
