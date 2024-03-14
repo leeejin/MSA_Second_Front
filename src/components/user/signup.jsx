@@ -225,11 +225,20 @@ const Signup = () => {
                         </div>
 
                         <p>비밀번호 확인</p>
-                        <input
-                            placeholder="비밀번호 확인"
-                            type="password"
-                            onChange={(e) => handleChangeInfo('confirmPassword', e)}
-                        />
+                        <div className="password-input">
+                            <input
+                                placeholder="비밀번호 확인"
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                onChange={(e) => handleChangeInfo('confirmPassword', e)}
+                            />
+                            <div className="password-toggle-icon-container"> {/* 눈 아이콘을 감싸는 컨테이너 */}
+                                {showConfirmPassword ? (
+                                    <FaEyeSlash onClick={handleToggleConfirmPasswordVisibility} className="password-toggle-icon" />
+                                ) : (
+                                    <FaEye onClick={handleToggleConfirmPasswordVisibility} className="password-toggle-icon" />
+                                )}
+                            </div>
+                        </div>
 
                         <button className="btn btn-style-execute" onClick={handleOpenClose}>회원가입</button>
 

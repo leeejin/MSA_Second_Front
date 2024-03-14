@@ -14,19 +14,8 @@ const DetailIntroduceInfo = ({ contentid }) => {
 
         try {
              const response = await axios.get(Constant.serviceURL + `/lodgings/searchIntro/${contentid}`);
-           
-            return {
-                id: response.data.id,
-                contentid: response.data.contentid,
-                contenttypeid: response.data.contenttypeid,
-                roomcount: response.data.roomcount,
-                roomtype: response.data.roomtype,
-                refundregulation:response.data.refundregulation,
-                checkintime: response.data.checkintime,
-                checkouttime: response.data.checkouttime,
-                chkcooking: response.data.chkcooking,
-                parkinglodging: response.data.parkinglodging
-            };
+           console.log("소개정보데이터",response);
+            return response.data;
         } catch (error) {
             console.error(error);
         }

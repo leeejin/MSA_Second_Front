@@ -29,6 +29,7 @@ export const ERROR_STATE = {
     'accommodationAreaError': { active: false, message: '지역을 선택해주세요' },
     'accommodationSigunguError': { active: false, message: '시군구를 선택해주세요' },
     'accommodationReserveSuccess': { active: false, message: '숙소예약완료되었습니다!' },
+    'accommodationReserveError': { active: false, message: '알 수 없는 이유로 숙소예약에 실패하였습니다' },
     'searchTextError':{ active: false, message: '검색어를 입력해주세요' },
     'refundError':{ active: false, message: '이미 환불된 건입니다' },
 };

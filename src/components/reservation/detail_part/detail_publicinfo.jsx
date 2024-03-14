@@ -61,27 +61,9 @@ const DetailPublicInfo = ({ contentid }) => {
         
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/searchDetail/${contentid}`);
-            console.log(response);
-            return {
-                id: response.data.id,
-                contentid: response.data.contentid,
-                contenttypeid: response.data.contenttypeid,
-                createdtime: response.data.createdtime,
-                title: response.data.title,
-                modifiedtime: response.data.modifiedtime,
-                tel: response.data.tel,
-                telname: response.data.telname,
-                homePage: response.data.homePage,
-                firstimage: response.data.firstimage,
-                firstimage2: response.data.firstimage2,
-                areacode: response.data.areacode,
-                sigungucode: response.data.sigungucode,
-                addr1: response.data.addr1,
-                addr2: response.data.addr2,
-                mapx: response.data.mapx,
-                mapy: response.data.mapy,
-                overview: response.data.overview
-            };
+            console.log(response.data);
+            return response.data;
+     
         } catch (error) {
             console.error(error);
         }

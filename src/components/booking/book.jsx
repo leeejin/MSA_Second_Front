@@ -113,7 +113,7 @@ const ModalBookCheck = () => {
             if (seatLevel === "일반석") filteredContents = filteredContents.sort((a, b) => a.economyCharge - b.economyCharge);
             else if (seatLevel === "프리스티지석") filteredContents = filteredContents.sort((a, b) => a.prestigeCharge - b.prestigeCharge);
         } else if (value === "depTime") {
-            filteredContents = filteredContents.sort((a, b) => a.depTime - b.depTime);
+            filteredContents = filteredContents.sort((a, b) => a.depPlandTime - b.depPlandTime);
         }
 
         setListContents(filteredContents);

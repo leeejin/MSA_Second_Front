@@ -19,10 +19,10 @@ const DetailRoomInfo = ({ contentid }) => {
         name: useSelector((state) => state.name),
         email: useSelector((state) => state.username)
     };
-    const [contents, setContents] = useState({});
+    const [contents, setContents] = useState([]);
     const [image, setImage] = useState({ img: null, imgAlt: '' });
     const [depTime, setDepTime] = useState(new Date());
-    const [cost, setCost] = useState(0);
+    const [cost, setCost] = useState([]);
     const [open, setOpen] = useState({
         reserveopen: false,
         payopen: false,
@@ -44,18 +44,31 @@ const DetailRoomInfo = ({ contentid }) => {
                 img: response.roomImg1,
                 imgAlt: response.roomImg1Alt
             }));
-            const costs = [
-                response.roompeakseasonminfee2 ?? 0,
-                response.roompeakSeasonMinfee1 ?? 0,
-                response.roomoffseasonminfee2 ?? 0,
-                response.roomoffseasonminfee1 ?? 0,
-            ];
-            costs.sort((a, b) => a - b);
-            const highestCost = costs[costs.length - 1];
-            setCost(highestCost);
+
+            const result = response.map((response) => {
+                const costs = [
+                    response.roompeakseasonminfee2 ? response.roompeakseasonminfee2 : 0,
+                    response.roompeakSeasonMinfee1 ? response.roompeakSeasonMinfee1 : 0,
+                    response.roomoffseasonminfee2 ? response.roomoffseasonminfee2 : 0,
+                    response.roomoffseasonminfee1 ? response.roomoffseasonminfee1 : 0,
+                ];
+                const highestCost =Math.max(...costs);
+                console.log(highestCost);
+                return highestCost
+               
+            });
+            setCost(result);
         });
     }, []);
-
+    useEffect(() => {
+        
+        //costs.sort((a, b) => a - b);
+        // const highestCost = costs[costs.length - 1];
+         
+        // 임시 배열을 사용하여 cost state 업데이트
+        
+    }, [])
+    console.log(cost);
     /** 출발 날짜 핸들러 */
     const handleDateChange = (date) => {
         console.log(date);
@@ -87,10 +100,11 @@ const DetailRoomInfo = ({ contentid }) => {
         }, 2000);
     };
     /** 예약확인 함수 */
-    const handleOpenCloseData = (data) => {
+    const handleOpenCloseData = (data,cost) => {
         setSelectedData(prevData => ({
             ...prevData,
             ...data,
+            charge:cost
         }));
         setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen }));
 
@@ -257,9 +271,11 @@ const DetailRoomInfo = ({ contentid }) => {
             reservationdate: Constant.handleDateFormatISOChange(depTime),
             email: loginInfo.email,
             name: loginInfo.name,
-            charge: cost,
+            userId: loginInfo.userId,
+            charge: selectedData.charge,
             roomcode: selectedData.roomcode,
         };
+        console.log(formData);
         try {
             const reservationResponse = await axios.post(Constant.serviceURL + `/lodgingReservations/create`, formData);
             console.log("서버로부터 받은 데이터 : ", reservationResponse.data);
@@ -276,7 +292,7 @@ const DetailRoomInfo = ({ contentid }) => {
                 ...prev,
                 reserveopen: !prev.reserveopen
             }));
-            handleError('reserveError', true);
+            handleError('accommodationReserveError', true);
         }
     }
     /**예약 취소 함수 */
@@ -301,56 +317,8 @@ const DetailRoomInfo = ({ contentid }) => {
 
         try {
             const response = await axios.get(Constant.serviceURL + `/lodgings/searchRoom/${contentid}`);
-            return {
-                id: response.data.id,
-                contentid: response.data.contentid,
-                contenttypeid: response.data.contenttypeid,
-                roomcode: response.data.roomcode,
-                roomtitle: response.data.roomtitle,
-                roomsize: response.data.roomsize,
-                roomcount: response.data.roomcount,
-                roombasecount: response.data.roombasecount,
-                roommaxcount: response.data.roommaxcount,
-                roomoffseasonminfee1: response.data.roomoffseasonminfee1,
-                roomoffseasonminfee2: response.data.roomoffseasonminfee2,
-                roompeakSeasonMinfee1: response.data.roompeakSeasonMinfee1,
-                roompeakseasonminfee2: response.data.roompeakseasonminfee2,
-                roomintro: response.data.roomintro,
-                roombathfadility: response.data.roombathfadility,
-                roombath: response.data.roombath,
-                roomhometheater: response.data.roomhometheater,
-                roomaircondition: response.data.roomaircondition,
-                roomtv: response.data.roomtv,
-                roompc: response.data.roompc,
-                roomcable: response.data.roomcable,
-                roominternet: response.data.roominternet,
-                roomrefrigerator: response.data.roomrefrigerator,
-                roomtoiletries: response.data.roomtoiletries,
-                roomsofa: response.data.roomsofa,
-                roomcook: response.data.roomcook,
-                roomtable: response.data.roomtable,
-                roomhairdryer: response.data.roomhairdryer,
-                roomsize2: response.data.roomsize2,
-                roomImg1: response.data.roomImg1,
-                roomImg1Alt: response.data.roomImg1Alt,
-                roomImg2: response.data.roomImg2,
-                roomImg2Alt: response.data.roomImg2Alt,
-                roomImg3: response.data.roomImg3,
-                roomImg3Alt: response.data.roomImg3Alt,
-                roomImg4: response.data.roomImg4Alt,
-                roomImg4Alt: response.data.roomImg4Alt,
-                originImgurl: response.data.originImgurl,
-                imgname: response.data.imgname,
-                smallimageurl: response.data.smallimageurl,
-
-                /**이 부분은 수정 될 수 있습니다.       
-                 roomCapacity: {
-                            "2024-03-31": 10,
-                          ...
-                            "2024-03-01": 10
-                ////////////////////////////////////
-                        }*/
-            };
+            console.log("객실정보 : ", response.data);
+            return response.data;
         } catch (error) {
             console.error(error);
         }
@@ -366,6 +334,7 @@ const DetailRoomInfo = ({ contentid }) => {
                 open.payopen && <ModalComponent handleSubmit={handlePay} handleOpenClose={handleOpenCloseReserve} message={"예약이 완료되었습니다. 카카오페이로 결제하시겠습니까?"} />
             }
             <div className="container-middle middlepanel">
+
                 <div className="w-50">
                     <ModalLargerComponent imgAlt={image.imgAlt} image={image.img} />
                     <Img
@@ -390,63 +359,73 @@ const DetailRoomInfo = ({ contentid }) => {
                         onClick={() => handleViewLarger(contents.roomImg4, contents.roomImg4Alt)} />
 
                 </div>
-                <div className="w-50">
-                    <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
-                        <div className="d-flex" style={{ gap: '10px' }}>
-                            <p>성수기 주중</p>
-                            <h3 style={{ margin: '0 0 0 10px' }}>
-                                {
-                                    cost === 0 ? <span>{contents.roomintro}</span> :
-                                        <span>{cost.toLocaleString()}원</span>
-                                }</h3>
-                        </div>
-                        {
-                            cost !== 0 && <div>
-                                <Datepicker depTime={depTime} handleDateChange={handleDateChange} />
-                                <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents)}>
-                                    예약하러 가기
-                                </button>
-                            </div>
-                        }
+                {
+                    contents.map((contents,index) =>
+                        <div key={contents.roomcode}>
+                            
+                            <table className="w-50 table-list" style={{ marginTop: '40px' }}>
+                                <tbody>
+                                    <tr>
+                                        <td>객실명</td>
+                                        <td>{contents.roomtitle}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>객실크기</td>
+                                        <td>{contents.roomsize}평 ({contents.roomsize2}㎡)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>기준인원</td>
+                                        <td>{contents.roombasecount} ~ {contents.roommaxcount}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>비수기 금액</td>
+                                        <td>{contents.roomoffseasonminfee1 ?? 0} ~ {contents.roomoffseasonminfee2 ?? 0} 원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>성수기 금액</td>
+                                        <td>{contents.roompeakSeasonMinfee1 ?? 0} ~ {contents.roompeakseasonminfee2 ?? 0} 원</td>
+                                    </tr>
+                                    <tr>
+                                        <td>TV</td>
+                                        <td>{contents.roomtv}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>인터넷</td>
+                                        <td>{contents.roominternet}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>냉장고</td>
+                                        <td>{contents.roomrefrigerator}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div className="w-50">
+                                <div className="d-flex d-row" style={{ justifyContent: 'space-around' }} >
+                                    <div className="d-flex" style={{ gap: '10px' }}>
+                                        <p>성수기 주중</p>
+                                        <h3 style={{ margin: '0 0 0 10px' }}>
+                                            {
+                                                cost[index] > 0 ? <span>{cost[index].toLocaleString()}원</span> :
+                                                    <span>{contents.roomintro}</span>
+                                            }</h3>
+                                    </div>
+                                    {
+                                        cost[index] > 0 && <div>
+                                            <Datepicker depTime={depTime} handleDateChange={handleDateChange} />
+                                            <button className="btn btn-style-reserve" onClick={() => handleOpenCloseData(contents,cost[index])}>
+                                                예약하러 가기
+                                            </button>
+                                        </div>
+                                    }
 
-                    </div>
-                </div>
-                <table className="w-50 table-list" style={{ marginTop: '40px' }}>
-                    <tbody>
-                        <tr>
-                            <td>객실명</td>
-                            <td>{contents.roomtitle}</td>
-                        </tr>
-                        <tr>
-                            <td>객실크기</td>
-                            <td>{contents.roomsize}평 ({contents.roomsize2}㎡)</td>
-                        </tr>
-                        <tr>
-                            <td>기준인원</td>
-                            <td>{contents.roombasecount} ~ {contents.roommaxcount}</td>
-                        </tr>
-                        <tr>
-                            <td>비수기 금액</td>
-                            <td>{contents.roomoffseasonminfee1 ?? 0} ~ {contents.roomoffseasonminfee2 ?? 0} 원</td>
-                        </tr>
-                        <tr>
-                            <td>성수기 금액</td>
-                            <td>{contents.roompeakSeasonMinfee1 ?? 0} ~ {contents.roompeakseasonminfee2 ?? 0} 원</td>
-                        </tr>
-                        <tr>
-                            <td>TV</td>
-                            <td>{contents.roomtv}</td>
-                        </tr>
-                        <tr>
-                            <td>인터넷</td>
-                            <td>{contents.roominternet}</td>
-                        </tr>
-                        <tr>
-                            <td>냉장고</td>
-                            <td>{contents.roomrefrigerator}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    )
+                }
+
+
             </div>
         </div>
     )
