@@ -185,7 +185,7 @@ const ModalBookCheck = () => {
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
+            setOpen(prev => ({ ...prev, reserveopen: false, payopen: !prev.payopen }));
             navigate(`/CompleteBook/${serverData.id} `, {
                 state: {
                     contents: serverData,
@@ -239,11 +239,7 @@ const ModalBookCheck = () => {
                 }
             });
             console.log('결제취소 처리가 성공적으로 되었습니다');
-            setOpen(prev => ({
-                ...prev,
-                payopen: !prev.payopen,
-                reserveopen: !prev.reserveopen
-            }));
+           
         } catch (error) {
 
             console.error('결제취소 처리가 실패했습니다.\n오류내용 : ', error.reponse.data);
@@ -271,6 +267,7 @@ const ModalBookCheck = () => {
             setServerData(reservationResponse.data);
             setOpen(prev => ({ 
                 ...prev,
+                   reserveopen: false,
                 payopen: true
             }));
         } catch (error) {

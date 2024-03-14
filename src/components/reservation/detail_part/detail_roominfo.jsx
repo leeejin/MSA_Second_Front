@@ -157,6 +157,7 @@ const DetailRoomInfo = ({ contentid }) => {
             if (rsp.success) { // 결제가 성공되면
                 console.log('Payment succeeded');
                 await validatePaymentAPI(rsp);
+                setOpen(prev => ({ ...prev, reserveopen: false, payopen: !prev.payopen }));
             } else {
                 console.error(`Payment failed.Error: ${rsp.error_msg} `);
                 await cancelPaymentAPI(rsp.merchant_uid,category); // 결제 실패되었음을 알리는 요청
@@ -196,7 +197,7 @@ const DetailRoomInfo = ({ contentid }) => {
                 }
             });
             console.log('결제가 되고 난 후 진행되는 사후 검증에 성공했습니다.' + response);
-            setOpen(prev => ({ ...prev, reserveopen: !prev.reserveopen, payopen: !prev.payopen }));
+            
             //항공에선 여기서 CompleteBook으로 가서 결제내역 보여줬음
         } catch (error) {
             await refundPaymentAPI(rsp.merchant_uid, rsp.imp_uid,"L"); // 결제 사후 검증 실패 시 해당 결제에 대해 환불 요청
@@ -246,11 +247,7 @@ const DetailRoomInfo = ({ contentid }) => {
                 }
             });
             console.log('결제취소 처리가 성공적으로 되었습니다');
-            setOpen(prev => ({
-                ...prev,
-                payopen: !prev.payopen,
-                reserveopen: !prev.reserveopen
-            }));
+          
         } catch (error) {
 
             console.error('결제취소 처리가 실패했습니다.\n오류내용 : ', error.reponse.data);

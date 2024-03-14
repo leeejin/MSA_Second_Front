@@ -63,7 +63,7 @@ const AccommodationList = () => {
     /** 예약 목록 불러오는 API */
     async function callGetReservedListAPI() {
         try {
-            const response = await axios.get(Constant.serviceURL + `/reservationInfos/lodgings/${userId}`); // TODO URL 변경
+            const response = await axios.get(Constant.serviceURL + `/reservationInfos/lodging/${userId}`); // TODO URL 변경
             console.log(response.data);
             return response.data;
         } catch (error) {
