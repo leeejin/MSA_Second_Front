@@ -417,11 +417,11 @@ const DetailRoomInfo = ({ contentid }) => {
                         </tr>
                         <tr>
                             <td>비수기 금액</td>
-                            <td>{contents.roomoffseasonminfee1} ~ {contents.roomoffseasonminfee2} 원</td>
+                            <td>{contents.roomoffseasonminfee1?? 0} ~ {contents.roomoffseasonminfee2?? 0} 원</td>
                         </tr>
                         <tr>
                             <td>성수기 금액</td>
-                            <td>{contents.roompeakSeasonMinfee1} ~ {contents.roompeakseasonminfee2} 원</td>
+                            <td>{contents.roompeakSeasonMinfee1?? 0} ~ {contents.roompeakseasonminfee2?? 0} 원</td>
                         </tr>
                         <tr>
                             <td>TV</td>
